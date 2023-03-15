@@ -1,175 +1,144 @@
 <script setup>
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons-vue";
 
-import { reactive } from "vue";
-import AddEditProjectModal from "@/components/project/AddEditProjectModal.vue";
+import {ref, watch} from "vue";
 
-const tblConfig = reactive({
-  columns: [
-    {
-      title: "Project Name",
-      dataIndex: "title",
-      key: "title",
-    },
-    {
-      title: "Description",
-      dataIndex: "desc",
-      key: "desc",
-    },
-    {
-      title: "Default language",
-      dataIndex: "defaultLanguage",
-      key: "defaultLanguage",
-    },
-    {
-      title: "Other languages",
-      dataIndex: "otherLanguages",
-      key: "otherLanguages",
-    },
-    {
-      title: "Create at",
-      dataIndex: "createdAt",
-      key: "createdAt",
-    },
-    {
-      title: "Action",
-      dataIndex: "action",
-      key: "action",
-    },
-  ],
-  data: [
-    {
-      key: "1",
-      title: "John Brown",
-      desc: 32,
-      defaultLanguage: "New York No. 1 Lake Park",
-      otherLanguages: "New York No. 1 Lake Park",
-      createdAt: "New York No. 1 Lake Park",
-      action: "New York No. 1 Lake Park",
-    },
-    {
-      key: "2",
-      title: "Jim Green",
-      desc: 42,
-      defaultLanguage: "London No. 1 Lake Park",
-      otherLanguages: "New York No. 1 Lake Park",
-      createdAt: "New York No. 1 Lake Park",
-      action: "New York No. 1 Lake Park",
-    },
-    {
-      key: "3",
-      title: "Joe Black",
-      desc: 32,
-      defaultLanguage: "Sidney No. 1 Lake Park",
-      otherLanguages: "New York No. 1 Lake Park",
-      createdAt: "New York No. 1 Lake Park",
-      action: "New York No. 1 Lake Park",
-    },
-    {
-      key: "4",
-      title: "Jim Red",
-      desc: 32,
-      defaultLanguage: "London No. 2 Lake Park",
-      otherLanguages: "New York No. 1 Lake Park",
-      createdAt: "New York No. 1 Lake Park",
-      action: "New York No. 1 Lake Park",
-    }
+const visible = ref(false)
+const textSearch = ref('')
 
-  ],
-  loading: false,
-  pagination: {
-    current: 1,
-    pageSize: 2,
-    total: 0,
-  },
-});
+const showModal = () => {
+  visible.value = true
+}
+const handleOk = () => {
+  visible.value = false
+}
 
-const modalInstance = reactive({
-  visible: false,
-  title: "Add new project",
-  projectModel: undefined,
-  addNewProject: () => {
-    modalInstance.visible = true;
-    modalInstance.title = "Add new project";
-    modalInstance.projectModel = undefined;
-  },
-  afterSuccessSaveProject: () => {
-    modalInstance.visible = false;
-  },
-});
-const filterModel = reactive({
-  q: "",
-  isSearching: false,
-});
+watch(textSearch, (val) => {
+  console.log(val)
+})
 
-const callFilterProjectService = () => {
-  console.log("callFilterProjectService");
-};
+
+const getValueMenuItem = (e)=>{
+  console.log(e.key)
+}
+
 </script>
 
 <template>
   <a-page-header
     style="border: 1px solid rgb(235, 237, 240); padding: 10px"
-    title="Project view"
+    title="Product"
   >
     <template #tags>
-      <a-button type="primary" @click="modalInstance.addNewProject"
-        >Add</a-button
-      >
+      <a-button type="primary" @click="showModal">Add</a-button>
     </template>
 
     <template #extra>
       <a-space>
-        <a-input placeholder="Search project" />
+        <input v-model="textSearch" type="text" class="w-[20rem] p-1  outline-1 outline-[#1890ff]"
+               placeholder="Tìm kiếm...">
+
         <a-dropdown placement="bottomRight">
           <a-button>Sort</a-button>
           <template #overlay>
-            <a-menu>
-              <a-menu-item> Latest </a-menu-item>
-              <a-menu-item> From A - Z </a-menu-item>
-              <a-menu-item> From Z-A </a-menu-item>
-              <a-menu-item> Oldest </a-menu-item>
+            <a-menu @click="getValueMenuItem">
+              <a-menu-item key="1"> Latest </a-menu-item>
+              <a-menu-item key="2"> From A - Z </a-menu-item>
+              <a-menu-item key="3"> From Z-A </a-menu-item>
+              <a-menu-item key="4"> Oldest </a-menu-item>
             </a-menu>
           </template>
         </a-dropdown>
       </a-space>
     </template>
 
-    <a-table
-      :columns="tblConfig.columns"
-      :data-source="tblConfig.data"
-      :loading="tblConfig.loading"
-      :pagination="tblConfig.pagination"
-      :row-key="(record) => record.id"
-      :scroll="{ x: 800 }"
-    >
 
-      <template #bodyCell="{ column, text, record }">
-        <template v-if="column.key === 'action'">
-          <a-space>
-            <span
-              class="cursor-pointer text-blue-400 hover:text-blue-500 ease-in-out duration-300"
-            >
-              <edit-outlined />
-            </span>
+    <div>
+      <a-modal v-model:visible="visible" width="1000px" title="Basic Modal" @ok="handleOk">
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+      </a-modal>
+    </div>
 
-            <a-popconfirm
-              title="Are you sure?"
-              @confirm="() => {}"
-              placement="bottomLeft"
-            >
-              <span
-                class="cursor-pointer text-red-400 hover:text-red-500 ease-in-out duration-300"
-                ><delete-outlined
-              /></span>
-            </a-popconfirm>
-          </a-space>
-        </template>
-      </template>
-    </a-table>
-    <add-edit-project-modal
-      :modal-instance="modalInstance"
-      @afterSuccessSaveProject="modalInstance.afterSuccessSaveProject"
-    />
+
+
+
+
+    <div class="flex flex-col">
+      <div class="overflow-x-auto ">
+        <div class="py-2 inline-block min-w-full ">
+          <div class="overflow-hidden">
+            <table class="min-w-full">
+              <thead class="bg-gray-200 border-b">
+              <tr>
+                <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                  #
+                </th>
+                <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                  First
+                </th>
+                <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                  Last
+                </th>
+                <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                  Handle
+                </th>
+                <th scope="col" class="text-sm font-medium flex justify-end text-gray-900 px-6 py-4 text-left">
+                  Hành động
+                </th>
+              </tr>
+              </thead>
+              <tbody v-for="(item,index) in 10" :key="index">
+              <tr class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" >  {{index +1}}  </td>
+                <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                  Jacob
+                </td>
+                <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                  Thornton
+                </td>
+                <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                  @fat
+                </td>
+                <td class="text-sm flex justify-end text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                  <div class="flex justify-start items-center">
+
+                           <span><i class="
+                              fa-solid fa-pen-to-square
+                              text-xl text-blue-500
+                              mr-2
+                              cursor-pointer
+                            "></i></span>
+
+
+                    <span data-bs-toggle="modal"
+                          data-bs-target="#exampleModalCenter"><i
+                        class="
+                    fa-solid fa-trash-can
+                    text-xl text-red-600
+                    cursor-pointer
+                  "></i></span>
+                  </div>
+                </td>
+              </tr>
+
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-end">
+      <a-pagination v-model:current="current" :total="50" show-less-items />
+    </div>
+
+
+
+
   </a-page-header>
+
+
+
 </template>
