@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "homePage": "https://MienNc.github.io/vue-translate-editor",
     "dev": "vite --port 2000",
     "build": "vite build",
     "preview": "vite preview",
