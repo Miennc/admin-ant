@@ -7,7 +7,7 @@ import vue from "@vitejs/plugin-vue";
 export default defineConfig({
   plugins: [vue()],
   publicPath: process.env.NODE_ENV === 'production'
-      ? '/test_github_page/' // Thay tên repository của các bạn vào đây nhé
+      ? '/admin-ant/' // Thay tên repository của các bạn vào đây nhé
       : '/',
   resolve: {
     alias: {
