@@ -91,7 +91,7 @@ onMounted(() => {
           </span>
         </a-menu-item>
 
-        <a-menu-item key="translation">
+        <a-menu-item key="users">
           <span class="flex items-center">
             <function-outlined />
             <span>Quản lý người dùng</span>
