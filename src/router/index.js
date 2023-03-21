@@ -24,6 +24,11 @@ const router = createRouter({
                     name: "Language page",
                     component: () => import("../views/LanguagesView.vue"),
                 },
+                {
+                    path: "user-detail",
+                    name: "userDetail",
+                    component: () => import("../views/UserDetails.vue"),
+                }
             ],
         },
 

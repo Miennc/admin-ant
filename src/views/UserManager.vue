@@ -3,6 +3,7 @@ import {userServices} from "@/services/userServices";
 import {onMounted, ref, watch} from "vue";
 import Loading from "@/components/loading/Loading.vue";
 import {useToast} from "vue-toastification";
+import router from "@/router";
 
 const toast = useToast()
 const visible = ref(false)
@@ -17,6 +18,17 @@ const visibleConfirm = ref(false)
 const loading = ref(false)
 const modalText = ref('Bạn có chắc chắn muốn xóa người dùng không?')
 const confirmLoading = ref(false);
+const visibleEdit = ref(false)
+const idEditUser = ref('')
+
+
+const options = ref([{
+  value: 'ACTIVE',
+  label: 'ACTIVE',
+}, {
+  value: 'PENDING',
+  label: 'PENDING',
+}]);
 
 const inputUsers = ref({
   name: '',
@@ -24,6 +36,7 @@ const inputUsers = ref({
   password: '',
   userName: '',
   phone: '',
+  status: 'ACTIVE'
 })
 
 const errors = ref({
@@ -35,6 +48,13 @@ const errors = ref({
 })
 
 const showModal = () => {
+  inputUsers.value = {
+    name: '',
+    email: '',
+    password: '',
+    userName: '',
+    phone: '',
+  }
   visible.value = true
 }
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -61,34 +81,81 @@ const handleRemoveUser = async () => {
 }
 
 
+const handleChange = value => {
+  console.log(value); // { key: "lucy", label: "Lucy (101)" }
+};
+
+
 const showModalConfirm = (id) => {
   idRemoveUser.value = id
   visibleConfirm.value = true
 }
 
+const showModalEdit = async (id) => {
+  visibleEdit.value = true
+  idEditUser.value = id
+  try {
+    const res = await userServices.findByIdUser(id)
+    inputUsers.value = {
+      name: res.data.displayName,
+      email: res.data.email,
+      password: res.data.password,
+      userName: res.data.username,
+      phone: res.data.phoneNumber,
+      status: res.data.status
+    }
+  } catch (e) {
+    console.log(e)
+  }
+
+}
+
+
+const handleEditUser = async () => {
+  try {
+    await userServices.editUser({
+      id: idEditUser.value,
+      displayName: inputUsers.value.name,
+      email: inputUsers.value.email,
+      password: inputUsers.value.password,
+      username: inputUsers.value.userName,
+      phoneNumber: inputUsers.value.phone,
+      status: inputUsers.value.status
+    })
+    toast.success('Cập nhật người dùng thành công')
+  } catch (e) {
+    toast.error('Cập nhật người dùng thất bại')
+  }
+}
+
 
 const handleAddUser = async () => {
 
-  loading.value = true
-  try {
-    const formData = new FormData()
-    formData.append('displayName', inputUsers.value.name,)
-    formData.append('email', inputUsers.value.email)
-    formData.append('password', inputUsers.value.password)
-    formData.append('username', inputUsers.value.userName)
-    formData.append('phoneNumber', inputUsers.value.phone)
-    const config = {
-      headers: {
-        'content-type': 'multipart/form-data'
+  if (validate()) {
+    loading.value = true
+    try {
+      await userServices.addUser({
+        displayName: inputUsers.value.name,
+        email: inputUsers.value.email,
+        password: inputUsers.value.password,
+        username: inputUsers.value.userName,
+        phoneNumber: inputUsers.value.phone
+      })
+      toast.success('Thêm người dùng thành công')
+      await getAllUser()
+      visible.value = false
+      inputUsers.value = {
+        name: '',
+        email: '',
+        password: '',
+        userName: '',
+        phone: '',
       }
-    };
-    await userServices.addUser(formData, config)
-    toast.success('Thêm người dùng thành công')
-  } catch (e) {
-    console.log(e)
-    toast.error('Thêm người dùng thất bại')
+    } catch (e) {
+      toast.error(e.response.data)
+    }
+    loading.value = false
   }
-  loading.value = false
 
 }
 
@@ -98,8 +165,8 @@ const searchUser = async () => {
     const res = await userServices.searchUser({
       page: currentPage.value - 1,
       size: 10,
-      sort: 'desc',
-      keyword: textSearch.value.trim()
+      sort: 'id,desc',
+      keyword: textSearch.value.trim() ? textSearch.value.trim() : ''
     })
     dataUser.value = res.data.content
     totalPages.value = res.data.totalPages * 10
@@ -111,26 +178,35 @@ const searchUser = async () => {
 }
 
 watch(textSearch, async () => {
-  if (textSearch.value) {
-    await searchUser()
-  }
+  await searchUser()
 })
 
-
-const getValueMenuItem = (e) => {
-  console.log(e.key)
+const filterByName = async (e) => {
+  try {
+    const res = await userServices.getAllUsers({
+      page: currentPage.value - 1,
+      size: 10,
+      sort: e.key == '1' ? 'username,asc' : 'username,desc'
+    })
+    dataUser.value = res.data.content
+    totalPages.value = res.data.totalPages * 10
+    currentPage.value = res.data.number + 1
+  } catch (e) {
+    console.log(e)
+  }
 }
+
 
 const getAllUser = async () => {
   try {
     const res = await userServices.getAllUsers({
       page: currentPage.value - 1,
       size: 10,
-      sort: 'desc',
+      sort: 'id,desc',
     })
-    dataUser.value = res.data.data.content
-    totalPages.value = res.data.data.totalPages * 10
-    currentPage.value = res.data.data.number + 1
+    dataUser.value = res.data.content
+    totalPages.value = res.data.totalPages * 10
+    currentPage.value = res.data.number + 1
   } catch (e) {
     console.log(e)
   }
@@ -163,13 +239,12 @@ onMounted(async () => {
                placeholder="Tìm kiếm...">
 
         <a-dropdown placement="bottomRight">
-          <a-button>Sort</a-button>
+          <a-button>Lọc</a-button>
           <template #overlay>
-            <a-menu @click="getValueMenuItem">
-              <a-menu-item key="1"> Latest</a-menu-item>
-              <a-menu-item key="2"> From A - Z</a-menu-item>
-              <a-menu-item key="3"> From Z-A</a-menu-item>
-              <a-menu-item key="4"> Oldest</a-menu-item>
+            <a-menu @click="filterByName">
+              <a-menu-item key="">Lọc theo tên</a-menu-item>
+              <a-menu-item key="1"> Từ A - Z</a-menu-item>
+              <a-menu-item key="2"> Từ Z-A</a-menu-item>
             </a-menu>
           </template>
         </a-dropdown>
@@ -268,13 +343,15 @@ onMounted(async () => {
               </tr>
               </thead>
               <tbody v-for="(itemUser,indexUser) in dataUser" :key="indexUser">
-              <tr class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
+              <tr class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100 ">
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                   {{ (currentPage - 1) * 10 + (indexUser + 1) }}
                 </td>
-                <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                  {{ itemUser.displayName }}
-                </td>
+                <router-link :to="{path:'/user-detail', query:{id: itemUser.id}}">
+                  <td class="text-sm cursor-pointer text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                    {{ itemUser.displayName }}
+                  </td>
+                </router-link>
                 <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                   {{ itemUser.username }}
                 </td>
@@ -304,7 +381,7 @@ onMounted(async () => {
                 <td class="text-sm flex justify-end text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                   <div class="flex justify-start items-center">
 
-                           <span><i class="
+                           <span @click="showModalEdit(itemUser.id)"><i class="
                               fa-solid fa-pen-to-square
                               text-xl text-blue-500
                               mr-2
@@ -354,6 +431,67 @@ onMounted(async () => {
       @ok="handleRemoveUser"
   >
     <p>{{ modalText }}</p>
+  </a-modal>
+
+
+  <a-modal v-model:visible="visibleEdit" width="1000px" title="Sửa người dùng" @ok="handleEditUser">
+    <div>
+      <label class="block text-sm font-medium text-gray-700">
+        Tên người dùng
+      </label>
+      <div class="mt-1">
+        <a-input v-model:value="inputUsers.name" placeholder="Tên người dùng"/>
+      </div>
+      <span class="text-red-500 font-medium italic text-sm"> {{ errors.name }}</span>
+    </div>
+
+    <div class="mt-2">
+      <label class="block text-sm font-medium text-gray-700">
+        Tên đăng nhập
+      </label>
+      <div class="mt-1">
+        <a-input v-model:value="inputUsers.userName" placeholder="Tên đăng nhập"/>
+      </div>
+      <span class="text-red-500 font-medium italic text-sm"> {{ errors.userName }}</span>
+    </div>
+
+
+    <div class="mt-2">
+      <label class="block text-sm font-medium text-gray-700">
+        Email
+      </label>
+      <div class="mt-1">
+        <a-input v-model:value="inputUsers.email" placeholder="Email"/>
+      </div>
+      <span class="text-red-500 font-medium italic text-sm"> {{ errors.email }}</span>
+    </div>
+
+
+    <div class="mt-2">
+      <label class="block text-sm font-medium text-gray-700">
+        Số điện thoại
+      </label>
+      <div class="mt-1">
+        <a-input v-model:value="inputUsers.phone" placeholder="Số điện thoại"/>
+      </div>
+      <span class="text-red-500 font-medium italic text-sm"> {{ errors.phone }}</span>
+    </div>
+
+
+    <div class="mt-2">
+      <label class="block text-sm font-medium text-gray-700">
+        Trạng thái
+      </label>
+      <a-select
+          v-model:value="inputUsers.status"
+          label-in-value
+          style="width: 100%"
+          :options="options"
+          @change="handleChange"
+      ></a-select>
+    </div>
+
+
   </a-modal>
 
 

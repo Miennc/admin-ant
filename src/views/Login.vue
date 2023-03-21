@@ -4,6 +4,7 @@ import {ref, watch} from "vue";
 import {authenServices} from "@/services/authenServices";
 import {useToast} from "vue-toastification";
 import {useRouter} from 'vue-router';
+import Loading from "@/components/loading/Loading.vue";
 import router from "@/router";
 
 const userName = ref('')
@@ -13,6 +14,7 @@ const errors = ref({
   password: ''
 })
 const toast = useToast()
+const loading = ref(false)
 
 
 const validateFormLogin = () => {
@@ -23,6 +25,7 @@ const validateFormLogin = () => {
 
 const handleLogin = async () => {
   if (validateFormLogin()) {
+    loading.value = true
     try {
       const res = await authenServices.login({
         username: userName.value,
@@ -31,6 +34,7 @@ const handleLogin = async () => {
       localStorage.setItem('token', res.data.data.accessToken)
       toast.success('Login success')
       await router.push({path: '/'})
+      loading.value = false
     } catch (e) {
       toast.error("Login failed please check your username and password")
     }
@@ -160,6 +164,14 @@ const handleLogin = async () => {
               transform="translate(-335.6414 -100.11607)" fill="#2f2e41"/>
         </svg>
       </div>
+    </div>
+
+
+    <div
+        v-if="loading"
+        class="fixed top-0 bottom-0 left-0 z-[99999999] right-0 bg-black opacity-30 flex justify-center items-center"
+    >
+      <Loading :loading="loading"></Loading>
     </div>
   </div>
   </body>

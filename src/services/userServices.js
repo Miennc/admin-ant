@@ -6,7 +6,7 @@ function getAllUsers(payload) {
 }
 
 function addUser(payload) {
-    return Axios.post('/user/signup', payload);
+    return Axios.post('/admin/create-user-account', payload);
 }
 
 
@@ -18,9 +18,25 @@ function removeUser(id) {
     return Axios.del(`/user/delete/${id}`);
 }
 
+function findByIdUser(id) {
+    return Axios.get(`/user/find-by-id/${id}`);
+}
+
+
+function acceptUser(payload) {
+    return Axios.post(`/user/change-status`, payload);
+}
+
+function editUser(payload) {
+    return Axios.put(`/admin/update-user-account`, payload);
+}
+
 export const userServices = {
     getAllUsers,
     addUser,
     searchUser,
-    removeUser
+    removeUser,
+    findByIdUser,
+    acceptUser,
+    editUser
 };
