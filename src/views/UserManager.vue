@@ -92,6 +92,15 @@ const showModalConfirm = (id) => {
 }
 
 const showModalEdit = async (id) => {
+
+  errors.value = {
+    name: '',
+    email: '',
+    password: '',
+    userName: '',
+    phone: '',
+  }
+
   visibleEdit.value = true
   idEditUser.value = id
   try {
@@ -112,19 +121,21 @@ const showModalEdit = async (id) => {
 
 
 const handleEditUser = async () => {
-  try {
-    await userServices.editUser({
-      id: idEditUser.value,
-      displayName: inputUsers.value.name,
-      email: inputUsers.value.email,
-      password: inputUsers.value.password,
-      username: inputUsers.value.userName,
-      phoneNumber: inputUsers.value.phone,
-      status: inputUsers.value.status
-    })
-    toast.success('Cập nhật người dùng thành công')
-  } catch (e) {
-    toast.error('Cập nhật người dùng thất bại')
+  if (validate()) {
+    try {
+      await userServices.editUser({
+        id: idEditUser.value,
+        displayName: inputUsers.value.name,
+        email: inputUsers.value.email,
+        password: inputUsers.value.password,
+        username: inputUsers.value.userName,
+        phoneNumber: inputUsers.value.phone,
+        status: inputUsers.value.status
+      })
+      toast.success('Cập nhật người dùng thành công')
+    } catch (e) {
+      toast.error('Cập nhật người dùng thất bại')
+    }
   }
 }
 
@@ -323,19 +334,19 @@ onMounted(async () => {
                   #
                 </th>
                 <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                  Name
+                  Họ và tên
                 </th>
                 <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                  Username
+                  Tên đăng nhập
                 </th>
                 <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                   Email
                 </th>
                 <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                  Phone
+                  Số điện thoại
                 </th>
                 <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                  Status
+                  Trạng thái
                 </th>
                 <th scope="col" class="text-sm font-medium flex justify-end text-gray-900 px-6 py-4 text-left">
                   Hành động

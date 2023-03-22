@@ -28,6 +28,21 @@ const router = createRouter({
                     path: "user-detail",
                     name: "userDetail",
                     component: () => import("../views/UserDetails.vue"),
+                },
+                {
+                    path: "profile",
+                    name: "Profile",
+                    component: () => import("../views/Profile.vue"),
+                },
+                {
+                    path: "categories",
+                    name: "Categories",
+                    component: () => import("../views/Categories.vue"),
+                },
+                {
+                    path: "level",
+                    name: "Level",
+                    component: () => import("../views/Level.vue"),
                 }
             ],
         },

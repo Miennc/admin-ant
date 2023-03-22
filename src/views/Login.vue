@@ -33,7 +33,7 @@ const handleLogin = async () => {
       })
       localStorage.setItem('token', res.data.data.accessToken)
       toast.success('Login success')
-      await router.push({path: '/'})
+      await router.push('/')
       loading.value = false
     } catch (e) {
       toast.error("Login failed please check your username and password")

@@ -31,6 +31,15 @@ function editUser(payload) {
     return Axios.put(`/admin/update-user-account`, payload);
 }
 
+function getProfile() {
+    return Axios.get(`/user/current-user-profile`);
+}
+
+
+function changePassword(payload) {
+    return Axios.put(`/admin/change-password-user-account`, payload);
+}
+
 export const userServices = {
     getAllUsers,
     addUser,
@@ -38,5 +47,7 @@ export const userServices = {
     removeUser,
     findByIdUser,
     acceptUser,
-    editUser
+    editUser,
+    getProfile,
+    changePassword
 };
