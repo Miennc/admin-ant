@@ -11,8 +11,8 @@ const router = createRouter({
             children: [
                 {
                     path: "",
-                    name: "Home page",
-                    component: () => import("../views/HomePage.vue"),
+                    name: "Product",
+                    component: () => import("../views/Product.vue"),
                 },
                 {
                     path: "users",
@@ -43,6 +43,21 @@ const router = createRouter({
                     path: "level",
                     name: "Level",
                     component: () => import("../views/Level.vue"),
+                },
+                {
+                    path: "news",
+                    name: "News",
+                    component: () => import("../views/News.vue"),
+                },
+                {
+                    path: "product-detail",
+                    name: "ProductDetail",
+                    component: () => import("../views/ProductDetails.vue"),
+                },
+                {
+                    path: "detail-news",
+                    name: "DetailNews",
+                    component: () => import("../views/DetailNew.vue"),
                 }
             ],
         },

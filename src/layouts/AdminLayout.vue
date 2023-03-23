@@ -7,6 +7,7 @@ import {
   SettingOutlined,
   GroupOutlined,
   StockOutlined,
+  SendOutlined,
 } from "@ant-design/icons-vue";
 import {onBeforeMount, onMounted, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
@@ -123,6 +124,13 @@ onMounted(() => {
           <span class="flex items-center">
            <stock-outlined/>
             <span>Quản lý level</span>
+          </span>
+        </a-menu-item>
+
+        <a-menu-item key="news">
+          <span class="flex items-center">
+           <send-outlined/>
+            <span>Quản lý Tin tức</span>
           </span>
         </a-menu-item>
 

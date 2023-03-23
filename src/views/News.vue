@@ -1,59 +1,58 @@
 <script setup>
-import {levelServices} from "@/services/levelServices";
 import {onMounted, ref, watch} from "vue";
 import Loading from "@/components/loading/Loading.vue";
 import {useToast} from "vue-toastification";
+import {newsServices} from "@/services/newServices";
 
 const toast = useToast()
 const visible = ref(false)
 const textSearch = ref('')
-const dataLevel = ref([])
+const dataNew = ref([])
 const currentPage = ref(1)
 const totalPages = ref(1)
-const idRemoveLevel = ref('')
+const idRemoveNew = ref('')
 const visibleConfirm = ref(false)
 const loading = ref(false)
 const modalText = ref('Bạn có chắc chắn muốn xóa level không?')
 const confirmLoading = ref(false);
 const visibleEdit = ref(false)
-const idEditLevel = ref('')
-const inputLevel = ref({
-  name: '',
+const idEditNew = ref('')
+const inputNew = ref({
+  title: '',
   fileUrl: '',
   fileUpload: '',
-  valueNumber: '',
+  content: '',
 })
 const errors = ref({
-  name: '',
+  title: '',
+  fileUrl: '',
   fileUpload: '',
-  valueNumber: '',
+  content: '',
 })
 const showModal = () => {
-  inputLevel.value = {
-    name: '',
+  inputNew.value = {
+    title: '',
     fileUrl: '',
     fileUpload: '',
-    valueNumber: '',
+    content: '',
   }
   visible.value = true
 }
-const regexValue = /^[0-9]*$/;
-
 const validate = () => {
-  errors.value.name = inputLevel.value.name ? '' : 'Tên danh level không được để trống'
-  errors.value.fileUpload = inputLevel?.value?.fileUpload?.length < 1 ? 'Ảnh không được để trống' : ''
-  errors.value.valueNumber = regexValue.test(inputLevel.value.valueNumber) && inputLevel.value.valueNumber ? '' : 'Giá trị không hợp lệ'
+  errors.value.title = inputNew.value.title ? '' : 'Tiêu đề không được để trống'
+  errors.value.content = inputNew.value.content ? '' : 'Nội dung không được để trống'
+  errors.value.fileUpload = inputNew?.value?.fileUpload?.length < 1 ? 'Ảnh không được để trống' : ''
   return !errors.value.name && !errors.value.fileUpload && !errors.value.valueNumber
 }
 
 
-const handlRemoveLevel = async () => {
+const handlRemoveNew = async () => {
   try {
-    await levelServices.removeLevel(idRemoveLevel.value)
-    await getAllLevel()
-    toast.success('Xóa level thành công')
+    await newsServices.removeNews(idRemoveNew.value)
+    await getAllNew()
+    toast.success('Xóa bài viết thành công')
   } catch (e) {
-    toast.error('Xóa level thất bại')
+    toast.error('Xóa bài viết thất bại')
   }
   visibleConfirm.value = false
 }
@@ -65,24 +64,25 @@ const handleChange = value => {
 
 
 const showModalConfirm = (id) => {
-  idRemoveLevel.value = id
+  idRemoveNew.value = id
   visibleConfirm.value = true
 }
 
 const showModalEdit = async (id) => {
   errors.value = {
-    name: '',
+    title: '',
+    fileUrl: '',
     fileUpload: '',
-    valueNumber: '',
+    content: '',
   }
   visibleEdit.value = true
-  idEditLevel.value = id
+  idEditNew.value = id
   try {
-    const res = await levelServices.findLevelById(id)
-    inputLevel.value = {
-      name: res.data.name,
-      fileUrl: res.data.image,
-      valueNumber: res.data.value,
+    const res = await newsServices.findByIdNews(id)
+    inputNew.value = {
+      title: res.data.title,
+      fileUrl: res.data.previewImage,
+      content: res.data.content,
     }
   } catch (e) {
     console.log(e)
@@ -91,25 +91,25 @@ const showModalEdit = async (id) => {
 }
 
 
-const handlEditLevel = async () => {
+const handlEditNew = async () => {
   if (validate()) {
     try {
       const formData = new FormData()
-      formData.append('id', idEditLevel.value)
-      if (inputLevel.value.fileUpload) {
-        formData.append('image', inputLevel.value.fileUpload)
+      formData.append('id', idEditNew.value)
+      if (inputNew.value.fileUpload) {
+        formData.append('previewImageFile', inputNew.value.fileUpload)
       }
-      formData.append('name', inputLevel.value.name)
-      formData.append('value', inputLevel.value.valueNumber)
+      formData.append('title', inputNew.value.title)
+      formData.append('content', inputNew.value.content)
       const config = {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       }
-      await levelServices.editLevel(formData, config)
-      await getAllLevel()
+      await newsServices.editNews(formData, config)
+      await getAllNew()
       visibleEdit.value = false
-      toast.success('Cập nhật level thành công')
+      toast.success('Cập nhật tin tức thành công')
     } catch (e) {
       toast.error(e.response.data)
     }
@@ -120,38 +120,40 @@ const handlEditLevel = async () => {
 const previewFile = (e) => {
   const file = e.target.files[0]
   if (file) {
-    inputLevel.value.fileUpload = file
+    inputNew.value.fileUpload = file
     const reader = new FileReader()
     reader.readAsDataURL(file)
     reader.onloadend = () => {
-      inputLevel.value.fileUrl = reader.result
+      inputNew.value.fileUrl = reader.result
     }
   }
   e.target.value = ''
 }
 
-const handlAddLevel = async () => {
+
+const handlAddNew = async () => {
 
   if (validate()) {
     loading.value = true
     try {
       const formData = new FormData()
-      formData.append('image', inputLevel.value.fileUpload)
-      formData.append('name', inputLevel.value.name)
-      formData.append('value', inputLevel.value.valueNumber)
+      formData.append('title', inputNew.value.title)
+      formData.append('content', inputNew.value.content)
+      formData.append('previewImageFile', inputNew.value.fileUpload)
       const config = {
         headers: {
           'content-type': 'multipart/form-data'
         }
       }
-      await levelServices.createLevel(formData, config)
-      toast.success('Thêm level thành công')
-      await getAllLevel()
+      await newsServices.createNews(formData, config)
+      toast.success('Thêm tin tức thành công')
+      await getAllNew()
       visible.value = false
-      inputLevel.value = {
-        name: '',
+      inputNew.value = {
+        title: '',
         fileUrl: '',
         fileUpload: '',
+        content: '',
       }
     } catch (e) {
       toast.error(e.response.data)
@@ -163,15 +165,15 @@ const handlAddLevel = async () => {
 }
 
 
-const searchLevel = async () => {
+const searchNew = async () => {
   try {
-    const res = await levelServices.searchLevel({
+    const res = await newsServices.searchNews({
       page: currentPage.value - 1,
       size: 5,
       sort: 'id,desc',
       keyword: textSearch.value.trim() ? textSearch.value.trim() : ''
     })
-    dataLevel.value = res.data.content
+    dataNew.value = res.data.content
     totalPages.value = res.data.totalPages * 10
     currentPage.value = res.data.number + 1
   } catch (e) {
@@ -180,17 +182,17 @@ const searchLevel = async () => {
 }
 
 watch(textSearch, async () => {
-  await searchLevel()
+  await searchNew()
 })
 
 const filterByName = async (e) => {
   try {
-    const res = await levelServices.getAllLevel({
+    const res = await newsServices.listAllNews({
       page: currentPage.value - 1,
       size: 5,
-      sort: e.key == '1' ? 'name,asc' : 'name,desc'
+      sort: e.key == '1' ? 'title,asc' : 'title,desc'
     })
-    dataLevel.value = res.data.content
+    dataNew.value = res.data.content
     totalPages.value = res.data.totalPages * 10
     currentPage.value = res.data.number + 1
   } catch (e) {
@@ -199,14 +201,14 @@ const filterByName = async (e) => {
 }
 
 
-const getAllLevel = async () => {
+const getAllNew = async () => {
   try {
-    const res = await levelServices.getAllLevel({
+    const res = await newsServices.listAllNews({
       page: currentPage.value - 1,
       size: 5,
       sort: 'id,desc',
     })
-    dataLevel.value = res.data.content
+    dataNew.value = res.data.content
     totalPages.value = res.data.totalPages * 10
     currentPage.value = res.data.number + 1
   } catch (e) {
@@ -215,13 +217,13 @@ const getAllLevel = async () => {
 }
 
 const pageChanged = async () => {
-  await getAllLevel()
+  await getAllNew()
 }
 
 
 onMounted(async () => {
   loading.value = true
-  await getAllLevel()
+  await getAllNew()
   loading.value = false
 })
 
@@ -231,10 +233,10 @@ onMounted(async () => {
 <template>
   <a-page-header
       style="border: 1px solid rgb(235, 237, 240); padding: 10px"
-      title="Quản lý level"
+      title="Quản lý tin tức"
   >
     <template #tags>
-      <a-button type="primary" @click="showModal">Thêm level</a-button>
+      <a-button type="primary" @click="showModal">Thêm tin tức</a-button>
     </template>
 
     <template #extra>
@@ -257,41 +259,41 @@ onMounted(async () => {
 
 
     <div>
-      <a-modal v-model:visible="visible" width="1000px" title="Thêm level" @ok="handlAddLevel">
+      <a-modal v-model:visible="visible" width="1000px" title="Thêm tin tức" @ok="handlAddNew">
 
         <div>
           <label class="block text-sm font-medium text-gray-700">
-            Tên level
+            Tiêu đề
           </label>
           <div class="mt-1">
-            <a-input v-model:value="inputLevel.name" placeholder="Tên level"/>
+            <a-input v-model:value="inputNew.title" placeholder="tiêu đề"/>
           </div>
-          <span class="text-red-500 font-medium italic text-sm"> {{ errors.name }}</span>
+          <span class="text-red-500 font-medium italic text-sm"> {{ errors.title }}</span>
         </div>
 
 
         <div class="mt-2">
           <label class="block text-sm font-medium text-gray-700">
-            Giá trị
+            Nội dung
           </label>
           <div class="mt-1">
-            <a-input v-model:value="inputLevel.valueNumber" placeholder="Giá trị"/>
+            <a-input v-model:value="inputNew.content" placeholder="nội dung"/>
           </div>
-          <span class="text-red-500 font-medium italic text-sm"> {{ errors.valueNumber }}</span>
+          <span class="text-red-500 font-medium italic text-sm"> {{ errors.content }}</span>
         </div>
 
         <div class="flex items-center mt-3 justify-start">
           <label for="file-upload" class="px-4 py-1 bg-blue-500 text-white  cursor-pointer hover:bg-blue-600">
-            Upload File
+            Tải ảnh lên
           </label>
           <input id="file-upload" type="file" class="sr-only" @change="previewFile">
         </div>
-        <div class="w-44 relative mt-2  overflow-hidden h-44" v-if="inputLevel.fileUrl">
-          <img class="w-full h-full object-cover" :src="inputLevel.fileUrl" alt=""/>
-          <div v-if="inputLevel.fileUrl" class="ml-2">
+        <div class="w-44 relative mt-2  overflow-hidden h-44" v-if="inputNew.fileUrl">
+          <img class="w-full h-full object-cover" :src="inputNew.fileUrl" alt=""/>
+          <div v-if="inputNew.fileUrl" class="ml-2">
             <button
                 class="text-red-700 bg-[#ffffff] w-7 h-7 shadow-md rounded-full absolute -top-1 -right-1"
-                @click=" inputLevel.fileUrl = '' ; inputLevel.fileUpload = ''"
+                @click=" inputNew.fileUrl = '' ; inputNew.fileUpload = ''"
             >
               <i class="fa-solid text-gray-500 text-lg fa-xmark"></i>
             </button>
@@ -316,40 +318,42 @@ onMounted(async () => {
                   #
                 </th>
                 <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                  Tên level
+                  Tiêu đề
                 </th>
                 <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                  Ảnh
+                  Nội dung
                 </th>
                 <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                  Giá trị
+                  Ảnh tin tức
                 </th>
                 <th scope="col" class="text-sm font-medium flex justify-end text-gray-900 px-6 py-4 text-left">
                   Hành động
                 </th>
               </tr>
               </thead>
-              <tbody v-for="(itemLevel,indexLevel) in dataLevel" :key="indexLevel">
+              <tbody v-for="(itemNew,indexNew) in dataNew" :key="indexNew">
               <tr class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100 ">
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {{ (currentPage - 1) * 10 + (indexLevel + 1) }}
+                  {{ (currentPage - 1) * 10 + (indexNew + 1) }}
                 </td>
                 <td class="text-sm  text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                  {{ itemLevel.name }}
+                  <router-link :to="{name:'DetailNews', query:{id: itemNew.id}}">
+                    {{ itemNew.title }}
+                  </router-link>
+                </td>
+                <td class="text-sm  text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                  {{ itemNew.content }}
                 </td>
                 <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                   <div class="w-[100px] h-[100px] overflow-hidden">
-                    <img :src="itemLevel?.image" alt="" class="w-full h-full object-cover">
+                    <img :src="itemNew?.previewImage" alt="" class="w-full h-full object-cover">
                   </div>
                 </td>
 
-                <td class="text-sm  text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                  {{ itemLevel.value }}
-                </td>
                 <td class="text-sm flex justify-end text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                   <div class="flex justify-start items-center">
 
-                           <span @click="showModalEdit(itemLevel.id)"><i class="
+                           <span @click="showModalEdit(itemNew.id)"><i class="
                               fa-solid fa-pen-to-square
                               text-xl text-blue-500
                               mr-2
@@ -357,7 +361,7 @@ onMounted(async () => {
                             "></i></span>
 
 
-                    <span @click="showModalConfirm(itemLevel.id)" data-bs-toggle="modal"
+                    <span @click="showModalConfirm(itemNew.id)" data-bs-toggle="modal"
                           data-bs-target="#exampleModalCenter"><i
                         class="
                     fa-solid fa-trash-can
@@ -396,46 +400,46 @@ onMounted(async () => {
       v-model:visible="visibleConfirm"
       title="Xóa level"
       :confirm-loading="confirmLoading"
-      @ok="handlRemoveLevel"
+      @ok="handlRemoveNew"
   >
     <p>{{ modalText }}</p>
   </a-modal>
 
 
-  <a-modal v-model:visible="visibleEdit" width="1000px" title="Sửa danh mục" @ok="handlEditLevel">
+  <a-modal v-model:visible="visibleEdit" width="1000px" title="Sửa tin tức" @ok="handlEditNew">
     <div>
       <label class="block text-sm font-medium text-gray-700">
-        Tên level
+        Tiêu đề
       </label>
       <div class="mt-1">
-        <a-input v-model:value="inputLevel.name" placeholder="Tên level"/>
+        <a-input v-model:value="inputNew.title" placeholder="tiêu đề"/>
       </div>
-      <span class="text-red-500 font-medium italic text-sm"> {{ errors.name }}</span>
+      <span class="text-red-500 font-medium italic text-sm"> {{ errors.title }}</span>
     </div>
 
 
     <div class="mt-2">
       <label class="block text-sm font-medium text-gray-700">
-        Giá trị
+        Nội dung
       </label>
       <div class="mt-1">
-        <a-input v-model:value="inputLevel.valueNumber" placeholder="Giá trị"/>
+        <a-input v-model:value="inputNew.content" placeholder="nội dung"/>
       </div>
-      <span class="text-red-500 font-medium italic text-sm"> {{ errors.valueNumber }}</span>
+      <span class="text-red-500 font-medium italic text-sm"> {{ errors.content }}</span>
     </div>
 
     <div class="flex items-center mt-3 justify-start">
       <label for="file-upload" class="px-4 py-1 bg-blue-500 text-white  cursor-pointer hover:bg-blue-600">
-        Upload File
+        Tải ảnh lên
       </label>
       <input id="file-upload" type="file" class="sr-only" @change="previewFile">
     </div>
-    <div class="w-44 relative mt-2  overflow-hidden h-44" v-if="inputLevel.fileUrl">
-      <img class="w-full h-full object-cover" :src="inputLevel.fileUrl" alt=""/>
-      <div v-if="inputLevel.fileUrl" class="ml-2">
+    <div class="w-44 relative mt-2  overflow-hidden h-44" v-if="inputNew.fileUrl">
+      <img class="w-full h-full object-cover" :src="inputNew.fileUrl" alt=""/>
+      <div v-if="inputNew.fileUrl" class="ml-2">
         <button
             class="text-red-700 bg-[#ffffff] w-7 h-7 shadow-md rounded-full absolute -top-1 -right-1"
-            @click=" inputLevel.fileUrl = '' ; inputLevel.fileUpload = ''"
+            @click=" inputNew.fileUrl = '' ; inputNew.fileUpload = ''"
         >
           <i class="fa-solid text-gray-500 text-lg fa-xmark"></i>
         </button>
