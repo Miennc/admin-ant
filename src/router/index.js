@@ -58,6 +58,16 @@ const router = createRouter({
                     path: "detail-news",
                     name: "DetailNews",
                     component: () => import("../views/DetailNew.vue"),
+                },
+                {
+                    path: "levelSpecification",
+                    name: "levelSpecification",
+                    component: () => import("../views/levelSpecification.vue"),
+                },
+                {
+                    path: "level-specification-detail",
+                    name: "levelSpecificationDetail",
+                    component: () => import("../views/DetailLevelSpecification.vue"),
                 }
             ],
         },

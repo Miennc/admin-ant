@@ -127,6 +127,14 @@ onMounted(() => {
           </span>
         </a-menu-item>
 
+
+        <a-menu-item key="levelSpecification">
+          <span class="flex items-center">
+           <stock-outlined/>
+            <span>Quản lý thông số level </span>
+          </span>
+        </a-menu-item>
+
         <a-menu-item key="news">
           <span class="flex items-center">
            <send-outlined/>

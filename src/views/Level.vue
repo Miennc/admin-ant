@@ -234,7 +234,7 @@ onMounted(async () => {
       title="Quản lý level"
   >
     <template #tags>
-      <a-button type="primary" @click="showModal">Thêm level</a-button>
+      <a-button type="primary" @click="showModal">Thêm level     </a-button>
     </template>
 
     <template #extra>
