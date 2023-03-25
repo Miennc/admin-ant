@@ -16,7 +16,7 @@ import DetailLevelSpecification from "../views/DetailLevelSpecification.vue";
 
 
 const router = createRouter({
-    history: createWebHistory(import.meta.env.VITE_SOME_KEY),
+    history: createWebHistory(),
     routes: [
         {
             path: "/",
