@@ -4,7 +4,6 @@ import AdminLayout from "../layouts/AdminLayout.vue";
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
-
         {
             path: "/",
             name: "Login",
@@ -79,8 +78,8 @@ const router = createRouter({
             ],
         },
 
-
     ],
+    mode: 'hash'
 });
 
 export default router;
