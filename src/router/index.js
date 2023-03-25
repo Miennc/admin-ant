@@ -4,10 +4,18 @@ import AdminLayout from "../layouts/AdminLayout.vue";
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
+
         {
             path: "/",
+            name: "Login",
+            component: () => import("../views/Login.vue"),
+        },
+        {
+            path: "/home",
             name: "home",
             component: AdminLayout,
+
+
             children: [
                 {
                     path: "",
@@ -72,11 +80,7 @@ const router = createRouter({
             ],
         },
 
-        {
-            path: "/login",
-            name: "Login",
-            component: () => import("../views/Login.vue"),
-        }
+
     ],
 });
 

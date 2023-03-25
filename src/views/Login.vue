@@ -1,9 +1,8 @@
 <script setup>
-import {ref, watch} from "vue";
+import {ref} from "vue";
 
 import {authenServices} from "@/services/authenServices";
 import {useToast} from "vue-toastification";
-import {useRouter} from 'vue-router';
 import Loading from "@/components/loading/Loading.vue";
 import router from "@/router";
 
@@ -33,7 +32,7 @@ const handleLogin = async () => {
       })
       localStorage.setItem('token', res.data.data.accessToken)
       toast.success('Login success')
-      await router.push('/')
+      await router.push('/home')
     } catch (e) {
       toast.error("Login failed please check your username and password")
     }
