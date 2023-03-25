@@ -1,7 +1,9 @@
 import {createRouter, createWebHistory} from "vue-router";
 import AdminLayout from "../layouts/AdminLayout.vue";
 
-const routes = [
+const router = createRouter({
+    history: createWebHistory(import.meta.env.BASE_URL),
+    routes: [
         {
             path: "/",
             name: "Login",
@@ -75,28 +77,9 @@ const routes = [
                 }
             ],
         },
-    ];
 
-const router = createRouter({
-    history: createWebHistory(),
-    routes,
-    navigationFallback: {
-        rewrite: "/index.html",
-        exclude: ["/images/*.{png,jpg,gif}", "/css/*"],
-    },
-    scrollBehavior(to, from, savedPosition) {
-        if (to.hash) {
-            return {
-                el: to.hash,
-            };
-        }
-    },
+    ],
+    mode: 'hash'
 });
-
-router.beforeEach((to, from, next) => {
-    document.title = `${to.meta.title || "runner"}`;
-    next();
-});
-
 
 export default router;
