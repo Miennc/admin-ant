@@ -69,6 +69,15 @@ const validate = () => {
 }
 
 
+const validateFormEdit = () => {
+  errors.value.name = inputUsers.value.name ? '' : 'Tên người dùng không được để trống'
+  errors.value.email = emailRegex.test(inputUsers.value.email) ? '' : 'Email không đúng định dạng'
+  errors.value.userName = inputUsers.value.userName ? '' : 'Tên đăng nhập không được để trống'
+  errors.value.phone = phoneRegex.test(inputUsers.value.phone) ? '' : 'Số điện thoại không đúng định dạng'
+  return !errors.value.name && !errors.value.email && !errors.value.userName && !errors.value.phone
+}
+
+
 const handleRemoveUser = async () => {
   try {
     await userServices.removeUser(idRemoveUser.value)
@@ -82,6 +91,7 @@ const handleRemoveUser = async () => {
 
 
 const handleChange = value => {
+  inputUsers.value.status = value.value
   console.log(value); // { key: "lucy", label: "Lucy (101)" }
 };
 
@@ -108,7 +118,6 @@ const showModalEdit = async (id) => {
     inputUsers.value = {
       name: res.data.displayName,
       email: res.data.email,
-      password: res.data.password,
       userName: res.data.username,
       phone: res.data.phoneNumber,
       status: res.data.status
@@ -121,7 +130,7 @@ const showModalEdit = async (id) => {
 
 
 const handleEditUser = async () => {
-  if (validate()) {
+  if (validateFormEdit()) {
     try {
       await userServices.editUser({
         id: idEditUser.value,
@@ -132,11 +141,14 @@ const handleEditUser = async () => {
         phoneNumber: inputUsers.value.phone,
         status: inputUsers.value.status
       })
+      await getAllUser()
       toast.success('Cập nhật người dùng thành công')
+      visibleEdit.value = false
     } catch (e) {
       toast.error('Cập nhật người dùng thất bại')
     }
   }
+
 }
 
 
