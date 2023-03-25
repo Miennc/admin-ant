@@ -1,4 +1,4 @@
-import {createRouter, createWebHistory} from "vue-router";
+import {createRouter, createWebHashHistory} from "vue-router";
 import AdminLayout from "../layouts/AdminLayout.vue";
 import Login from "../views/Login.vue";
 import Product from "../views/Product.vue";
@@ -16,7 +16,7 @@ import DetailLevelSpecification from "../views/DetailLevelSpecification.vue";
 
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHashHistory(),
     routes: [
         {
             path: "/",
@@ -93,7 +93,6 @@ const router = createRouter({
         },
 
     ],
-    mode: 'hash'
 });
 
 export default router;
