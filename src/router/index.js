@@ -15,7 +15,6 @@ const router = createRouter({
             name: "home",
             component: AdminLayout,
 
-
             children: [
                 {
                     path: "",
