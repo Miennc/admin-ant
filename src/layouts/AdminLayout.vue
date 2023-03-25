@@ -61,7 +61,7 @@ onMounted(() => {
   }
 
   refreshOpenedSubMenu();
-  if (route.path === "/") {
+  if (route.path === "/home") {
     selectedKeys.value = ["dashboard"];
   }
 });

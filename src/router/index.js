@@ -1,5 +1,19 @@
 import {createRouter, createWebHistory} from "vue-router";
 import AdminLayout from "../layouts/AdminLayout.vue";
+import Login from "../views/Login.vue";
+import Product from "../views/Product.vue";
+import UserManager from "../views/UserManager.vue";
+import LanguagesView from "../views/LanguagesView.vue";
+import UserDetails from "../views/UserDetails.vue";
+import Profile from "../views/Profile.vue";
+import Categories from "../views/Categories.vue";
+import Level from "../views/Level.vue";
+import News from "../views/News.vue";
+import ProductDetails from "../views/ProductDetails.vue";
+import DetailNew from "../views/DetailNew.vue";
+import levelSpecification from "../views/levelSpecification.vue";
+import DetailLevelSpecification from "../views/DetailLevelSpecification.vue";
+
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,7 +21,7 @@ const router = createRouter({
         {
             path: "/",
             name: "Login",
-            component: () => import("../views/Login.vue"),
+            component: Login,
         },
         {
             path: "/home",
@@ -18,62 +32,62 @@ const router = createRouter({
                 {
                     path: "",
                     name: "Product",
-                    component: () => import("../views/Product.vue"),
+                    component: Product,
                 },
                 {
                     path: "users",
                     name: "User page",
-                    component: () => import("../views/UserManager.vue"),
+                    component: UserManager,
                 },
                 {
                     path: "languages",
                     name: "Language page",
-                    component: () => import("../views/LanguagesView.vue"),
+                    component: () => LanguagesView,
                 },
                 {
                     path: "user-detail",
                     name: "userDetail",
-                    component: () => import("../views/UserDetails.vue"),
+                    component: UserDetails,
                 },
                 {
                     path: "profile",
                     name: "Profile",
-                    component: () => import("../views/Profile.vue"),
+                    component: Profile,
                 },
                 {
                     path: "categories",
                     name: "Categories",
-                    component: () => import("../views/Categories.vue"),
+                    component: Categories,
                 },
                 {
                     path: "level",
                     name: "Level",
-                    component: () => import("../views/Level.vue"),
+                    component: Level,
                 },
                 {
                     path: "news",
                     name: "News",
-                    component: () => import("../views/News.vue"),
+                    component: News,
                 },
                 {
                     path: "product-detail",
                     name: "ProductDetail",
-                    component: () => import("../views/ProductDetails.vue"),
+                    component: ProductDetails,
                 },
                 {
                     path: "detail-news",
                     name: "DetailNews",
-                    component: () => import("../views/DetailNew.vue"),
+                    component: DetailNew,
                 },
                 {
                     path: "levelSpecification",
                     name: "levelSpecification",
-                    component: () => import("../views/levelSpecification.vue"),
+                    component: levelSpecification,
                 },
                 {
                     path: "level-specification-detail",
                     name: "levelSpecificationDetail",
-                    component: () => import("../views/DetailLevelSpecification.vue"),
+                    component: () => DetailLevelSpecification,
                 }
             ],
         },
