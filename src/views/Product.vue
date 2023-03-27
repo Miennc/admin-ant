@@ -217,7 +217,7 @@ const handlEditProduct = async () => {
           'Content-Type': 'multipart/form-data'
         }
       }
-      await levelServices.editLevel(formData, config)
+      await productServices.editProduct(formData, config)
       await getAllProduct()
       visibleEdit.value = false
       toast.success('Cập nhật sản phẩm thành công')

@@ -141,7 +141,7 @@ const resetStateError = () => {
     energyRecoverPriceUnit: "",
     stepsPerTime: '',
     distancePerTime: '',
-    status: "",
+    status: "ACTIVE",
     defaultLevelId: '',
     maxLevelId: '',
     productCategoryId: ''
@@ -219,54 +219,73 @@ const getUnitMoney = async () => {
   }
 }
 
+const idCategory = ref('')
+
 const showModalEdit = async (id) => {
-  // await resetStateError()
+  await getAllLevel()
+  await getAllCate()
+  await getUnitMoney()
+  await resetStateError()
   visibleEdit.value = true
-  // idEditLevelSpeci.value = id
+  idEditLevelSpeci.value = id
   try {
-    // const res = await levelSpecificationServices.findByIdLevelSpecification(id)
-    // inputLevelSpeci.value = {
-    //   daysToUseMax: res.data.daysToUseMax,
-    //   durability: res.data.durability,
-    //   energy: res.data.energy,
-    //   durabilityConsumption: res.data.durabilityConsumption,
-    //   energyConsumption: res.data.energyConsumption,
-    //   sellingPrice: res.data.sellingPrice,
-    //   sellingPriceUnit: res.data.sellingPriceUnit,
-    //   upgradePrice: res.data.upgradePrice,
-    //   upgradePriceUnit: res.data.upgradePriceUnit,
-    //   repairPrice: res.data.repairPrice,
-    //   repairPriceUnit: res.data.repairPriceUnit,
-    //   energyRecoverPrice: res.data.energyRecoverPrice,
-    //   energyRecoverPriceUnit: res.data.energyRecoverPriceUnit,
-    //   stepsPerTime: res.data.stepsPerTime,
-    //   distancePerTime: res.data.distancePerTime,
-    //   defaultLevelId: res.data.defaultLevelId,
-    //   maxLevelId: res.data.maxLevelId,
-    //   productCategoryId: res.data.productCategoryId,
-    // }
+    const res = await levelSpecificationServices.findByIdLevelSpecification(id)
+    inputLevelSpeci.value = {
+      daysToUseMax: res.data.daysToUseMax,
+      durability: res.data.durability,
+      energy: res.data.energy,
+      durabilityConsumption: res.data.durabilityConsumption,
+      energyConsumption: res.data.energyConsumption,
+      sellingPrice: res.data.sellingPrice,
+      sellingPriceUnit: res.data.sellingPriceUnit,
+      upgradePrice: res.data.upgradePrice,
+      upgradePriceUnit: res.data.upgradePriceUnit,
+      repairPrice: res.data.repairPrice,
+      repairPriceUnit: res.data.repairPriceUnit,
+      energyRecoverPrice: res.data.energyRecoverPrice,
+      energyRecoverPriceUnit: res.data.energyRecoverPriceUnit,
+      stepsPerTime: res.data.stepsPerTime,
+      distancePerTime: res.data.distancePerTime,
+      maxLevelId: res.data.maxLevel.value,
+      defaultLevelId: res.data.defaultLevel.value,
+      productCategoryId: res.data.productCategory.name,
+    }
+    idCategory.value = res.data.productCategory.id
   } catch (e) {
     console.log(e)
   }
-
 }
 
 
-const handlEditLevelSpeci = async () => {
+const editLevelSpeci = async () => {
   if (validate()) {
     try {
-      await userServices.editUser({
+      await levelSpecificationServices.editLevelSpecification({
         id: idEditLevelSpeci.value,
-        displayName: inputLevelSpeci.value.name,
-        email: inputLevelSpeci.value.email,
-        password: inputLevelSpeci.value.password,
-        username: inputLevelSpeci.value.userName,
-        phoneNumber: inputLevelSpeci.value.phone,
-        status: inputLevelSpeci.value.status
+        daysToUseMax: inputLevelSpeci.value.daysToUseMax,
+        durability: inputLevelSpeci.value.durability,
+        energy: inputLevelSpeci.value.energy,
+        durabilityConsumption: inputLevelSpeci.value.durabilityConsumption,
+        energyConsumption: inputLevelSpeci.value.energyConsumption,
+        sellingPrice: inputLevelSpeci.value.sellingPrice,
+        sellingPriceUnit: inputLevelSpeci.value.sellingPriceUnit,
+        upgradePrice: inputLevelSpeci.value.upgradePrice,
+        upgradePriceUnit: inputLevelSpeci.value.upgradePriceUnit,
+        repairPrice: inputLevelSpeci.value.repairPrice,
+        repairPriceUnit: inputLevelSpeci.value.repairPriceUnit,
+        energyRecoverPrice: inputLevelSpeci.value.energyRecoverPrice,
+        energyRecoverPriceUnit: inputLevelSpeci.value.energyRecoverPriceUnit,
+        stepsPerTime: inputLevelSpeci.value.stepsPerTime,
+        distancePerTime: inputLevelSpeci.value.distancePerTime,
+        defaultLevelId: inputLevelSpeci.value.defaultLevelId,
+        maxLevelId: inputLevelSpeci.value.maxLevelId,
+        productCategoryId: idCategory.value,
       })
-      toast.success('Cập nhật người dùng thành công')
+      toast.success('Cập  nhật thông số level thành công')
+      await getLevelSpecification()
+      visibleEdit.value = false
     } catch (e) {
-      toast.error('Cập nhật người dùng thất bại')
+      console.log(e.response.data)
     }
   }
 }
@@ -300,7 +319,6 @@ const handleAddLevelSpeci = async () => {
       await getLevelSpecification()
       visible.value = false
       resetState()
-
     } catch (e) {
       toast.error(e.response.data)
     }
@@ -779,7 +797,7 @@ onMounted(async () => {
                 <td class="text-sm flex justify-end text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                   <div class="flex justify-start items-center">
 
-                           <span @click="showModalEdit(itemLevelSpeci?.id)"><i class="
+                           <span @click="showModalEdit(itemLevelSpeci.id)"><i class="
                               fa-solid fa-pen-to-square
                               text-xl text-blue-500
                               mr-2
@@ -832,7 +850,8 @@ onMounted(async () => {
   </a-modal>
 
 
-  <a-modal v-model:visible="visibleEdit" width="1000px" title="Sửa thông số level" @ok="handlEditLevelSpeci">
+  <a-modal v-model:visible="visibleEdit" width="1000px" title="Sửa thông số level" @ok="editLevelSpeci">
+
     <div>
       <label class="block text-sm font-medium text-gray-700">
         Số ngày tối đa người mua được phép sử dụng
