@@ -2,7 +2,7 @@ import axios from "axios";
 
 let axiosInstance = null;
 let headers = {
-
+'cache-control': 'no-cache',
 }
 
 function setHeaders(inputHeaders) {

@@ -17,7 +17,7 @@ const route = useRoute();
 const selectedKeys = ref(["1"]);
 const collapsed = ref(false);
 const openedSubMenu = ref(["dashboard"]);
-const baseAdminUrl = "/";
+const baseAdminUrl = "/home/";
 
 // for methods
 const onMenuClick = ({key}) => {
@@ -52,7 +52,7 @@ onBeforeMount(() => {
 
 const logout = () => {
   localStorage.removeItem("token");
-  router.push("/login");
+  router.push("/");
 };
 
 onMounted(() => {
@@ -61,7 +61,7 @@ onMounted(() => {
   }
 
   refreshOpenedSubMenu();
-  if (route.path === "/") {
+  if (route.path === "/home") {
     selectedKeys.value = ["dashboard"];
   }
 });
