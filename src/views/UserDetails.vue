@@ -109,7 +109,7 @@ onMounted(() => {
                       <div class="flex gap-4">
                         <div>
                           <p class="font-semibold text-gray-600">Mặt trước:</p>
-                          <div class="w-[100%] h-[230px] overflow-hidden">
+                          <div class="w-[100%] h-[230px] overflow-hidden" v-if="dataUserById?.identification?.identificationImageFrontUrl">
                             <img :src="dataUserById?.identification?.identificationImageFrontUrl" alt=""
                                  class="w-full h-full object-contain">
                           </div>
@@ -118,7 +118,7 @@ onMounted(() => {
 
                         <div>
                           <p class="font-semibold text-gray-600">Mặt Sau:</p>
-                          <div class="w-[100%] h-[230px] overflow-hidden">
+                          <div class="w-[100%] h-[230px] overflow-hidden" v-if="dataUserById?.identification?.identificationImageFrontUrl">
                             <img :src="dataUserById?.identification?.identificationImageFrontUrl" alt=""
                                  class="w-full h-full object-contain">
                           </div>
@@ -129,7 +129,7 @@ onMounted(() => {
 
                     <div class="mt-[2.1rem]">
                       <p class="font-semibold text-gray-600">Ảnh chân dung:</p>
-                      <div class="w-[230px] h-[230px] overflow-hidden bg-red-500">
+                      <div class="w-[230px] h-[230px] overflow-hidden bg-red-500" v-if="dataUserById?.identification?.identificationImageSelfieUrl">
                         <img :src="dataUserById?.identification?.identificationImageSelfieUrl" alt="" class="w-[230px] h-[230px]">
                       </div>
                     </div>

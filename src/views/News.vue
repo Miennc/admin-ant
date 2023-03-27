@@ -42,7 +42,7 @@ const validate = () => {
   errors.value.title = inputNew.value.title ? '' : 'Tiêu đề không được để trống'
   errors.value.content = inputNew.value.content ? '' : 'Nội dung không được để trống'
   errors.value.fileUpload = inputNew?.value?.fileUpload?.length < 1 ? 'Ảnh không được để trống' : ''
-  return !errors.value.name && !errors.value.fileUpload && !errors.value.valueNumber
+  return !errors.value.title && !errors.value.fileUpload && !errors.value.content
 }
 
 

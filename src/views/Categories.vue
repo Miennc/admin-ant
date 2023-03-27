@@ -106,6 +106,8 @@ const hanldEditCate = async () => {
         name: inputCate.value.name,
         description: inputCate.value.description,
       })
+      await getAllCategory()
+      visibleEdit.value = false
       toast.success('Cập nhật danh mục thành công')
     } catch (e) {
       toast.error(e.response.data)

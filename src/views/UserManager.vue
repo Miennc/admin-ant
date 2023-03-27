@@ -370,11 +370,19 @@ onMounted(async () => {
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                   {{ (currentPage - 1) * 10 + (indexUser + 1) }}
                 </td>
+
                 <router-link :to="{name:'userDetail', query:{id: itemUser.id}}">
-                  <td class="text-sm cursor-pointer text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                    {{ itemUser.displayName }}
-                  </td>
+                  <a-tooltip placement="bottom">
+                    <template #title>
+                      <span>  Ấn vào để xem chi tiết người dùng </span>
+                    </template>
+                    <td class="text-sm cursor-pointer text-gray-900 font-light px-6  whitespace-nowrap">
+                      {{ itemUser.displayName }}
+                    </td>
+                  </a-tooltip>
                 </router-link>
+
+
                 <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                   {{ itemUser.username }}
                 </td>
