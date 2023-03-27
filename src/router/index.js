@@ -13,7 +13,8 @@ import ProductDetails from "../views/ProductDetails.vue";
 import DetailNew from "../views/DetailNew.vue";
 import levelSpecification from "../views/levelSpecification.vue";
 import DetailLevelSpecification from "../views/DetailLevelSpecification.vue";
-
+import Mission from "../views/Mission.vue";
+import DetailMission from "../views/DetailMission.vue";
 
 const router = createRouter({
     history: createWebHashHistory(),
@@ -88,6 +89,16 @@ const router = createRouter({
                     path: "level-specification-detail",
                     name: "levelSpecificationDetail",
                     component: () => DetailLevelSpecification,
+                },
+                {
+                    path: "mission",
+                    name: "Mission",
+                    component: () => Mission,
+                },
+                {
+                    path: "mission-detail",
+                    name: "DetailMission",
+                    component: () => DetailMission,
                 }
             ],
         },

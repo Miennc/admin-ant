@@ -57,7 +57,7 @@ const logout = () => {
 
 onMounted(() => {
   if (!localStorage.getItem('token')) {
-    router.push('/login');
+    router.push({name: 'Login'});
   }
 
   refreshOpenedSubMenu();
@@ -113,6 +113,14 @@ onMounted(() => {
           </span>
         </a-menu-item>
 
+
+        <a-menu-item key="mission">
+          <span class="flex items-center">
+            <group-outlined/>
+            <span>Quản lý nhiệm vụ</span>
+          </span>
+        </a-menu-item>
+
         <a-menu-item key="categories">
           <span class="flex items-center">
             <group-outlined/>
@@ -143,13 +151,13 @@ onMounted(() => {
         </a-menu-item>
 
 
-        <a-sub-menu key="sub4">
-          <template #icon>
-            <SettingOutlined/>
-          </template>
-          <template #title>Quản lý tin tức</template>
-          <a-menu-item key="9">Tin tức</a-menu-item>
-        </a-sub-menu>
+<!--        <a-sub-menu key="sub4">-->
+<!--          <template #icon>-->
+<!--            <SettingOutlined/>-->
+<!--          </template>-->
+<!--          <template #title>Quản lý tin tức</template>-->
+<!--          <a-menu-item key="9">Tin tức</a-menu-item>-->
+<!--        </a-sub-menu>-->
 
       </a-menu>
     </a-layout-sider>

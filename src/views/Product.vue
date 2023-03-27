@@ -356,11 +356,12 @@ const pageChanged = async () => {
 const checkToken = () => {
   const token = localStorage.getItem('token')
   if (!token) {
-    router.push('/login')
+    router.push({name: 'login'})
   }
 }
 
 onMounted(async () => {
+  await checkToken()
   loading.value = true
   await getAllProduct()
   loading.value = false
