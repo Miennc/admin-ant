@@ -86,7 +86,7 @@ onMounted(() => {
               v-if="!collapsed"
               class="text-[#1890ff] font-medium text-[18px] m-0"
           >
-            Admin
+            Admin runner app
           </h1>
         </a>
       </div>

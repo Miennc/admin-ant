@@ -5,6 +5,8 @@ import Loading from "@/components/loading/Loading.vue";
 import {useToast} from "vue-toastification";
 import router from "@/router";
 import {levelSpecificationServices} from "@/services/levelSpecificationServices";
+import {levelServices} from "@/services/levelServices";
+import {categoryServices} from "@/services/categoryServices";
 
 const toast = useToast()
 const visible = ref(false)
@@ -33,12 +35,12 @@ const options = ref([{
 
 
 const handleChangeSellingPriceUnit = (value) => {
-  inputLevelSpeci.value.sellingPriceUnit = value
+  inputLevelSpeci.value.sellingPriceUnit = value.value
 }
 const optionSellingPriceUnit = ref([])
 
 const handleChangeUpgradePriceUnit = (value) => {
-  inputLevelSpeci.value.upgradePriceUnit = value
+  inputLevelSpeci.value.upgradePriceUnit = value.value
 }
 const optionUpgradePriceUnit = ref([])
 
@@ -46,38 +48,38 @@ const optionEnergyRecoverPriceUnit = ref([])
 const optionRepairPriceUnit = ref([])
 
 const handleChangeRepairPriceUnit = (value) => {
-  inputLevelSpeci.value.repairPriceUnit = value
+  inputLevelSpeci.value.repairPriceUnit = value.value
 }
 const handleChangeEnergyRecoverPriceUnit = (value) => {
-  inputLevelSpeci.value.energyRecoverPriceUnit = value
+  inputLevelSpeci.value.energyRecoverPriceUnit = value.value
 }
 
 const inputLevelSpeci = ref({
-  daysToUseMax: 0,
-  timeToUseMax: 0,
-  durability: 0,
-  energy: 0,
-  durabilityConsumption: 0,
-  energyConsumption: 0,
-  sellingPrice: 0,
+  daysToUseMax: 1,
+  timeToUseMaxInDay: 1,
+  durability: 1,
+  energy: 1,
+  durabilityConsumption: 1,
+  energyConsumption: 1,
+  sellingPrice: 1,
   sellingPriceUnit: "VND",
-  upgradePrice: 0,
+  upgradePrice: 1,
   upgradePriceUnit: "VND",
-  repairPrice: 0,
+  repairPrice: 1,
   repairPriceUnit: "VND",
-  energyRecoverPrice: 0,
+  energyRecoverPrice: 1,
   energyRecoverPriceUnit: "VND",
-  stepsPerTime: 0,
-  distancePerTime: 0,
+  stepsPerTime: 1,
+  distancePerTime: 1,
   status: "string",
-  defaultLevelId: 0,
-  maxLevelId: 0,
-  productCategoryId: 0
+  defaultLevelId: 1,
+  maxLevelId: 1,
+  productCategoryId: 1
 })
 
 const errors = ref({
   daysToUseMax: '',
-  timeToUseMax: '',
+  timeToUseMaxInDay: '',
   durability: '',
   energy: '',
   durabilityConsumption: '',
@@ -98,15 +100,62 @@ const errors = ref({
   productCategoryId: ''
 })
 
-const showModal = async () => {
-  await getUnitMoney()
+
+const resetState = () => {
   inputLevelSpeci.value = {
-    name: '',
-    email: '',
-    password: '',
-    userName: '',
-    phone: '',
+    daysToUseMax: 1, // số ngày sử dụng tối đa
+    timeToUseMaxInDay: 1,  // thời gian sử dụng tối đa trong ngày
+    durability: 1, // độ bền
+    energy: 1,   // năng lượng
+    durabilityConsumption: 1,  // độ bền tiêu hao
+    energyConsumption: 1, // năng lượng tiêu hao
+    sellingPrice: 1, // giá bán
+    sellingPriceUnit: "VND", // đơn vị giá bán
+    upgradePrice: 1, //  giá nâng cấp mỗi level
+    upgradePriceUnit: "VND", // đơn vị giá nâng cấp
+    repairPrice: 1, // giá sửa chữa
+    repairPriceUnit: "VND", // đơn vị giá sửa chữa
+    energyRecoverPrice: 1, // giá phục hồi năng lượng
+    energyRecoverPriceUnit: "VND", // đơn vị giá phục hồi năng lượng
+    stepsPerTime: 1, // Số bước mỗi lần
+    distancePerTime: 1, // số khoảng cách mỗi lần
+    status: "string",
+    defaultLevelId: 1,
+    maxLevelId: 1,
+    productCategoryId: 1  // danh mục sản phẩm
   }
+}
+
+const resetStateError = () => {
+  errors.value = {
+    daysToUseMax: '',
+    timeToUseMaxInDay: '',
+    durability: '',
+    energy: '',
+    durabilityConsumption: '',
+    energyConsumption: '',
+    sellingPrice: '',
+    sellingPriceUnit: "",
+    upgradePrice: '',
+    upgradePriceUnit: "",
+    repairPrice: '',
+    repairPriceUnit: "",
+    energyRecoverPrice: '',
+    energyRecoverPriceUnit: "",
+    stepsPerTime: '',
+    distancePerTime: '',
+    status: "",
+    defaultLevelId: '',
+    maxLevelId: '',
+    productCategoryId: ''
+  }
+}
+
+const showModal = async () => {
+  await getAllLevel()
+  await getAllCate()
+  await getUnitMoney()
+  resetState()
 
   visible.value = true
 }
@@ -118,7 +167,7 @@ const isNumber = (value) => {
 
 const validate = () => {
   errors.daysToUseMax = isNumber(inputLevelSpeci.value.daysToUseMax) ? '' : 'Vui lòng nhập số'
-  errors.timeToUseMax = isNumber(inputLevelSpeci.value.timeToUseMax) ? '' : 'Vui lòng nhập số'
+  errors.timeToUseMaxInDay = isNumber(inputLevelSpeci.value.timeToUseMaxInDay) ? '' : 'Vui lòng nhập số'
   errors.durability = isNumber(inputLevelSpeci.value.durability) ? '' : 'Vui lòng nhập số'
   errors.energy = isNumber(inputLevelSpeci.value.energy) ? '' : 'Vui lòng nhập số'
   errors.durabilityConsumption = isNumber(inputLevelSpeci.value.durabilityConsumption) ? '' : 'Vui lòng nhập số'
@@ -136,7 +185,7 @@ const validate = () => {
   errors.defaultLevelId = isNumber(inputLevelSpeci.value.defaultLevelId) ? '' : 'Vui lòng nhập số'
   errors.maxLevelId = isNumber(inputLevelSpeci.value.maxLevelId) ? '' : 'Vui lòng nhập số'
   errors.productCategoryId = isNumber(inputLevelSpeci.value.productCategoryId) ? '' : 'Vui lòng nhập số'
-  return !errors.daysToUseMax && !errors.timeToUseMax && !errors.durability && !errors.energy && !errors.durabilityConsumption && !errors.energyConsumption && !errors.sellingPrice && !errors.sellingPriceUnit && !errors.upgradePrice && !errors.upgradePriceUnit && !errors.repairPrice && !errors.repairPriceUnit && !errors.energyRecoverPrice && !errors.energyRecoverPriceUnit && !errors.stepsPerTime && !errors.distancePerTime && !errors.defaultLevelId && !errors.maxLevelId && !errors.productCategoryId
+  return !errors.daysToUseMax && !errors.timeToUseMaxInDay && !errors.durability && !errors.energy && !errors.durabilityConsumption && !errors.energyConsumption && !errors.sellingPrice && !errors.sellingPriceUnit && !errors.upgradePrice && !errors.upgradePriceUnit && !errors.repairPrice && !errors.repairPriceUnit && !errors.energyRecoverPrice && !errors.energyRecoverPriceUnit && !errors.stepsPerTime && !errors.distancePerTime && !errors.defaultLevelId && !errors.maxLevelId && !errors.productCategoryId
 
 }
 
@@ -180,13 +229,7 @@ const getUnitMoney = async () => {
 
 const showModalEdit = async (id) => {
 
-  errors.value = {
-    name: '',
-    email: '',
-    password: '',
-    userName: '',
-    phone: '',
-  }
+  resetStateError()
 
   visibleEdit.value = true
   idEditUser.value = id
@@ -233,23 +276,33 @@ const handleAddLevelSpeci = async () => {
   if (validate()) {
     loading.value = true
     try {
-      await userServices.addUser({
-        displayName: inputLevelSpeci.value.name,
-        email: inputLevelSpeci.value.email,
-        password: inputLevelSpeci.value.password,
-        username: inputLevelSpeci.value.userName,
-        phoneNumber: inputLevelSpeci.value.phone
+      await levelSpecificationServices.createLevelSpecification({
+        daysToUseMax: inputLevelSpeci.value.daysToUseMax,
+        timeToUseMaxInDay: inputLevelSpeci.value.timeToUseMaxInDay,
+        durability: inputLevelSpeci.value.durability,
+        energy: inputLevelSpeci.value.energy,
+        durabilityConsumption: inputLevelSpeci.value.durabilityConsumption,
+        energyConsumption: inputLevelSpeci.value.energyConsumption,
+        sellingPrice: inputLevelSpeci.value.sellingPrice,
+        sellingPriceUnit: inputLevelSpeci.value.sellingPriceUnit,
+        upgradePrice: inputLevelSpeci.value.upgradePrice,
+        upgradePriceUnit: inputLevelSpeci.value.upgradePriceUnit,
+        repairPrice: inputLevelSpeci.value.repairPrice,
+        repairPriceUnit: inputLevelSpeci.value.repairPriceUnit,
+        energyRecoverPrice: inputLevelSpeci.value.energyRecoverPrice,
+        energyRecoverPriceUnit: inputLevelSpeci.value.energyRecoverPriceUnit,
+        stepsPerTime: inputLevelSpeci.value.stepsPerTime,
+        distancePerTime: inputLevelSpeci.value.distancePerTime,
+        defaultLevelId: inputLevelSpeci.value.defaultLevelId,
+        maxLevelId: inputLevelSpeci.value.maxLevelId,
+        productCategoryId: inputLevelSpeci.value.productCategoryId
+
       })
-      toast.success('Thêm người dùng thành công')
+      toast.success('Thêm thông số level thành công')
       await getLevelSpecification()
       visible.value = false
-      inputLevelSpeci.value = {
-        name: '',
-        email: '',
-        password: '',
-        userName: '',
-        phone: '',
-      }
+      resetState()
+
     } catch (e) {
       toast.error(e.response.data)
     }
@@ -310,6 +363,66 @@ const getLevelSpecification = async () => {
     console.log(e)
   }
 }
+
+
+const optionMaxLevelId = ref({
+  value: []
+})
+const optionDefaultLevelId = ref({
+  value: []
+})
+
+
+const handleChangeDefaultLevelId = (value) => {
+  inputLevelSpeci.value.defaultLevelId = value.value
+}
+const handleChangeMaxLevelId = (value) => {
+  inputLevelSpeci.value.maxLevelId = value.value
+}
+
+const getAllLevel = async () => {
+  try {
+    const res = await levelServices.getAllLevel()
+    const options = res.data.content.map(item => {
+      return {
+        label: item.name,
+        value: item.id
+      }
+    })
+    console.log(options)
+    optionDefaultLevelId.value = options
+    optionMaxLevelId.value = options
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+const optionsCate = ref({
+  value: []
+})
+
+
+// danh mục
+
+const handleChangeProductCategory = (value) => {
+  inputLevelSpeci.value.productCategoryId = value.value
+}
+
+const getAllCate = async () => {
+  try {
+    const res = await categoryServices.getAllCategory()
+    const options = res.data.content.map(item => {
+      return {
+        label: item.name,
+        value: item.id
+      }
+    })
+    optionsCate.value = options
+  } catch (e) {
+
+  }
+}
+
 
 const pageChanged = async () => {
   await getLevelSpecification()
@@ -419,13 +532,20 @@ onMounted(async () => {
 
         <div>
           <label class="block text-sm font-medium text-gray-700">
-            Số ngày tối đa người mua được phép sử dụng
+            Danh mục
           </label>
           <div class="mt-1">
-            <a-input v-model:value="inputLevelSpeci.daysToUseMax"
-                     placeholder="Số ngày tối đa người mua được phép sử dụng"/>
+            <a-select
+                v-model:value="inputLevelSpeci.productCategoryId"
+                label-in-value
+                style="width:100%"
+                :options="optionsCate"
+                @change="handleChangeProductCategory"
+            >
+            </a-select>
+
           </div>
-          <span class="text-red-500 font-medium italic text-sm"> {{ errors.name }}</span>
+          <span class="text-red-500 font-medium italic text-sm"> {{ errors.productCategoryId }}</span>
         </div>
 
         <div>
@@ -572,7 +692,15 @@ onMounted(async () => {
             Level mặc định của giày lúc ban đầu
           </label>
           <div class="mt-1">
-            <a-input v-model:value="inputLevelSpeci.defaultLevelId" placeholder="Level mặc đinh"/>
+            <a-select
+                v-model:value="inputLevelSpeci.defaultLevelId"
+                label-in-value
+                style="width:100%"
+                :options="optionDefaultLevelId"
+                @change="handleChangeDefaultLevelId"
+            >
+            </a-select>
+
           </div>
           <span class="text-red-500 font-medium italic text-sm"> {{ errors.defaultLevelId }}</span>
         </div>
@@ -582,7 +710,15 @@ onMounted(async () => {
             Level tối đa của giày
           </label>
           <div class="mt-1">
-            <a-input v-model:value="inputLevelSpeci.maxLevelId" placeholder="Level tối đa"/>
+
+            <a-select
+                v-model:value="inputLevelSpeci.maxLevelId"
+                label-in-value
+                style="width:100%"
+                :options="optionMaxLevelId"
+                @change="handleChangeMaxLevelId"
+            >
+            </a-select>
           </div>
           <span class="text-red-500 font-medium italic text-sm"> {{ errors.maxLevelId }}</span>
         </div>

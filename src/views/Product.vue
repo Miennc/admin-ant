@@ -5,7 +5,9 @@ import Loading from "@/components/loading/Loading.vue";
 import {useToast} from "vue-toastification";
 import {productServices} from "@/services/productServices";
 import {categoryServices} from "@/services/categoryServices";
+import {useRoute} from "vue-router";
 
+const router = useRoute()
 const toast = useToast()
 const visible = ref(false)
 const textSearch = ref('')
@@ -350,6 +352,13 @@ const pageChanged = async () => {
   await getAllProduct()
 }
 
+
+const checkToken = () => {
+  const token = localStorage.getItem('token')
+  if (!token) {
+    router.push('/login')
+  }
+}
 
 onMounted(async () => {
   loading.value = true
