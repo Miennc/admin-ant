@@ -25,11 +25,16 @@ function listAllMission(payload) {
     return Axios.get('/mission/find-all', payload);
 }
 
+function getUnitMoney() {
+    return Axios.get('/product/find-all-unit-money');
+}
+
 export const missionServices = {
     createMission,
     searchMission,
     removeMission,
     findByIdMission,
     editMission,
-    listAllMission
+    listAllMission,
+    getUnitMoney
 };

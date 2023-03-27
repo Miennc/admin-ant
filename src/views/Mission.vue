@@ -15,44 +15,69 @@ const totalPages = ref(1)
 const idRemoveMission = ref('')
 
 const visibleConfirm = ref(false)
+const optionsUnit = ref([])
 
 const loading = ref(false)
 const modalText = ref('Bạn có chắc chắn muốn xóa nhiệm vụ không?')
 const confirmLoading = ref(false);
 const visibleEdit = ref(false)
-const idEditCate = ref('')
+const idEditMission = ref('')
 
 
-const options = ref([{
-  value: 'ACTIVE',
-  label: 'ACTIVE',
-}, {
-  value: 'PENDING',
-  label: 'PENDING',
-}]);
+const optionsType = [
+  {label: 'Đi nhanh', value: 'FASTER'},
+  {label: 'Đi xa', value: 'LONGER'},
+]
 
-const inputCate = ref({
+const handlChangeType = (value) => {
+  inputMission.value.type = value.value
+}
+
+const inputMission = ref({
   name: '',
   description: '',
+  type: '',
+  steps: '',
+  minutes: '',
+  reward: '',
+  rewardUnit: '',
 })
 
 const errors = ref({
   name: '',
   description: '',
+  type: '',
+  steps: '',
+  minutes: '',
+  reward: '',
+  rewardUnit: '',
 })
 
-const showModal = () => {
-  inputCate.value = {
+const showModal = async () => {
+  await getUnitMoney()
+  inputMission.value = {
     name: '',
     description: '',
   }
   visible.value = true
 }
 
+const regexNumber = /^[0-9]*$/
+
 const validate = () => {
-  errors.value.name = inputCate.value.name ? '' : 'Tên danh mục không được để trống'
-  errors.value.description = inputCate.value.description ? '' : 'Mô tả không được để trống'
-  return !errors.value.name && !errors.value.description
+  errors.value.name = inputMission.value.name ? '' : 'Tên danh mục không được để trống'
+  errors.value.description = inputMission.value.description ? '' : 'Mô tả không được để trống'
+  errors.value.type = inputMission.value.type ? '' : 'Loại nhiệm vụ không được để trống'
+  errors.value.steps = regexNumber.test(inputMission.value.steps) ? '' : 'Số bước phải là số'
+  errors.value.minutes = inputMission.value.minutes && inputMission.value.type == 'FASTER' ? '' : 'Số phút không được để trống'
+  errors.value.reward = regexNumber.test(inputMission.value.reward) ? '' : 'Số tiền phải là số'
+  errors.value.rewardUnit = inputMission.value.rewardUnit ? '' : 'Đơn vị phần thưởng không được để trống'
+  if (inputMission.value.type == 'FASTER') {
+    return !errors.value.name && !errors.value.description && !errors.value.type && !errors.value.steps && !errors.value.minutes && !errors.value.reward && !errors.value.rewardUnit
+  } else {
+    return !errors.value.name && !errors.value.description && !errors.value.type && !errors.value.steps && !errors.value.reward && !errors.value.rewardUnit
+  }
+
 }
 
 
@@ -67,6 +92,26 @@ const handlRemoveMission = async () => {
   visibleConfirm.value = false
 }
 
+const getUnitMoney = async () => {
+  try {
+    const res = await missionServices.getUnitMoney()
+    console.log(res.data)
+    optionsUnit.value = res.data.map(item => {
+      return {
+        label: item,
+        value: item,
+      }
+    })
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+
+const handlChangeUnit = (value) => {
+  inputMission.value.rewardUnit = value.value
+}
+
 
 const handleChange = value => {
   console.log(value); // { key: "lucy", label: "Lucy (101)" }
@@ -79,18 +124,28 @@ const showModalConfirm = (id) => {
 }
 
 const showModalEdit = async (id) => {
-
+  await getUnitMoney()
   errors.value = {
     name: '',
     description: '',
+    type: '',
+    steps: '',
+    minutes: '',
+    reward: '',
+    rewardUnit: '',
   }
   visibleEdit.value = true
-  idEditCate.value = id
+  idEditMission.value = id
   try {
-    const res = await categoryServices.findCategoryById(id)
-    inputCate.value = {
+    const res = await missionServices.findByIdMission(id)
+    inputMission.value = {
       name: res.data.name,
       description: res.data.description,
+      type: res.data.type,
+      steps: res.data.steps,
+      minutes: res.data.minutes,
+      reward: res.data.reward,
+      rewardUnit: res.data.rewardUnit,
     }
   } catch (e) {
     console.log(e)
@@ -102,12 +157,19 @@ const showModalEdit = async (id) => {
 const hanldEditCate = async () => {
   if (validate()) {
     try {
-      await categoryServices.editCategory({
-        id: idEditCate.value,
-        name: inputCate.value.name,
-        description: inputCate.value.description,
+      await missionServices.editMission({
+        id: idEditMission.value,
+        name: inputMission.value.name,
+        description: inputMission.value.description,
+        type: inputMission.value.type,
+        steps: inputMission.value.steps,
+        minutes: inputMission.value.minutes,
+        reward: inputMission.value.reward,
+        rewardUnit: inputMission.value.rewardUnit,
       })
-      toast.success('Cập nhật danh mục thành công')
+      await getAllMission()
+      visibleEdit.value = false
+      toast.success('Sửa nhiệm vụ thành công')
     } catch (e) {
       toast.error(e.response.data)
     }
@@ -115,21 +177,30 @@ const hanldEditCate = async () => {
 }
 
 
-const handleAddCate = async () => {
-
+const handlAddMission = async () => {
   if (validate()) {
     loading.value = true
     try {
-      await categoryServices.createCategory({
-        name: inputCate.value.name,
-        description: inputCate.value.description,
+      await missionServices.createMission({
+        name: inputMission.value.name,
+        description: inputMission.value.description,
+        type: inputMission.value.type,
+        steps: inputMission.value.steps,
+        minutes: inputMission.value.minutes,
+        reward: inputMission.value.reward,
+        rewardUnit: inputMission.value.rewardUnit,
       })
-      toast.success('Thêm danh mục thành công')
+      toast.success(' Thêm nhiệm vụ thành công')
       await getAllMission()
       visible.value = false
-      inputCate.value = {
+      inputMission.value = {
         name: '',
         description: '',
+        type: '',
+        steps: '',
+        minutes: '',
+        reward: '',
+        rewardUnit: '',
       }
     } catch (e) {
       toast.error(e.response.data)
@@ -232,26 +303,97 @@ onMounted(async () => {
 
 
     <div>
-      <a-modal v-model:visible="visible" width="1000px" title="Thêm nhiệm vụ" @ok="handleAddCate">
+      <a-modal v-model:visible="visible" width="1000px" title="Thêm nhiệm vụ" @ok="handlAddMission">
 
         <div>
           <label class="block text-sm font-medium text-gray-700">
-            Tên danh mục
+            Kiểu nhiệm vụ
           </label>
           <div class="mt-1">
-            <a-input v-model:value="inputCate.name" placeholder="Tên người dùng"/>
+            <a-select
+                v-model:value="inputMission.type"
+                label-in-value
+                style="width:100%"
+                :options="optionsType"
+                @change="handlChangeType"
+            >
+            </a-select>
+          </div>
+          <span class="text-red-500 font-medium italic text-sm"> {{ errors.type }}</span>
+        </div>
+
+
+        <div class="mt-2">
+          <label class="block text-sm font-medium text-gray-700">
+            Tên nhiệm vụ
+          </label>
+          <div class="mt-1">
+            <a-input v-model:value="inputMission.name" placeholder="Tên người dùng"/>
           </div>
           <span class="text-red-500 font-medium italic text-sm"> {{ errors.name }}</span>
         </div>
 
         <div class="mt-2">
           <label class="block text-sm font-medium text-gray-700">
-            Mô tả danh mục
+            Mô tả nhiệm vụ
           </label>
           <div class="mt-1">
-            <a-input v-model:value="inputCate.description" placeholder="Tên đăng nhập"/>
+            <a-input v-model:value="inputMission.description" placeholder="Mô tả nhiệm vụ"/>
           </div>
           <span class="text-red-500 font-medium italic text-sm"> {{ errors.description }}</span>
+        </div>
+
+
+        <div class="mt-2">
+          <label class="block text-sm font-medium text-gray-700">
+            Số bước chân
+          </label>
+          <div class="mt-1">
+            <a-input v-model:value="inputMission.steps" placeholder="Số bước chân"/>
+          </div>
+          <span class="text-red-500 font-medium italic text-sm"> {{ errors.steps }}</span>
+        </div>
+
+
+        <div class="mt-2" v-if="inputMission.type==  'FASTER' ">
+          <label class="block text-sm font-medium text-gray-700">
+            Số phút thực hiện
+          </label>
+          <div class="mt-1">
+            <a-input v-model:value="inputMission.minutes" placeholder="Số phút thực hiện"/>
+          </div>
+          <span class="text-red-500 font-medium italic text-sm"> {{ errors.minutes }}</span>
+        </div>
+
+
+        <div class="mt-2">
+          <label class="block text-sm font-medium text-gray-700">
+            Phần thưởng
+          </label>
+          <div class="mt-1">
+            <a-input v-model:value="inputMission.reward" placeholder="Phần thưởng"/>
+          </div>
+          <span class="text-red-500 font-medium italic text-sm"> {{ errors.reward }}</span>
+        </div>
+
+
+        <div class="mt-2">
+          <label class="block text-sm font-medium text-gray-700">
+            Đơn vị phần thưởng
+          </label>
+          <div class="mt-1">
+            <a-select
+                v-model:value="inputMission.rewardUnit"
+                label-in-value
+                style="width:100%"
+                :options="optionsUnit"
+                @change="handlChangeUnit"
+            >
+            </a-select>
+
+
+          </div>
+          <span class="text-red-500 font-medium italic text-sm"> {{ errors.rewardUnit }}</span>
         </div>
 
       </a-modal>
@@ -373,22 +515,93 @@ onMounted(async () => {
   <a-modal v-model:visible="visibleEdit" width="1000px" title="Sửa danh mục" @ok="hanldEditCate">
     <div>
       <label class="block text-sm font-medium text-gray-700">
-        Tên danh mục
+        Kiểu nhiệm vụ
       </label>
       <div class="mt-1">
-        <a-input v-model:value="inputCate.name" placeholder="Tên danh mục"/>
+        <a-select
+            v-model:value="inputMission.type"
+            label-in-value
+            style="width:100%"
+            :options="optionsType"
+            @change="handlChangeType"
+        >
+        </a-select>
+      </div>
+      <span class="text-red-500 font-medium italic text-sm"> {{ errors.type }}</span>
+    </div>
+
+
+    <div class="mt-2">
+      <label class="block text-sm font-medium text-gray-700">
+        Tên nhiệm vụ
+      </label>
+      <div class="mt-1">
+        <a-input v-model:value="inputMission.name" placeholder="Tên người dùng"/>
       </div>
       <span class="text-red-500 font-medium italic text-sm"> {{ errors.name }}</span>
     </div>
 
     <div class="mt-2">
       <label class="block text-sm font-medium text-gray-700">
-        Mô tả danh mục
+        Mô tả nhiệm vụ
       </label>
       <div class="mt-1">
-        <a-input v-model:value="inputCate.description" placeholder="môi tả"/>
+        <a-input v-model:value="inputMission.description" placeholder="Mô tả nhiệm vụ"/>
       </div>
       <span class="text-red-500 font-medium italic text-sm"> {{ errors.description }}</span>
+    </div>
+
+
+    <div class="mt-2">
+      <label class="block text-sm font-medium text-gray-700">
+        Số bước chân
+      </label>
+      <div class="mt-1">
+        <a-input v-model:value="inputMission.steps" placeholder="Số bước chân"/>
+      </div>
+      <span class="text-red-500 font-medium italic text-sm"> {{ errors.steps }}</span>
+    </div>
+
+
+    <div class="mt-2" v-if="inputMission.type==  'FASTER' ">
+      <label class="block text-sm font-medium text-gray-700">
+        Số phút thực hiện
+      </label>
+      <div class="mt-1">
+        <a-input v-model:value="inputMission.minutes" placeholder="Số phút thực hiện"/>
+      </div>
+      <span class="text-red-500 font-medium italic text-sm"> {{ errors.minutes }}</span>
+    </div>
+
+
+    <div class="mt-2">
+      <label class="block text-sm font-medium text-gray-700">
+        Phần thưởng
+      </label>
+      <div class="mt-1">
+        <a-input v-model:value="inputMission.reward" placeholder="Phần thưởng"/>
+      </div>
+      <span class="text-red-500 font-medium italic text-sm"> {{ errors.reward }}</span>
+    </div>
+
+
+    <div class="mt-2">
+      <label class="block text-sm font-medium text-gray-700">
+        Đơn vị phần thưởng
+      </label>
+      <div class="mt-1">
+        <a-select
+            v-model:value="inputMission.rewardUnit"
+            label-in-value
+            style="width:100%"
+            :options="optionsUnit"
+            @change="handlChangeUnit"
+        >
+        </a-select>
+
+
+      </div>
+      <span class="text-red-500 font-medium italic text-sm"> {{ errors.rewardUnit }}</span>
     </div>
 
 
