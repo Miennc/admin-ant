@@ -119,6 +119,19 @@ onMounted(() => {
         <div class="bg-[#e5e7eb] h-[1px] my-2">
         </div>
 
+
+        <div class="flex gap-5">
+          <div class=" text-[#111827] font-[500]">
+            Đơn vị giá
+          </div>
+          <div>
+            {{ dataProduct?.priceUnit }}
+          </div>
+        </div>
+
+        <div class="bg-[#e5e7eb] h-[1px] my-2">
+        </div>
+
         <div class="flex gap-5">
           <div class=" text-[#111827] font-[500]">
             Level
@@ -159,8 +172,8 @@ onMounted(() => {
             Ảnh sản phẩm
           </div>
         </div>
-        <div class="flex flex-wrap">
-          <div v-for="(itemImg,index) in dataProduct.imageList" :key="index" class="w-[100px]  h-[100px] overflow-hidden">
+        <div class="flex flex-wrap" >
+          <div   v-for="(itemImg,index) in dataProduct.imageList" :key="index" class="w-[100px]  h-[100px] overflow-hidden">
             <img :src="itemImg" alt="" class="w-full h-full object-cover">
           </div>
         </div>

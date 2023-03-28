@@ -42,13 +42,19 @@ const handleChangeCategory = value => {
   inputProduct.value.categoryId = value.value
 };
 
+
+const handleChangeMoney = value => {
+  inputProduct.value.priceUnit = value.value
+};
+const optionsMoney = ref([])
+
 const inputProduct = ref({
   name: '',
   fileUrl: [],
   fileUpload: [],
   sku: '',
   price: '',
-  priceUnit: '',
+  priceUnit: 'VND',
   status: 'ACTIVE',
   displayToTop: '',
   displaySale: '',
@@ -86,6 +92,21 @@ const getAllCate = async () => {
 }
 
 
+const getAllUnitMoney = async () => {
+  try {
+    const res = await productServices.getUnitMoney()
+    optionsMoney.value = res.data.map(item => {
+      return {
+        value: item,
+        label: item
+      }
+    })
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+
 const getAllLevel = async () => {
   try {
     const res = await levelServices.getAllLevel()
@@ -107,7 +128,7 @@ const showModal = async () => {
     fileUpload: [],
     sku: '',
     price: '',
-    priceUnit: '',
+    priceUnit: 'VND',
     status: 'ACTIVE',
     displayToTop: '',
     displaySale: '',
@@ -115,6 +136,7 @@ const showModal = async () => {
     categoryId: '',
     defaultLevelId: '',
   }
+  await getAllUnitMoney()
   await getAllLevel()
   await getAllCate()
   visible.value = true
@@ -174,6 +196,7 @@ const showModalEdit = async (id) => {
   }
   visibleEdit.value = true
   idEditLevel.value = id
+  await getAllUnitMoney()
   await getAllLevel()
   await getAllCate()
   try {
@@ -281,7 +304,7 @@ const handlAddProduct = async () => {
         fileUpload: [],
         sku: '',
         price: '',
-        priceUnit: '',
+        priceUnit: 'VND',
         status: 'ACTIVE',
         displayToTop: '',
         displaySale: '',
@@ -428,7 +451,7 @@ onMounted(async () => {
             Giá sản phẩm
           </label>
           <div class="mt-1">
-            <a-input v-model:value="inputProduct.price" placeholder="Giá   sản phẩm "/>
+            <a-input v-model:value="inputProduct.price" placeholder="Giá sản phẩm "/>
           </div>
           <span class="text-red-500 font-medium italic text-sm"> {{ errors.price }}</span>
         </div>
@@ -439,7 +462,15 @@ onMounted(async () => {
             Đơn vị giá
           </label>
           <div class="mt-1">
-            <a-input v-model:value="inputProduct.priceUnit" placeholder="10 000VNĐ "/>
+            <a-select
+                v-model:value="inputProduct.priceUnit"
+                label-in-value
+                style="width:100%"
+                :options="optionsMoney"
+                @change="handleChangeMoney"
+            >
+            </a-select>
+
           </div>
           <span class="text-red-500 font-medium italic text-sm"> {{ errors.priceUnit }}</span>
         </div>
@@ -450,7 +481,7 @@ onMounted(async () => {
             Mô tả sản phẩm
           </label>
           <div class="mt-1">
-            <a-input v-model:value="inputProduct.description" placeholder="10 000VNĐ "/>
+            <a-input v-model:value="inputProduct.description" placeholder="10 000VNĐ"/>
           </div>
           <span class="text-red-500 font-medium italic text-sm"> {{ errors.description }}</span>
         </div>
@@ -560,11 +591,16 @@ onMounted(async () => {
                   {{ (currentPage - 1) * 10 + (indexProduct + 1) }}
                 </td>
                 <td class="text-sm cursor-pointer  text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+
                   <router-link :to="{name:'ProductDetail', query:{id: itemLevel.id}}">
-                    {{ itemLevel.name }}
+                    <a-tooltip placement="bottom">
+                      <template #title>
+                        <span>  Ấn vào để xem chi tiết sản phẩm </span>
+                      </template>
+                      {{ itemLevel.name }}
+                    </a-tooltip>
                   </router-link>
                 </td>
-
                 <td class="text-sm  text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                   {{ itemLevel.description }}
                 </td>
@@ -675,7 +711,14 @@ onMounted(async () => {
         Đơn vị giá
       </label>
       <div class="mt-1">
-        <a-input v-model:value="inputProduct.priceUnit" placeholder="10 000VNĐ "/>
+        <a-select
+            v-model:value="inputProduct.priceUnit"
+            label-in-value
+            style="width:100%"
+            :options="optionsMoney"
+            @change="handleChangeMoney"
+        >
+        </a-select>
       </div>
       <span class="text-red-500 font-medium italic text-sm"> {{ errors.priceUnit }}</span>
     </div>

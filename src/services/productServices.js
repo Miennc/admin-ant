@@ -25,6 +25,10 @@ function editProduct(payload) {
     return Axios.put(`/product/update`, payload);
 }
 
+function getUnitMoney() {
+    return Axios.get('/product/find-all-unit-money');
+}
+
 
 export const productServices = {
     listAllProduct,
@@ -32,6 +36,6 @@ export const productServices = {
     searchProduct,
     removeProduct,
     findByIdProduct,
-    editProduct
-
+    editProduct,
+    getUnitMoney
 };
