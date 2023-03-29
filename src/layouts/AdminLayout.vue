@@ -23,9 +23,7 @@ const baseAdminUrl = "/home/";
 const onMenuClick = ({key}) => {
   console.log("onMenuClick", key);
   selectedKeys.value = [key];
-
-  if (key === "dashboard") router.push(baseAdminUrl);
-  else router.push(baseAdminUrl + key);
+  router.push(baseAdminUrl + key);
 };
 
 const onSubMenuClicked = (e, key) => {
@@ -49,15 +47,14 @@ const refreshOpenedSubMenu = () => {
 onBeforeMount(() => {
 });
 
-
 const logout = () => {
   localStorage.removeItem("token");
   router.push("/");
 };
 
 onMounted(() => {
-  if (!localStorage.getItem('token')) {
-    router.push({name: 'Login'});
+  if (!localStorage.getItem("token")) {
+    router.push({name: "Login"});
   }
 
   refreshOpenedSubMenu();
@@ -113,14 +110,6 @@ onMounted(() => {
           </span>
         </a-menu-item>
 
-
-        <a-menu-item key="missions">
-          <span class="flex items-center">
-            <setting-outlined/>
-            <span>Quản lý nhiệm vụ</span>
-          </span>
-        </a-menu-item>
-
         <a-menu-item key="categories">
           <span class="flex items-center">
             <group-outlined/>
@@ -130,26 +119,31 @@ onMounted(() => {
 
         <a-menu-item key="level">
           <span class="flex items-center">
-           <stock-outlined/>
+            <stock-outlined/>
             <span>Quản lý level</span>
           </span>
         </a-menu-item>
 
-
         <a-menu-item key="levelSpecification">
           <span class="flex items-center">
-           <stock-outlined/>
+            <stock-outlined/>
             <span>Quản lý thông số level </span>
           </span>
         </a-menu-item>
 
         <a-menu-item key="news">
           <span class="flex items-center">
-           <send-outlined/>
+            <send-outlined/>
             <span>Quản lý Tin tức</span>
           </span>
         </a-menu-item>
 
+        <a-menu-item key="test">
+          <span class="flex items-center">
+            <setting-outlined/>
+            <span>Quản lý nhiệm vụ</span>
+          </span>
+        </a-menu-item>
 
         <!--        <a-sub-menu key="sub4">-->
         <!--          <template #icon>-->
@@ -158,7 +152,6 @@ onMounted(() => {
         <!--          <template #title>Quản lý tin tức</template>-->
         <!--          <a-menu-item key="9">Tin tức</a-menu-item>-->
         <!--        </a-sub-menu>-->
-
       </a-menu>
     </a-layout-sider>
 
@@ -197,9 +190,7 @@ onMounted(() => {
           <template #overlay>
             <a-menu>
               <a-menu-item>
-                <router-link to="/profile"
-                >Thông tin cá nhân
-                </router-link>
+                <router-link to="/profile">Thông tin cá nhân</router-link>
               </a-menu-item>
               <a-menu-item>
                 <span @click="logout">Đăng xuất</span>

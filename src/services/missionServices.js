@@ -1,40 +1,39 @@
-import {Axios} from './Axios';
-
+import { Axios } from "./Axios";
 
 function createMission(payload) {
-    return Axios.post('/mission/add', payload);
+  return Axios.post("/mission/add", payload);
 }
 
 function searchMission(payload) {
-    return Axios.get('/mission/search', payload);
+  return Axios.get("/mission/search", payload);
 }
 
 function removeMission(id) {
-    return Axios.del(`/mission/delete/${id}`);
+  return Axios.del(`/mission/delete/${id}`);
 }
 
 function findByIdMission(id) {
-    return Axios.get(`/mission/find-by-id/${id}`);
+  return Axios.get(`/mission/find-by-id/${id}`);
 }
 
 function editMission(payload) {
-    return Axios.put(`/mission/update`, payload);
+  return Axios.put(`/mission/update`, payload);
 }
 
 function listAllMission(payload) {
-    return Axios.get('/mission/find-all', payload);
+  return Axios.get("/mission/find-all", payload);
 }
 
 function getUnitMoney() {
-    return Axios.get('/product/find-all-unit-money');
+  return Axios.get("/product/find-all-unit-money");
 }
 
 export const missionServices = {
-    createMission,
-    searchMission,
-    removeMission,
-    findByIdMission,
-    editMission,
-    listAllMission,
-    getUnitMoney
+  createMission,
+  searchMission,
+  removeMission,
+  findByIdMission,
+  editMission,
+  listAllMission,
+  getUnitMoney,
 };

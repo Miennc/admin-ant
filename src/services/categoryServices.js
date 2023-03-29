@@ -1,36 +1,34 @@
-import {Axios} from './Axios';
+import { Axios } from "./Axios";
 
 function getAllCategory(payload) {
-    return Axios.get(`/product-category/find-all`, payload);
+  return Axios.get(`/product-category/find-all`, payload);
 }
 
-
 function createCategory(payload) {
-    return Axios.post(`/product-category/add`, payload);
+  return Axios.post(`/product-category/add`, payload);
 }
 
 function removeCategory(id) {
-    return Axios.del(`/product-category/delete/${id}`);
+  return Axios.del(`/product-category/delete/${id}`);
 }
 
-
 function searchCate(payload) {
-    return Axios.get(`/product-category/search`, payload);
+  return Axios.get(`/product-category/search`, payload);
 }
 
 function findCategoryById(id) {
-    return Axios.get(`/product-category/find-by-id/${id}`);
+  return Axios.get(`/product-category/find-by-id/${id}`);
 }
 
 function editCategory(payload) {
-    return Axios.put(`/product-category/update`, payload);
+  return Axios.put(`/product-category/update`, payload);
 }
 
 export const categoryServices = {
-    getAllCategory,
-    createCategory,
-    removeCategory,
-    searchCate,
-    findCategoryById,
-    editCategory
+  getAllCategory,
+  createCategory,
+  removeCategory,
+  searchCate,
+  findCategoryById,
+  editCategory,
 };

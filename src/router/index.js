@@ -1,4 +1,4 @@
-import {createRouter, createWebHashHistory} from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 import AdminLayout from "../layouts/AdminLayout.vue";
 import Login from "../views/Login.vue";
 import Product from "../views/Product.vue";
@@ -17,93 +17,92 @@ import Mission from "../views/Mission.vue";
 import DetailMission from "../views/DetailMission.vue";
 
 const router = createRouter({
-    history: createWebHashHistory(),
-    routes: [
+  history: createWebHashHistory(),
+  routes: [
+    {
+      path: "/",
+      name: "Login",
+      component: Login,
+    },
+    {
+      path: "/home",
+      name: "home",
+      component: AdminLayout,
+
+      children: [
         {
-            path: "/",
-            name: "Login",
-            component: Login,
+          path: "",
+          name: "Product",
+          component: Product,
         },
         {
-            path: "/home",
-            name: "home",
-            component: AdminLayout,
-
-            children: [
-                {
-                    path: "",
-                    name: "Product",
-                    component: Product,
-                },
-                {
-                    path: "users",
-                    name: "User page",
-                    component: UserManager,
-                },
-                {
-                    path: "languages",
-                    name: "Language page",
-                    component: () => LanguagesView,
-                },
-                {
-                    path: "user-detail",
-                    name: "userDetail",
-                    component: UserDetails,
-                },
-                {
-                    path: "profile",
-                    name: "Profile",
-                    component: Profile,
-                },
-                {
-                    path: "categories",
-                    name: "Categories",
-                    component: Categories,
-                },
-                {
-                    path: "level",
-                    name: "Level",
-                    component: Level,
-                },
-                {
-                    path: "news",
-                    name: "News",
-                    component: News,
-                },
-                {
-                    path: "product-detail",
-                    name: "ProductDetail",
-                    component: ProductDetails,
-                },
-                {
-                    path: "detail-news",
-                    name: "DetailNews",
-                    component: DetailNew,
-                },
-                {
-                    path: "levelSpecification",
-                    name: "levelSpecification",
-                    component: levelSpecification,
-                },
-                {
-                    path: "level-specification-detail",
-                    name: "levelSpecificationDetail",
-                    component: () => DetailLevelSpecification,
-                },
-                {
-                    path: "missions",
-                    name: "Mission",
-                    component: () => Mission,
-                },
-                {
-                    path: "mission-detail",
-                    name: "DetailMission",
-                    component: () => DetailMission,
-                }
-            ],
+          path: "users",
+          name: "User page",
+          component: UserManager,
         },
-
-    ],
+        {
+          path: "languages",
+          name: "Language page",
+          component: () => LanguagesView,
+        },
+        {
+          path: "user-detail",
+          name: "userDetail",
+          component: UserDetails,
+        },
+        {
+          path: "profile",
+          name: "Profile",
+          component: Profile,
+        },
+        {
+          path: "categories",
+          name: "Categories",
+          component: Categories,
+        },
+        {
+          path: "level",
+          name: "Level",
+          component: Level,
+        },
+        {
+          path: "news",
+          name: "News",
+          component: News,
+        },
+        {
+          path: "product-detail",
+          name: "ProductDetail",
+          component: ProductDetails,
+        },
+        {
+          path: "detail-news",
+          name: "DetailNews",
+          component: DetailNew,
+        },
+        {
+          path: "levelSpecification",
+          name: "levelSpecification",
+          component: levelSpecification,
+        },
+        {
+          path: "level-specification-detail",
+          name: "levelSpecificationDetail",
+          component: () => DetailLevelSpecification,
+        },
+        {
+          path: "test",
+          name: "Mission",
+          component: () => Mission,
+        },
+        {
+          path: "mission-detail",
+          name: "DetailMission",
+          component: () => DetailMission,
+        },
+      ],
+    },
+  ],
 });
 
 export default router;
