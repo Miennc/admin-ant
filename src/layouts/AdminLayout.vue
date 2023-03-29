@@ -24,7 +24,7 @@ const onMenuClick = ({key}) => {
   console.log("onMenuClick", key);
   selectedKeys.value = [key];
 
-  if (key === "dashboard" || key === "") router.push(baseAdminUrl);
+  if (key === "dashboard") router.push(baseAdminUrl);
   else router.push(baseAdminUrl + key);
 };
 
@@ -151,13 +151,13 @@ onMounted(() => {
         </a-menu-item>
 
 
-<!--        <a-sub-menu key="sub4">-->
-<!--          <template #icon>-->
-<!--            <SettingOutlined/>-->
-<!--          </template>-->
-<!--          <template #title>Quản lý tin tức</template>-->
-<!--          <a-menu-item key="9">Tin tức</a-menu-item>-->
-<!--        </a-sub-menu>-->
+        <!--        <a-sub-menu key="sub4">-->
+        <!--          <template #icon>-->
+        <!--            <SettingOutlined/>-->
+        <!--          </template>-->
+        <!--          <template #title>Quản lý tin tức</template>-->
+        <!--          <a-menu-item key="9">Tin tức</a-menu-item>-->
+        <!--        </a-sub-menu>-->
 
       </a-menu>
     </a-layout-sider>
