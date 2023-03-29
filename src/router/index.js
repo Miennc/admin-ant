@@ -91,7 +91,7 @@ const router = createRouter({
                     component: () => DetailLevelSpecification,
                 },
                 {
-                    path: "mission",
+                    path: "missions",
                     name: "Mission",
                     component: () => Mission,
                 },

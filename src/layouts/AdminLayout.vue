@@ -114,7 +114,7 @@ onMounted(() => {
         </a-menu-item>
 
 
-        <a-menu-item key="mission">
+        <a-menu-item key="missions">
           <span class="flex items-center">
             <group-outlined/>
             <span>Quản lý nhiệm vụ</span>
