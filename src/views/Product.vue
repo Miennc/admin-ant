@@ -29,11 +29,6 @@ const dataLevel = ref([])
 const dataCategory = ref([])
 
 
-const removeFilePreview = (index) => {
-  inputProduct.value.fileUrl.splice(index, 1)
-  inputProduct.value.fileUpload.splice(index, 1)
-}
-
 const handleChangeLevel = value => {
   inputProduct.value.defaultLevelId = value.value
 };
@@ -61,6 +56,8 @@ const inputProduct = ref({
   description: '',
   categoryId: '',
   defaultLevelId: '',
+  minSpeed: '',
+  maxSpeed: '',
 })
 const errors = ref({
   name: '',
@@ -74,6 +71,8 @@ const errors = ref({
   description: '',
   categoryId: '',
   defaultLevelId: '',
+  minSpeed: '',
+  maxSpeed: '',
 })
 
 
@@ -135,6 +134,8 @@ const showModal = async () => {
     description: '',
     categoryId: '',
     defaultLevelId: '',
+    minSpeed: '',
+    maxSpeed: '',
   }
   await getAllUnitMoney()
   await getAllLevel()
@@ -145,9 +146,11 @@ const regexNumber = /^[0-9]*$/
 
 const validate = () => {
   errors.value.name = inputProduct.value.name ? '' : 'Tên sản phẩm không được để trống'
-  errors.value.fileUpload = inputProduct?.value?.fileUpload?.length < 1 ? 'Ảnh không được để trống' : ''
+  errors.value.fileUpload = inputProduct?.value?.fileUrl?.length < 1 ? 'Ảnh không được để trống' : ''
   errors.value.sku = inputProduct.value.sku ? '' : 'Sku không được để trống'
   errors.value.price = regexNumber.test(inputProduct.value.price) && inputProduct.value.price ? '' : 'Giá phải là số'
+  errors.value.minSpeed = regexNumber.test(inputProduct.value.minSpeed) && inputProduct.value.minSpeed ? '' : 'Tốc độ tối thiểu phải là số'
+  errors.value.maxSpeed = regexNumber.test(inputProduct.value.maxSpeed) && inputProduct.value.maxSpeed ? '' : 'Tốc độ tối đa phải là số'
   errors.value.priceUnit = inputProduct.value.priceUnit ? '' : 'Đơn vị in không được để trống'
   errors.value.status = inputProduct.value.status ? '' : 'Trạng thái không được để trống'
   errors.value.description = inputProduct.value.description ? '' : 'Mô tả không được để trống'
@@ -180,9 +183,10 @@ const showModalConfirm = (id) => {
 }
 
 const showModalEdit = async (id) => {
+
   errors.value = {
     name: '',
-    fileUrl: [],
+    fileUrl: '',
     fileUpload: '',
     sku: '',
     price: '',
@@ -193,6 +197,8 @@ const showModalEdit = async (id) => {
     description: '',
     categoryId: '',
     defaultLevelId: '',
+    minSpeed: '',
+    maxSpeed: '',
   }
   visibleEdit.value = true
   idEditLevel.value = id
@@ -204,6 +210,7 @@ const showModalEdit = async (id) => {
     inputProduct.value = {
       name: res.data.name,
       fileUrl: res.data.imageList.map(img => img),
+      fileUpload: [],
       sku: res.data.sku,
       price: res.data.price,
       priceUnit: res.data.priceUnit,
@@ -211,6 +218,8 @@ const showModalEdit = async (id) => {
       description: res.data.description,
       categoryId: res.data.category.id,
       defaultLevelId: res.data.defaultLevel.id,
+      minSpeed: res.data.minSpeed,
+      maxSpeed: res.data.maxSpeed,
     }
   } catch (e) {
     console.log(e)
@@ -225,7 +234,9 @@ const handlEditProduct = async () => {
       const formData = new FormData()
       formData.append('id', idEditLevel.value)
       if (inputProduct.value.fileUpload) {
-        formData.append('image', inputProduct.value.fileUpload)
+        for (let i = 0; i < inputProduct.value.fileUpload.length; i++) {
+          formData.append('imageList', inputProduct.value.fileUpload[i])
+        }
       }
       formData.append('name', inputProduct.value.name)
       formData.append('sku', inputProduct.value.sku)
@@ -235,6 +246,8 @@ const handlEditProduct = async () => {
       formData.append('description', inputProduct.value.description)
       formData.append('categoryId', inputProduct.value.categoryId)
       formData.append('defaultLevelId', inputProduct.value.defaultLevelId)
+      formData.append('minSpeed', inputProduct.value.minSpeed)
+      formData.append('maxSpeed', inputProduct.value.maxSpeed)
       const config = {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -251,17 +264,22 @@ const handlEditProduct = async () => {
 }
 
 
+const removeFilePreview = (index) => {
+  if (inputProduct.value.fileUrl?.length > 0) {
+    inputProduct.value.fileUrl?.splice(index, 1)
+  }
+  if (inputProduct.value.fileUpload?.length > 0) {
+    inputProduct.value.fileUpload?.splice(index, 1)
+  }
+}
+
+
 const previewFile = (e) => {
   const files = e.target.files
-  if (files) {
-    for (let i = 0; i < files.length; i++) {
-      inputProduct.value.fileUpload = [...inputProduct.value.fileUpload, files[i]]
-      const reader = new FileReader()
-      reader.readAsDataURL(files[i])
-      reader.onloadend = () => {
-        inputProduct.value.fileUrl.push(reader.result)
-      }
-    }
+  for (let i = 0; i < files.length; i++) {
+    console.log('files[i]', files[i])
+    inputProduct.value.fileUpload.push(files[i])
+    inputProduct.value.fileUrl.push(URL.createObjectURL(files[i]))
   }
   e.target.value = ''
 }
@@ -282,6 +300,8 @@ const handlAddProduct = async () => {
       formData.append('description', inputProduct.value.description)
       formData.append('categoryId', inputProduct.value.categoryId)
       formData.append('defaultLevelId', inputProduct.value.defaultLevelId)
+      formData.append('minSpeed', inputProduct.value.minSpeed)
+      formData.append('maxSpeed', inputProduct.value.maxSpeed)
       if (inputProduct.value.fileUpload) {
         for (let i = 0; i < inputProduct.value.fileUpload.length; i++) {
           formData.append('imageList', inputProduct.value.fileUpload[i])
@@ -311,6 +331,8 @@ const handlAddProduct = async () => {
         description: '',
         categoryId: '',
         defaultLevelId: '',
+        minSpeed: '',
+        maxSpeed: '',
       }
     } catch (e) {
       toast.error(e.response.data)
@@ -481,9 +503,30 @@ onMounted(async () => {
             Mô tả sản phẩm
           </label>
           <div class="mt-1">
-            <a-input v-model:value="inputProduct.description" placeholder="10 000VNĐ"/>
+            <a-input v-model:value="inputProduct.description" placeholder="mô tả sản phẩm"/>
           </div>
           <span class="text-red-500 font-medium italic text-sm"> {{ errors.description }}</span>
+        </div>
+
+        <div class="mt-2">
+          <label class="block text-sm font-medium text-gray-700">
+            Tốc độ tối đa
+          </label>
+          <div class="mt-1">
+            <a-input v-model:value="inputProduct.maxSpeed" placeholder="10km"/>
+          </div>
+          <span class="text-red-500 font-medium italic text-sm"> {{ errors.maxSpeed }}</span>
+        </div>
+
+
+        <div class="mt-2">
+          <label class="block text-sm font-medium text-gray-700">
+            Tốc độ tối thiểu
+          </label>
+          <div class="mt-1">
+            <a-input v-model:value="inputProduct.minSpeed" placeholder="1km"/>
+          </div>
+          <span class="text-red-500 font-medium italic text-sm"> {{ errors.minSpeed }}</span>
         </div>
 
 
@@ -734,6 +777,27 @@ onMounted(async () => {
       <span class="text-red-500 font-medium italic text-sm"> {{ errors.description }}</span>
     </div>
 
+    <div class="mt-2">
+      <label class="block text-sm font-medium text-gray-700">
+        Tốc độ tối đa
+      </label>
+      <div class="mt-1">
+        <a-input v-model:value="inputProduct.maxSpeed" placeholder="10km"/>
+      </div>
+      <span class="text-red-500 font-medium italic text-sm"> {{ errors.maxSpeed }}</span>
+    </div>
+
+
+    <div class="mt-2">
+      <label class="block text-sm font-medium text-gray-700">
+        Tốc độ tối thiểu
+      </label>
+      <div class="mt-1">
+        <a-input v-model:value="inputProduct.minSpeed" placeholder="1km"/>
+      </div>
+      <span class="text-red-500 font-medium italic text-sm"> {{ errors.minSpeed }}</span>
+    </div>
+
 
     <div class="mt-2">
       <label class="block text-sm font-medium text-gray-700">
@@ -782,8 +846,9 @@ onMounted(async () => {
       <input id="file-upload" type="file" class="sr-only" @change="previewFile" multiple="multiple">
     </div>
 
+
     <div class="flex flex-wrap items-center gap-2">
-      <div v-for="(itemImg,indexImg) in inputProduct.fileUrl" :key="index"
+      <div v-for="(itemImg,indexImg) in inputProduct.fileUrl" :key="indexImg"
            class="w-44 relative mt-2  overflow-hidden h-44" v-if="inputProduct.fileUrl.length >0">
         <img class="w-full h-full object-cover" :src="itemImg" alt=""/>
         <div v-if="inputProduct.fileUrl.length>0" class="ml-2">

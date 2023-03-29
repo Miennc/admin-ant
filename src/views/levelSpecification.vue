@@ -1,6 +1,6 @@
 <script setup>
 import {userServices} from "@/services/userServices";
-import {onMounted, ref, watch, computed} from "vue";
+import {onMounted, ref, watch, computed, reactive, watchEffect} from "vue";
 import Loading from "@/components/loading/Loading.vue";
 import {useToast} from "vue-toastification";
 import router from "@/router";
@@ -25,24 +25,16 @@ const visibleEdit = ref(false)
 const idEditLevelSpeci = ref('')
 
 
-const options = ref([{
-  value: 'ACTIVE',
-  label: 'ACTIVE',
-}, {
-  value: 'PENDING',
-  label: 'PENDING',
-}]);
+const state = reactive({
+  valueInput: [],
+  sellingPriceUnit: []
+});
 
 
 const ChangeSellingPriceUnit = (value) => {
   inputLevelSpeci.value.sellingPriceUnit = value.value
 }
-const optionSellingPriceUnit = ref([])
 
-const handleChangeUpgradePriceUnit = (value) => {
-  inputLevelSpeci.value.upgradePriceUnit = value.value
-}
-const optionUpgradePriceUnit = ref([])
 
 const optionEnergyRecoverPriceUnit = ref([])
 const optionRepairPriceUnit = ref([])
@@ -61,8 +53,6 @@ const inputLevelSpeci = ref({
   energyConsumption: '',
   sellingPrice: '',
   sellingPriceUnit: "",
-  upgradePrice: '',
-  upgradePriceUnit: "",
   repairPrice: '',
   repairPriceUnit: "VND",
   energyRecoverPrice: '',
@@ -80,8 +70,7 @@ const errors = ref({
   energyConsumption: '',
   sellingPrice: '',
   sellingPriceUnit: "",
-  upgradePrice: '',
-  upgradePriceUnit: "",
+
   repairPrice: '',
   repairPriceUnit: "",
   energyRecoverPrice: '',
@@ -95,25 +84,22 @@ const errors = ref({
 
 const resetState = () => {
   inputLevelSpeci.value = {
-    durability: '',
-    energy: '',
-    durabilityConsumption: '',
-    energyConsumption: '',
-    sellingPrice: '',
-    sellingPriceUnit: "",
-    upgradePrice: '',
-    upgradePriceUnit: "",
-    repairPrice: '',
-    repairPriceUnit: "",
-    energyRecoverPrice: '',
-    energyRecoverPriceUnit: "",
+    durability: '98',
+    energy: '9898',
+    durabilityConsumption: '9898',
+    energyConsumption: '898',
+    sellingPrice: '9898',
+    sellingPriceUnit: "VND",
+    repairPrice: '645',
+    repairPriceUnit: "VND",
+    energyRecoverPrice: '645',
+    energyRecoverPriceUnit: "VND",
     status: "ACTIVE",
-    defaultLevelId: '',
-    maxLevelId: '',
-    productCategoryId: ''
+    defaultLevelId: '6',
+    maxLevelId: '7',
+    productCategoryId: '5'
   }
-  valueInput.value = []
-  sellingPriceUnit.value = []
+  levelInputs.value = []
 }
 
 const resetStateError = () => {
@@ -124,8 +110,6 @@ const resetStateError = () => {
     energyConsumption: '',
     sellingPrice: '',
     sellingPriceUnit: "",
-    upgradePrice: '',
-    upgradePriceUnit: "",
     repairPrice: '',
     repairPriceUnit: "",
     energyRecoverPrice: '',
@@ -155,8 +139,8 @@ const validate = () => {
   errors.value.energyConsumption = regexNumber.test(inputLevelSpeci.value.energyConsumption) && inputLevelSpeci.value.energyConsumption !== '' ? '' : 'Vui lòng nhập số'
   errors.value.sellingPrice = regexNumber.test(inputLevelSpeci.value.sellingPrice) && inputLevelSpeci.value.sellingPrice !== '' ? '' : 'Vui lòng nhập số'
   errors.value.sellingPriceUnit = inputLevelSpeci.value.sellingPriceUnit !== '' ? '' : 'Trường này không được để trống'
-  errors.value.upgradePrice = regexNumber.test(inputLevelSpeci.value.upgradePrice) && inputLevelSpeci.value.upgradePrice !== '' ? '' : 'Vui lòng nhập số'
-  errors.value.upgradePriceUnit = inputLevelSpeci.value.upgradePriceUnit !== '' ? '' : 'Trường này không được để trống'
+  // errors.value.upgradePrice = regexNumber.test(inputLevelSpeci.value.upgradePrice) && inputLevelSpeci.value.upgradePrice !== '' ? '' : 'Vui lòng nhập số'
+  // errors.value.upgradePriceUnit = inputLevelSpeci.value.upgradePriceUnit !== '' ? '' : 'Trường này không được để trống'
   errors.value.repairPrice = regexNumber.test(inputLevelSpeci.value.repairPrice) && inputLevelSpeci.value.repairPrice !== '' ? '' : 'Vui lòng nhập số'
   errors.value.repairPriceUnit = inputLevelSpeci.value.repairPriceUnit !== '' ? '' : 'Trường này không được để trống'
   errors.value.energyRecoverPrice = regexNumber.test(inputLevelSpeci.value.energyRecoverPrice) && inputLevelSpeci.value.energyRecoverPrice !== '' ? '' : 'Vui lòng nhập số'
@@ -164,7 +148,7 @@ const validate = () => {
   errors.value.defaultLevelId = inputLevelSpeci.value.defaultLevelId !== '' ? '' : 'Trường này không được để trống'
   errors.value.maxLevelId = inputLevelSpeci.value.maxLevelId !== '' ? '' : 'Trường này không được để trống'
   errors.value.productCategoryId = inputLevelSpeci.value.productCategoryId !== '' ? '' : 'Trường này không được để trống'
-  return !errors.value.durability && !errors.value.energy && !errors.value.durabilityConsumption && !errors.value.energyConsumption && !errors.value.sellingPrice && !errors.value.sellingPriceUnit && !errors.value.upgradePrice && !errors.value.upgradePriceUnit && !errors.value.repairPrice && !errors.value.repairPriceUnit && !errors.value.energyRecoverPrice && !errors.value.energyRecoverPriceUnit && !errors.value.defaultLevelId && !errors.value.maxLevelId && !errors.value.productCategoryId
+  return !errors.value.durability && !errors.value.energy && !errors.value.durabilityConsumption && !errors.value.energyConsumption && !errors.value.sellingPrice && !errors.value.sellingPriceUnit && !errors.value.repairPrice && !errors.value.repairPriceUnit && !errors.value.energyRecoverPrice && !errors.value.energyRecoverPriceUnit && !errors.value.defaultLevelId && !errors.value.maxLevelId && !errors.value.productCategoryId
 }
 
 
@@ -192,7 +176,7 @@ const showModalConfirm = (id) => {
 
 
 const SellingPriceUnitOptions = ref([])
-
+const optionSellingPriceUnit = ref([])
 const getUnitMoney = async () => {
   try {
     const res = await levelSpecificationServices.getUnitMoney()
@@ -200,7 +184,6 @@ const getUnitMoney = async () => {
     const options = res.data.map(item => ({value: item, label: item}));
     SellingPriceUnitOptions.value = options
     optionSellingPriceUnit.value = options
-    optionUpgradePriceUnit.value = options
     optionRepairPriceUnit.value = options
     optionEnergyRecoverPriceUnit.value = options
   } catch (e) {
@@ -226,8 +209,6 @@ const showModalEdit = async (id) => {
       energyConsumption: res.data.energyConsumption,
       sellingPrice: res.data.sellingPrice,
       sellingPriceUnit: res.data.sellingPriceUnit,
-      upgradePrice: res.data.upgradePrice,
-      upgradePriceUnit: res.data.upgradePriceUnit,
       repairPrice: res.data.repairPrice,
       repairPriceUnit: res.data.repairPriceUnit,
       energyRecoverPrice: res.data.energyRecoverPrice,
@@ -236,8 +217,8 @@ const showModalEdit = async (id) => {
       defaultLevelId: res.data.defaultLevel.value,
       productCategoryId: res.data.productCategory.name,
     }
-    valueInput.value = res.data?.levelUpgrades?.map(item => item?.upgradePrice),
-        sellingPriceUnit.value = res.data?.levelUpgrades?.map(item => item?.upgradePriceUnit),
+    state.valueInput = res.data?.levelUpgrades?.map(item => item?.upgradePrice),
+        state.sellingPriceUnit = res.data?.levelUpgrades?.map(item => item?.upgradePriceUnit),
         idCategory.value = res.data.productCategory.id
   } catch (e) {
     console.log(e)
@@ -248,7 +229,7 @@ const showModalEdit = async (id) => {
 const editLevelSpeci = async () => {
   if (validate()) {
     try {
-      const levelUpgradePriceUnit = optionUpgradePriceUnit.value.map(item => item.value)
+      const levelUpgradePriceUnit = SellingPriceUnitOptions.value.map(item => item.value)
 
       await levelSpecificationServices.editLevelSpecification({
         id: idEditLevelSpeci.value,
@@ -259,8 +240,6 @@ const editLevelSpeci = async () => {
         energyConsumption: inputLevelSpeci.value.energyConsumption,
         sellingPrice: inputLevelSpeci.value.sellingPrice,
         sellingPriceUnit: inputLevelSpeci.value.sellingPriceUnit,
-        upgradePrice: inputLevelSpeci.value.upgradePrice,
-        upgradePriceUnit: inputLevelSpeci.value.upgradePriceUnit,
         repairPrice: inputLevelSpeci.value.repairPrice,
         repairPriceUnit: inputLevelSpeci.value.repairPriceUnit,
         energyRecoverPrice: inputLevelSpeci.value.energyRecoverPrice,
@@ -271,7 +250,7 @@ const editLevelSpeci = async () => {
         maxLevelId: inputLevelSpeci.value.maxLevelId,
         productCategoryId: idCategory.value,
         timeToUseMaxInDay: 8,
-        levelUpgradeList: valueInput.value.map((price, index) => {
+        levelUpgradeList: state.valueInput.map((price, index) => {
           return {
             upgradePriceUnit: levelUpgradePriceUnit[index],
             upgradePrice: parseInt(price)
@@ -292,7 +271,7 @@ const handleAddLevelSpeci = async () => {
   if (validate()) {
     loading.value = true
     try {
-      const levelUpgradePriceUnit = optionUpgradePriceUnit.value.map(item => item.value)
+      const levelUpgradePriceUnit = SellingPriceUnitOptions.value.map(item => item.value)
       await levelSpecificationServices.createLevelSpecification({
         daysToUseMax: 30,
         durability: inputLevelSpeci.value.durability,
@@ -301,8 +280,6 @@ const handleAddLevelSpeci = async () => {
         energyConsumption: inputLevelSpeci.value.energyConsumption,
         sellingPrice: inputLevelSpeci.value.sellingPrice,
         sellingPriceUnit: inputLevelSpeci.value.sellingPriceUnit,
-        upgradePrice: inputLevelSpeci.value.upgradePrice,
-        upgradePriceUnit: inputLevelSpeci.value.upgradePriceUnit,
         repairPrice: inputLevelSpeci.value.repairPrice,
         repairPriceUnit: inputLevelSpeci.value.repairPriceUnit,
         energyRecoverPrice: inputLevelSpeci.value.energyRecoverPrice,
@@ -313,7 +290,7 @@ const handleAddLevelSpeci = async () => {
         maxLevelId: inputLevelSpeci.value.maxLevelId,
         productCategoryId: inputLevelSpeci.value.productCategoryId,
         timeToUseMaxInDay: 8,
-        levelUpgradeList: valueInput.value.map((price, index) => {
+        levelUpgradeList: state.valueInput.map((price, index) => {
           return {
             upgradePriceUnit: levelUpgradePriceUnit[index],
             upgradePrice: parseInt(price)
@@ -457,12 +434,9 @@ onMounted(async () => {
 })
 
 const handleChangeSellingPriceUnit = (value, index) => {
-  sellingPriceUnit.value[index] = value.value
+  state.sellingPriceUnit[index] = value.value
 }
 
-
-const valueInput = ref([])
-const sellingPriceUnit = ref([])
 const levelInputs = computed(() => {
   const diff = Math.abs(inputLevelSpeci.value.maxLevelId - inputLevelSpeci.value.defaultLevelId);
   const inputs = [];
@@ -471,6 +445,7 @@ const levelInputs = computed(() => {
   }
   return inputs;
 });
+
 
 
 </script>
@@ -596,34 +571,6 @@ const levelInputs = computed(() => {
           <span class="text-red-500 font-medium italic text-sm"> {{ errors.sellingPriceUnit }}</span>
         </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700">
-            Giá nâng cấp mỗi level
-          </label>
-          <div class="mt-1">
-            <a-input v-model:value="inputLevelSpeci.upgradePrice" placeholder="Giá nâng cấp mỗi level"/>
-          </div>
-          <span class="text-red-500 font-medium italic text-sm"> {{ errors.upgradePrice }}</span>
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700">
-            Đơn vị giá nâng cấp mỗi level
-          </label>
-          <div class="mt-1">
-
-            <a-select
-                v-model:value="inputLevelSpeci.upgradePriceUnit"
-                label-in-value
-                style="width:100%"
-                :options="optionUpgradePriceUnit"
-                @change="handleChangeUpgradePriceUnit"
-            >
-            </a-select>
-          </div>
-          <span class="text-red-500 font-medium italic text-sm"> {{ errors.upgradePriceUnit }}</span>
-        </div>
-
 
         <div>
           <label class="block text-sm font-medium text-gray-700">
@@ -727,13 +674,13 @@ const levelInputs = computed(() => {
           <label class="block text-sm font-medium text-gray-700" :for="'input'+index">{{
               'Giá trị level ' + (index + 1)
             }}</label>
-          <a-input :id="'input'+index" v-model:value="valueInput[index]"/>
+          <a-input :id="'input'+index" v-model:value="state.valueInput[index]"/>
           <label class="block text-sm font-medium text-gray-700" :for="'input'+index">
             {{ 'Đơn vị level ' + (index + 1) }}
           </label>
           <div class="mt-1">
             <a-select
-                v-model:value="sellingPriceUnit[index]"
+                v-model:value="state.sellingPriceUnit[index]"
                 label-in-value
                 style="width:100%"
                 :options="SellingPriceUnitOptions"
@@ -765,9 +712,6 @@ const levelInputs = computed(() => {
                   Đơn vị giá bán giày
                 </th>
                 <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                  Giá nâng cấp mỗi level
-                </th>
-                <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                   Level măc định
                 </th>
                 <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
@@ -796,9 +740,7 @@ const levelInputs = computed(() => {
                 <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                   {{ itemLevelSpeci.sellingPriceUnit }}
                 </td>
-                <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                  {{ itemLevelSpeci.upgradePrice }}
-                </td>
+
                 <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                   {{ itemLevelSpeci?.defaultLevel?.value }}
                 </td>
@@ -957,34 +899,6 @@ const levelInputs = computed(() => {
       <span class="text-red-500 font-medium italic text-sm"> {{ errors.sellingPriceUnit }}</span>
     </div>
 
-    <div>
-      <label class="block text-sm font-medium text-gray-700">
-        Giá nâng cấp mỗi level
-      </label>
-      <div class="mt-1">
-        <a-input v-model:value="inputLevelSpeci.upgradePrice" placeholder="Giá nâng cấp mỗi level"/>
-      </div>
-      <span class="text-red-500 font-medium italic text-sm"> {{ errors.upgradePrice }}</span>
-    </div>
-
-    <div>
-      <label class="block text-sm font-medium text-gray-700">
-        Đơn vị giá nâng cấp mỗi level
-      </label>
-      <div class="mt-1">
-
-        <a-select
-            v-model:value="inputLevelSpeci.upgradePriceUnit"
-            label-in-value
-            style="width:100%"
-            :options="optionUpgradePriceUnit"
-            @change="handleChangeUpgradePriceUnit"
-        >
-        </a-select>
-      </div>
-      <span class="text-red-500 font-medium italic text-sm"> {{ errors.upgradePriceUnit }}</span>
-    </div>
-
 
     <div>
       <label class="block text-sm font-medium text-gray-700">
@@ -1087,13 +1001,13 @@ const levelInputs = computed(() => {
       <label class="block text-sm font-medium text-gray-700" :for="'input'+index">{{
           'Giá trị level ' + (index + 1)
         }}</label>
-      <a-input :id="'input'+index" v-model:value="valueInput[index]"/>
+      <a-input :id="'input'+index" v-model:value="state.valueInput[index]"/>
       <label class="block text-sm font-medium text-gray-700" :for="'input'+index">
         {{ 'Đơn vị level ' + (index + 1) }}
       </label>
       <div class="mt-1">
         <a-select
-            v-model:value="sellingPriceUnit[index]"
+            v-model:value="state.sellingPriceUnit[index]"
             label-in-value
             style="width:100%"
             :options="optionSellingPriceUnit"

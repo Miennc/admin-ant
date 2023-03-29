@@ -132,6 +132,32 @@ onMounted(() => {
         <div class="bg-[#e5e7eb] h-[1px] my-2">
         </div>
 
+
+        <div class="flex gap-5">
+          <div class=" text-[#111827] font-[500]">
+            Tốc độ tối đa
+          </div>
+          <div>
+            {{ dataProduct?.maxSpeed }}
+          </div>
+        </div>
+
+        <div class="bg-[#e5e7eb] h-[1px] my-2">
+        </div>
+
+        <div class="flex gap-5">
+          <div class=" text-[#111827] font-[500]">
+            Tốc độ tối thiểu
+          </div>
+          <div>
+            {{ dataProduct?.minSpeed }}
+          </div>
+        </div>
+
+        <div class="bg-[#e5e7eb] h-[1px] my-2">
+        </div>
+
+
         <div class="flex gap-5">
           <div class=" text-[#111827] font-[500]">
             Level
