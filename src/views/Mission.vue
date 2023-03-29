@@ -1,9 +1,7 @@
 <script setup>
-import { categoryServices } from "@/services/categoryServices";
 import { onMounted, ref, watch } from "vue";
 import Loading from "@/components/loading/Loading.vue";
 import { useToast } from "vue-toastification";
-import router from "@/router";
 import { missionServices } from "@/services/missionServices";
 
 const toast = useToast();
