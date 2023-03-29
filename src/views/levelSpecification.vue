@@ -1,6 +1,6 @@
 <script setup>
 import {userServices} from "@/services/userServices";
-import {computed, onMounted, ref, toRefs, watch} from "vue";
+import {onMounted, ref, watch, computed} from "vue";
 import Loading from "@/components/loading/Loading.vue";
 import {useToast} from "vue-toastification";
 import router from "@/router";
@@ -34,6 +34,11 @@ const options = ref([{
 }]);
 
 
+const ChangeSellingPriceUnit = (value) => {
+  inputLevelSpeci.value.sellingPriceUnit = value.value
+}
+const optionSellingPriceUnit = ref([])
+
 const handleChangeUpgradePriceUnit = (value) => {
   inputLevelSpeci.value.upgradePriceUnit = value.value
 }
@@ -50,21 +55,18 @@ const handleChangeEnergyRecoverPriceUnit = (value) => {
 }
 
 const inputLevelSpeci = ref({
-  daysToUseMax: '',
-
   durability: '',
   energy: '',
   durabilityConsumption: '',
   energyConsumption: '',
-
+  sellingPrice: '',
+  sellingPriceUnit: "",
   upgradePrice: '',
-  upgradePriceUnit: "VND",
+  upgradePriceUnit: "",
   repairPrice: '',
   repairPriceUnit: "VND",
   energyRecoverPrice: '',
   energyRecoverPriceUnit: "VND",
-  stepsPerTime: '',
-  distancePerTime: '',
   status: "ACTIVE",
   defaultLevelId: '',
   maxLevelId: '',
@@ -72,19 +74,18 @@ const inputLevelSpeci = ref({
 })
 
 const errors = ref({
-  daysToUseMax: '',
   durability: '',
   energy: '',
   durabilityConsumption: '',
   energyConsumption: '',
+  sellingPrice: '',
+  sellingPriceUnit: "",
   upgradePrice: '',
   upgradePriceUnit: "",
   repairPrice: '',
   repairPriceUnit: "",
   energyRecoverPrice: '',
   energyRecoverPriceUnit: "",
-  stepsPerTime: '',
-  distancePerTime: '',
   status: "ACTIVE",
   defaultLevelId: '',
   maxLevelId: '',
@@ -94,19 +95,18 @@ const errors = ref({
 
 const resetState = () => {
   inputLevelSpeci.value = {
-    daysToUseMax: '',
     durability: '',
     energy: '',
     durabilityConsumption: '',
     energyConsumption: '',
+    sellingPrice: '',
+    sellingPriceUnit: "",
     upgradePrice: '',
-    upgradePriceUnit: "VND",
+    upgradePriceUnit: "",
     repairPrice: '',
-    repairPriceUnit: "VND",
+    repairPriceUnit: "",
     energyRecoverPrice: '',
-    energyRecoverPriceUnit: "VND",
-    stepsPerTime: '',
-    distancePerTime: '',
+    energyRecoverPriceUnit: "",
     status: "ACTIVE",
     defaultLevelId: '',
     maxLevelId: '',
@@ -118,19 +118,18 @@ const resetState = () => {
 
 const resetStateError = () => {
   errors.value = {
-    daysToUseMax: '',
     durability: '',
     energy: '',
     durabilityConsumption: '',
     energyConsumption: '',
+    sellingPrice: '',
+    sellingPriceUnit: "",
     upgradePrice: '',
     upgradePriceUnit: "",
     repairPrice: '',
     repairPriceUnit: "",
     energyRecoverPrice: '',
     energyRecoverPriceUnit: "",
-    stepsPerTime: '',
-    distancePerTime: '',
     status: "ACTIVE",
     defaultLevelId: '',
     maxLevelId: '',
@@ -150,25 +149,22 @@ const showModal = async () => {
 const regexNumber = /^[0-9]*$/
 
 const validate = () => {
-  errors.value.daysToUseMax = regexNumber.test(inputLevelSpeci.value.daysToUseMax) && inputLevelSpeci.value.daysToUseMax !== '' ? '' : 'Vui lòng nhập số'
   errors.value.durability = regexNumber.test(inputLevelSpeci.value.durability) && inputLevelSpeci.value.durability !== '' ? '' : 'Vui lòng nhập số'
   errors.value.energy = regexNumber.test(inputLevelSpeci.value.energy) && inputLevelSpeci.value.energy !== '' ? '' : 'Vui lòng nhập số'
   errors.value.durabilityConsumption = regexNumber.test(inputLevelSpeci.value.durabilityConsumption) && inputLevelSpeci.value.durabilityConsumption !== '' ? '' : 'Vui lòng nhập số'
   errors.value.energyConsumption = regexNumber.test(inputLevelSpeci.value.energyConsumption) && inputLevelSpeci.value.energyConsumption !== '' ? '' : 'Vui lòng nhập số'
-  // errors.value.sellingPrice = regexNumber.test(inputLevelSpeci.value.sellingPrice) && inputLevelSpeci.value.sellingPrice !== '' ? '' : 'Vui lòng nhập số'
-  // errors.value.sellingPriceUnit = inputLevelSpeci.value.sellingPriceUnit !== '' ? '' : 'Trường này không được để trống'
+  errors.value.sellingPrice = regexNumber.test(inputLevelSpeci.value.sellingPrice) && inputLevelSpeci.value.sellingPrice !== '' ? '' : 'Vui lòng nhập số'
+  errors.value.sellingPriceUnit = inputLevelSpeci.value.sellingPriceUnit !== '' ? '' : 'Trường này không được để trống'
   errors.value.upgradePrice = regexNumber.test(inputLevelSpeci.value.upgradePrice) && inputLevelSpeci.value.upgradePrice !== '' ? '' : 'Vui lòng nhập số'
   errors.value.upgradePriceUnit = inputLevelSpeci.value.upgradePriceUnit !== '' ? '' : 'Trường này không được để trống'
   errors.value.repairPrice = regexNumber.test(inputLevelSpeci.value.repairPrice) && inputLevelSpeci.value.repairPrice !== '' ? '' : 'Vui lòng nhập số'
   errors.value.repairPriceUnit = inputLevelSpeci.value.repairPriceUnit !== '' ? '' : 'Trường này không được để trống'
   errors.value.energyRecoverPrice = regexNumber.test(inputLevelSpeci.value.energyRecoverPrice) && inputLevelSpeci.value.energyRecoverPrice !== '' ? '' : 'Vui lòng nhập số'
   errors.value.energyRecoverPriceUnit = inputLevelSpeci.value.energyRecoverPriceUnit !== '' ? '' : 'Trường này không được để trống'
-  errors.value.stepsPerTime = regexNumber.test(inputLevelSpeci.value.stepsPerTime) && inputLevelSpeci.value.stepsPerTime !== '' ? '' : 'Vui lòng nhập số'
-  errors.value.distancePerTime = regexNumber.test(inputLevelSpeci.value.distancePerTime) && inputLevelSpeci.value.distancePerTime !== '' ? '' : 'Vui lòng nhập số'
   errors.value.defaultLevelId = inputLevelSpeci.value.defaultLevelId !== '' ? '' : 'Trường này không được để trống'
   errors.value.maxLevelId = inputLevelSpeci.value.maxLevelId !== '' ? '' : 'Trường này không được để trống'
   errors.value.productCategoryId = inputLevelSpeci.value.productCategoryId !== '' ? '' : 'Trường này không được để trống'
-  return !errors.value.daysToUseMax && !errors.value.durability && !errors.value.energy && !errors.value.durabilityConsumption && !errors.value.energyConsumption && !errors.value.sellingPrice && !errors.value.sellingPriceUnit && !errors.value.upgradePrice && !errors.value.upgradePriceUnit && !errors.value.repairPrice && !errors.value.repairPriceUnit && !errors.value.energyRecoverPrice && !errors.value.energyRecoverPriceUnit && !errors.value.stepsPerTime && !errors.value.distancePerTime && !errors.value.defaultLevelId && !errors.value.maxLevelId && !errors.value.productCategoryId
+  return !errors.value.durability && !errors.value.energy && !errors.value.durabilityConsumption && !errors.value.energyConsumption && !errors.value.sellingPrice && !errors.value.sellingPriceUnit && !errors.value.upgradePrice && !errors.value.upgradePriceUnit && !errors.value.repairPrice && !errors.value.repairPriceUnit && !errors.value.energyRecoverPrice && !errors.value.energyRecoverPriceUnit && !errors.value.defaultLevelId && !errors.value.maxLevelId && !errors.value.productCategoryId
 }
 
 
@@ -195,17 +191,14 @@ const showModalConfirm = (id) => {
 }
 
 
-const optionSellingPriceUnit = ref([{
-  value: 'VND',
-  label: 'VND'
-}])
+const SellingPriceUnitOptions = ref([])
 
 const getUnitMoney = async () => {
   try {
     const res = await levelSpecificationServices.getUnitMoney()
 
     const options = res.data.map(item => ({value: item, label: item}));
-    console.log(options)
+    SellingPriceUnitOptions.value = options
     optionSellingPriceUnit.value = options
     optionUpgradePriceUnit.value = options
     optionRepairPriceUnit.value = options
@@ -227,19 +220,18 @@ const showModalEdit = async (id) => {
   try {
     const res = await levelSpecificationServices.findByIdLevelSpecification(id)
     inputLevelSpeci.value = {
-      daysToUseMax: res.data.daysToUseMax,
       durability: res.data.durability,
       energy: res.data.energy,
       durabilityConsumption: res.data.durabilityConsumption,
       energyConsumption: res.data.energyConsumption,
+      sellingPrice: res.data.sellingPrice,
+      sellingPriceUnit: res.data.sellingPriceUnit,
       upgradePrice: res.data.upgradePrice,
       upgradePriceUnit: res.data.upgradePriceUnit,
       repairPrice: res.data.repairPrice,
       repairPriceUnit: res.data.repairPriceUnit,
       energyRecoverPrice: res.data.energyRecoverPrice,
       energyRecoverPriceUnit: res.data.energyRecoverPriceUnit,
-      stepsPerTime: res.data.stepsPerTime,
-      distancePerTime: res.data.distancePerTime,
       maxLevelId: res.data.maxLevel.value,
       defaultLevelId: res.data.defaultLevel.value,
       productCategoryId: res.data.productCategory.name,
@@ -257,24 +249,28 @@ const editLevelSpeci = async () => {
   if (validate()) {
     try {
       const levelUpgradePriceUnit = optionUpgradePriceUnit.value.map(item => item.value)
+
       await levelSpecificationServices.editLevelSpecification({
         id: idEditLevelSpeci.value,
-        daysToUseMax: inputLevelSpeci.value.daysToUseMax,
+        daysToUseMax: 30,
         durability: inputLevelSpeci.value.durability,
         energy: inputLevelSpeci.value.energy,
         durabilityConsumption: inputLevelSpeci.value.durabilityConsumption,
         energyConsumption: inputLevelSpeci.value.energyConsumption,
+        sellingPrice: inputLevelSpeci.value.sellingPrice,
+        sellingPriceUnit: inputLevelSpeci.value.sellingPriceUnit,
         upgradePrice: inputLevelSpeci.value.upgradePrice,
         upgradePriceUnit: inputLevelSpeci.value.upgradePriceUnit,
         repairPrice: inputLevelSpeci.value.repairPrice,
         repairPriceUnit: inputLevelSpeci.value.repairPriceUnit,
         energyRecoverPrice: inputLevelSpeci.value.energyRecoverPrice,
         energyRecoverPriceUnit: inputLevelSpeci.value.energyRecoverPriceUnit,
-        stepsPerTime: inputLevelSpeci.value.stepsPerTime,
-        distancePerTime: inputLevelSpeci.value.distancePerTime,
+        stepsPerTime: 1000,
+        distancePerTime: 5,
         defaultLevelId: inputLevelSpeci.value.defaultLevelId,
         maxLevelId: inputLevelSpeci.value.maxLevelId,
         productCategoryId: idCategory.value,
+        timeToUseMaxInDay: 8,
         levelUpgradeList: valueInput.value.map((price, index) => {
           return {
             upgradePriceUnit: levelUpgradePriceUnit[index],
@@ -296,25 +292,27 @@ const handleAddLevelSpeci = async () => {
   if (validate()) {
     loading.value = true
     try {
-
       const levelUpgradePriceUnit = optionUpgradePriceUnit.value.map(item => item.value)
       await levelSpecificationServices.createLevelSpecification({
-        daysToUseMax: inputLevelSpeci.value.daysToUseMax,
+        daysToUseMax: 30,
         durability: inputLevelSpeci.value.durability,
         energy: inputLevelSpeci.value.energy,
         durabilityConsumption: inputLevelSpeci.value.durabilityConsumption,
         energyConsumption: inputLevelSpeci.value.energyConsumption,
+        sellingPrice: inputLevelSpeci.value.sellingPrice,
+        sellingPriceUnit: inputLevelSpeci.value.sellingPriceUnit,
         upgradePrice: inputLevelSpeci.value.upgradePrice,
         upgradePriceUnit: inputLevelSpeci.value.upgradePriceUnit,
         repairPrice: inputLevelSpeci.value.repairPrice,
         repairPriceUnit: inputLevelSpeci.value.repairPriceUnit,
         energyRecoverPrice: inputLevelSpeci.value.energyRecoverPrice,
         energyRecoverPriceUnit: inputLevelSpeci.value.energyRecoverPriceUnit,
-        stepsPerTime: inputLevelSpeci.value.stepsPerTime,
-        distancePerTime: inputLevelSpeci.value.distancePerTime,
+        stepsPerTime: 1000,
+        distancePerTime: 5,
         defaultLevelId: inputLevelSpeci.value.defaultLevelId,
         maxLevelId: inputLevelSpeci.value.maxLevelId,
         productCategoryId: inputLevelSpeci.value.productCategoryId,
+        timeToUseMaxInDay: 8,
         levelUpgradeList: valueInput.value.map((price, index) => {
           return {
             upgradePriceUnit: levelUpgradePriceUnit[index],
@@ -328,6 +326,7 @@ const handleAddLevelSpeci = async () => {
       resetState()
     } catch (e) {
       toast.error(e.response.data)
+      levelInputs.value = []
     }
     loading.value = false
   }
@@ -457,14 +456,13 @@ onMounted(async () => {
   loading.value = false
 })
 
-const valueInput = ref([])
-const sellingPriceUnit = ref([])
-
 const handleChangeSellingPriceUnit = (value, index) => {
   sellingPriceUnit.value[index] = value.value
 }
 
 
+const valueInput = ref([])
+const sellingPriceUnit = ref([])
 const levelInputs = computed(() => {
   const diff = Math.abs(inputLevelSpeci.value.maxLevelId - inputLevelSpeci.value.defaultLevelId);
   const inputs = [];
@@ -510,17 +508,6 @@ const levelInputs = computed(() => {
 
         <div>
           <label class="block text-sm font-medium text-gray-700">
-            Số ngày tối đa người mua được phép sử dụng
-          </label>
-          <div class="mt-1">
-            <a-input v-model:value="inputLevelSpeci.daysToUseMax"
-                     placeholder="  Số ngày tối đa người mua được phép sử dụng"/>
-          </div>
-          <span class="text-red-500 font-medium italic text-sm"> {{ errors.daysToUseMax }} </span>
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700">
             Độ bền ban đầu của giày
           </label>
           <div class="mt-1">
@@ -561,6 +548,15 @@ const levelInputs = computed(() => {
           <span class="text-red-500 font-medium italic text-sm"> {{ errors.energyConsumption }}</span>
         </div>
 
+        <div>
+          <label class="block text-sm font-medium text-gray-700">
+            Giá bán giày
+          </label>
+          <div class="mt-1">
+            <a-input v-model:value="inputLevelSpeci.sellingPrice" placeholder="Giá bán giày"/>
+          </div>
+          <span class="text-red-500 font-medium italic text-sm"> {{ errors.sellingPrice }}</span>
+        </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700">
@@ -580,6 +576,25 @@ const levelInputs = computed(() => {
           <span class="text-red-500 font-medium italic text-sm"> {{ errors.productCategoryId }}</span>
         </div>
 
+        <div>
+          <label class="block text-sm font-medium text-gray-700">
+            Đơn vị giá bán giày
+          </label>
+          <div class="mt-1">
+
+            <a-select
+                v-model:value="inputLevelSpeci.sellingPriceUnit"
+                label-in-value
+                style="width:100%"
+                :options="optionSellingPriceUnit"
+                @change="ChangeSellingPriceUnit"
+            >
+            </a-select>
+
+
+          </div>
+          <span class="text-red-500 font-medium italic text-sm"> {{ errors.sellingPriceUnit }}</span>
+        </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700">
@@ -616,7 +631,7 @@ const levelInputs = computed(() => {
           </label>
           <div class="mt-1">
             <a-input v-model:value="inputLevelSpeci.repairPrice"
-                     placeholder="    Giá sửa chữa (sửa xong thì giày có độ bền như ban đầu)"/>
+                     placeholder="Giá sửa chữa (sửa xong thì giày có độ bền như ban đầu)"/>
           </div>
           <span class="text-red-500 font-medium italic text-sm"> {{ errors.repairPrice }}</span>
         </div>
@@ -670,25 +685,6 @@ const levelInputs = computed(() => {
           <span class="text-red-500 font-medium italic text-sm"> {{ errors.energyRecoverPriceUnit }}</span>
         </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700">
-            Số bước chân tối đa mỗi lần sử dụng giày
-          </label>
-          <div class="mt-1">
-            <a-input v-model:value="inputLevelSpeci.stepsPerTime" placeholder="Số bước chân tối đa.. "/>
-          </div>
-          <span class="text-red-500 font-medium italic text-sm"> {{ errors.stepsPerTime }}</span>
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700">
-            Số khoảng cách tối đa mỗi lần sử dụng giày (km)
-          </label>
-          <div class="mt-1">
-            <a-input v-model:value="inputLevelSpeci.distancePerTime" placeholder="Số khoảng cách tối đa mỗi.."/>
-          </div>
-          <span class="text-red-500 font-medium italic text-sm"> {{ errors.distancePerTime }}</span>
-        </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700">
@@ -732,7 +728,6 @@ const levelInputs = computed(() => {
               'Giá trị level ' + (index + 1)
             }}</label>
           <a-input :id="'input'+index" v-model:value="valueInput[index]"/>
-
           <label class="block text-sm font-medium text-gray-700" :for="'input'+index">
             {{ 'Đơn vị level ' + (index + 1) }}
           </label>
@@ -741,16 +736,13 @@ const levelInputs = computed(() => {
                 v-model:value="sellingPriceUnit[index]"
                 label-in-value
                 style="width:100%"
-                :options="optionSellingPriceUnit"
+                :options="SellingPriceUnitOptions"
                 @change="handleChangeSellingPriceUnit(index)"
             >
             </a-select>
           </div>
         </div>
 
-
-        {{ valueInput }}
-        {{ sellingPriceUnit }}
 
       </a-modal>
     </div>
@@ -765,6 +757,12 @@ const levelInputs = computed(() => {
               <tr>
                 <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                   #
+                </th>
+                <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                  Giá bán giày
+                </th>
+                <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                  Đơn vị giá bán giày
                 </th>
                 <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                   Giá nâng cấp mỗi level
@@ -791,13 +789,20 @@ const levelInputs = computed(() => {
                       <span>  Ấn vào để xem chi tiết </span>
                     </template>
                     <td class="text-sm cursor-pointer text-gray-900 font-light px-6  whitespace-nowrap">
-                      {{ itemLevelSpeci?.defaultLevel?.value }}
+                      {{ itemLevelSpeci.sellingPrice }}
                     </td>
                   </a-tooltip>
                 </router-link>
                 <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                  {{ itemLevelSpeci.sellingPriceUnit }}
+                </td>
+                <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                   {{ itemLevelSpeci.upgradePrice }}
                 </td>
+                <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                  {{ itemLevelSpeci?.defaultLevel?.value }}
+                </td>
+
                 <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                   {{ itemLevelSpeci?.maxLevel?.value }}
                 </td>
@@ -861,16 +866,6 @@ const levelInputs = computed(() => {
 
   <a-modal v-model:visible="visibleEdit" width="1000px" title="Sửa thông số level" @ok="editLevelSpeci">
 
-    <div>
-      <label class="block text-sm font-medium text-gray-700">
-        Số ngày tối đa người mua được phép sử dụng
-      </label>
-      <div class="mt-1">
-        <a-input v-model:value="inputLevelSpeci.daysToUseMax"
-                 placeholder="  Số ngày tối đa người mua được phép sử dụng"/>
-      </div>
-      <span class="text-red-500 font-medium italic text-sm"> {{ errors.daysToUseMax }} </span>
-    </div>
 
     <div>
       <label class="block text-sm font-medium text-gray-700">
@@ -914,6 +909,15 @@ const levelInputs = computed(() => {
       <span class="text-red-500 font-medium italic text-sm"> {{ errors.energyConsumption }}</span>
     </div>
 
+    <div>
+      <label class="block text-sm font-medium text-gray-700">
+        Giá bán giày
+      </label>
+      <div class="mt-1">
+        <a-input v-model:value="inputLevelSpeci.sellingPrice" placeholder="Giá bán giày"/>
+      </div>
+      <span class="text-red-500 font-medium italic text-sm"> {{ errors.sellingPrice }}</span>
+    </div>
 
     <div>
       <label class="block text-sm font-medium text-gray-700">
@@ -933,6 +937,25 @@ const levelInputs = computed(() => {
       <span class="text-red-500 font-medium italic text-sm"> {{ errors.productCategoryId }}</span>
     </div>
 
+    <div>
+      <label class="block text-sm font-medium text-gray-700">
+        Đơn vị giá bán giày
+      </label>
+      <div class="mt-1">
+
+        <a-select
+            v-model:value="inputLevelSpeci.sellingPriceUnit"
+            label-in-value
+            style="width:100%"
+            :options="optionSellingPriceUnit"
+            @change="handleChangeSellingPriceUnit"
+        >
+        </a-select>
+
+
+      </div>
+      <span class="text-red-500 font-medium italic text-sm"> {{ errors.sellingPriceUnit }}</span>
+    </div>
 
     <div>
       <label class="block text-sm font-medium text-gray-700">
@@ -998,7 +1021,7 @@ const levelInputs = computed(() => {
         Giá phục hồi năng lượng
       </label>
       <div class="mt-1">
-        <a-input v-model:value="inputLevelSpeci.energyRecoverPrice" placeholder="  Giá phục hồi năng lượng"/>
+        <a-input v-model:value="inputLevelSpeci.energyRecoverPrice" placeholder="Giá phục hồi năng lượng"/>
       </div>
       <span class="text-red-500 font-medium italic text-sm"> {{ errors.energyRecoverPrice }}</span>
     </div>
@@ -1023,25 +1046,6 @@ const levelInputs = computed(() => {
       <span class="text-red-500 font-medium italic text-sm"> {{ errors.energyRecoverPriceUnit }}</span>
     </div>
 
-    <div>
-      <label class="block text-sm font-medium text-gray-700">
-        Số bước chân tối đa mỗi lần sử dụng giày
-      </label>
-      <div class="mt-1">
-        <a-input v-model:value="inputLevelSpeci.stepsPerTime" placeholder="Số bước chân tối đa.. "/>
-      </div>
-      <span class="text-red-500 font-medium italic text-sm"> {{ errors.stepsPerTime }}</span>
-    </div>
-
-    <div>
-      <label class="block text-sm font-medium text-gray-700">
-        Số khoảng cách tối đa mỗi lần sử dụng giày (km)
-      </label>
-      <div class="mt-1">
-        <a-input v-model:value="inputLevelSpeci.distancePerTime" placeholder="Số khoảng cách tối đa mỗi.."/>
-      </div>
-      <span class="text-red-500 font-medium italic text-sm"> {{ errors.distancePerTime }}</span>
-    </div>
 
     <div>
       <label class="block text-sm font-medium text-gray-700">
@@ -1079,13 +1083,11 @@ const levelInputs = computed(() => {
       <span class="text-red-500 font-medium italic text-sm"> {{ errors.maxLevelId }}</span>
     </div>
 
-
     <div v-for="(input, index) in levelInputs" :key="index" class="mt-2">
       <label class="block text-sm font-medium text-gray-700" :for="'input'+index">{{
           'Giá trị level ' + (index + 1)
         }}</label>
       <a-input :id="'input'+index" v-model:value="valueInput[index]"/>
-
       <label class="block text-sm font-medium text-gray-700" :for="'input'+index">
         {{ 'Đơn vị level ' + (index + 1) }}
       </label>
