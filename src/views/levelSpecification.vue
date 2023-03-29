@@ -1,12 +1,10 @@
 <script setup>
-import { userServices } from "@/services/userServices";
-import { onMounted, ref, watch, computed, reactive, watchEffect } from "vue";
+import {onMounted, ref, watch, reactive, watchEffect, computed} from "vue";
 import Loading from "@/components/loading/Loading.vue";
-import { useToast } from "vue-toastification";
-import router from "@/router";
-import { levelSpecificationServices } from "@/services/levelSpecificationServices";
-import { levelServices } from "@/services/levelServices";
-import { categoryServices } from "@/services/categoryServices";
+import {useToast} from "vue-toastification";
+import {levelSpecificationServices} from "@/services/levelSpecificationServices";
+import {levelServices} from "@/services/levelServices";
+import {categoryServices} from "@/services/categoryServices";
 
 const toast = useToast();
 const visible = ref(false);
@@ -27,14 +25,33 @@ const idEditLevelSpeci = ref("");
 const state = reactive({
   valueInput: [],
   sellingPriceUnit: [],
+  valueInput2: [],
+  sellingPriceUnit2: [],
 });
 
-const ChangeSellingPriceUnit = (value) => {
-  inputLevelSpeci.value.sellingPriceUnit = value.value;
-};
+// const dataUpLevelUpgradeList = ref([{
+//   upgradePriceUnit: levelUpgradePriceUnit[index],
+//   upgradePrice: parseInt(price),
+// }]);
+
+const SellingPriceUnitOptions = ref([]);
+const optionSellingPriceUnit = ref([]);
+
 
 const optionEnergyRecoverPriceUnit = ref([]);
 const optionRepairPriceUnit = ref([]);
+const idCategory = ref("");
+const optionMaxLevelId = ref({
+  value: [],
+});
+const optionDefaultLevelId = ref({
+  value: [],
+});
+
+const optionsCate = ref({
+  value: [],
+});
+
 
 const handleChangeRepairPriceUnit = (value) => {
   inputLevelSpeci.value.repairPriceUnit = value.value;
@@ -42,6 +59,13 @@ const handleChangeRepairPriceUnit = (value) => {
 const handleChangeEnergyRecoverPriceUnit = (value) => {
   inputLevelSpeci.value.energyRecoverPriceUnit = value.value;
 };
+
+
+const ChangeSellingPriceUnit = (value) => {
+  inputLevelSpeci.value.sellingPriceUnit = value.value;
+};
+
+
 
 const inputLevelSpeci = ref({
   durability: "",
@@ -117,100 +141,112 @@ const resetStateError = () => {
   };
 };
 
+
+const regexNumber = /^[0-9]*$/;
+const validate = () => {
+  errors.value.durability =
+      regexNumber.test(inputLevelSpeci.value.durability) &&
+      inputLevelSpeci.value.durability !== ""
+          ? ""
+          : "Vui lòng nhập số";
+  errors.value.energy =
+      regexNumber.test(inputLevelSpeci.value.energy) &&
+      inputLevelSpeci.value.energy !== ""
+          ? ""
+          : "Vui lòng nhập số";
+  errors.value.durabilityConsumption =
+      regexNumber.test(inputLevelSpeci.value.durabilityConsumption) &&
+      inputLevelSpeci.value.durabilityConsumption !== ""
+          ? ""
+          : "Vui lòng nhập số";
+  errors.value.energyConsumption =
+      regexNumber.test(inputLevelSpeci.value.energyConsumption) &&
+      inputLevelSpeci.value.energyConsumption !== ""
+          ? ""
+          : "Vui lòng nhập số";
+  errors.value.sellingPrice =
+      regexNumber.test(inputLevelSpeci.value.sellingPrice) &&
+      inputLevelSpeci.value.sellingPrice !== ""
+          ? ""
+          : "Vui lòng nhập số";
+  errors.value.sellingPriceUnit =
+      inputLevelSpeci.value.sellingPriceUnit !== ""
+          ? ""
+          : "Trường này không được để trống";
+  // errors.value.upgradePrice = regexNumber.test(inputLevelSpeci.value.upgradePrice) && inputLevelSpeci.value.upgradePrice !== '' ? '' : 'Vui lòng nhập số'
+  // errors.value.upgradePriceUnit = inputLevelSpeci.value.upgradePriceUnit !== '' ? '' : 'Trường này không được để trống'
+  errors.value.repairPrice =
+      regexNumber.test(inputLevelSpeci.value.repairPrice) &&
+      inputLevelSpeci.value.repairPrice !== ""
+          ? ""
+          : "Vui lòng nhập số";
+  errors.value.repairPriceUnit =
+      inputLevelSpeci.value.repairPriceUnit !== ""
+          ? ""
+          : "Trường này không được để trống";
+  errors.value.energyRecoverPrice =
+      regexNumber.test(inputLevelSpeci.value.energyRecoverPrice) &&
+      inputLevelSpeci.value.energyRecoverPrice !== ""
+          ? ""
+          : "Vui lòng nhập số";
+  errors.value.energyRecoverPriceUnit =
+      inputLevelSpeci.value.energyRecoverPriceUnit !== ""
+          ? ""
+          : "Trường này không được để trống";
+  errors.value.defaultLevelId =
+      inputLevelSpeci.value.defaultLevelId !== ""
+          ? ""
+          : "Trường này không được để trống";
+  errors.value.maxLevelId =
+      inputLevelSpeci.value.maxLevelId !== ""
+          ? ""
+          : "Trường này không được để trống";
+  errors.value.productCategoryId =
+      inputLevelSpeci.value.productCategoryId !== ""
+          ? ""
+          : "Trường này không được để trống";
+  return (
+      !errors.value.durability &&
+      !errors.value.energy &&
+      !errors.value.durabilityConsumption &&
+      !errors.value.energyConsumption &&
+      !errors.value.sellingPrice &&
+      !errors.value.sellingPriceUnit &&
+      !errors.value.repairPrice &&
+      !errors.value.repairPriceUnit &&
+      !errors.value.energyRecoverPrice &&
+      !errors.value.energyRecoverPriceUnit &&
+      !errors.value.defaultLevelId &&
+      !errors.value.maxLevelId &&
+      !errors.value.productCategoryId
+  );
+};
+
+let levelInputs = []
 const showModal = async () => {
   await getAllLevel();
   await getAllCate();
   await getUnitMoney();
   resetState();
-
   visible.value = true;
-};
-
-const regexNumber = /^[0-9]*$/;
-
-const validate = () => {
-  errors.value.durability =
-    regexNumber.test(inputLevelSpeci.value.durability) &&
-    inputLevelSpeci.value.durability !== ""
-      ? ""
-      : "Vui lòng nhập số";
-  errors.value.energy =
-    regexNumber.test(inputLevelSpeci.value.energy) &&
-    inputLevelSpeci.value.energy !== ""
-      ? ""
-      : "Vui lòng nhập số";
-  errors.value.durabilityConsumption =
-    regexNumber.test(inputLevelSpeci.value.durabilityConsumption) &&
-    inputLevelSpeci.value.durabilityConsumption !== ""
-      ? ""
-      : "Vui lòng nhập số";
-  errors.value.energyConsumption =
-    regexNumber.test(inputLevelSpeci.value.energyConsumption) &&
-    inputLevelSpeci.value.energyConsumption !== ""
-      ? ""
-      : "Vui lòng nhập số";
-  errors.value.sellingPrice =
-    regexNumber.test(inputLevelSpeci.value.sellingPrice) &&
-    inputLevelSpeci.value.sellingPrice !== ""
-      ? ""
-      : "Vui lòng nhập số";
-  errors.value.sellingPriceUnit =
-    inputLevelSpeci.value.sellingPriceUnit !== ""
-      ? ""
-      : "Trường này không được để trống";
-  // errors.value.upgradePrice = regexNumber.test(inputLevelSpeci.value.upgradePrice) && inputLevelSpeci.value.upgradePrice !== '' ? '' : 'Vui lòng nhập số'
-  // errors.value.upgradePriceUnit = inputLevelSpeci.value.upgradePriceUnit !== '' ? '' : 'Trường này không được để trống'
-  errors.value.repairPrice =
-    regexNumber.test(inputLevelSpeci.value.repairPrice) &&
-    inputLevelSpeci.value.repairPrice !== ""
-      ? ""
-      : "Vui lòng nhập số";
-  errors.value.repairPriceUnit =
-    inputLevelSpeci.value.repairPriceUnit !== ""
-      ? ""
-      : "Trường này không được để trống";
-  errors.value.energyRecoverPrice =
-    regexNumber.test(inputLevelSpeci.value.energyRecoverPrice) &&
-    inputLevelSpeci.value.energyRecoverPrice !== ""
-      ? ""
-      : "Vui lòng nhập số";
-  errors.value.energyRecoverPriceUnit =
-    inputLevelSpeci.value.energyRecoverPriceUnit !== ""
-      ? ""
-      : "Trường này không được để trống";
-  errors.value.defaultLevelId =
-    inputLevelSpeci.value.defaultLevelId !== ""
-      ? ""
-      : "Trường này không được để trống";
-  errors.value.maxLevelId =
-    inputLevelSpeci.value.maxLevelId !== ""
-      ? ""
-      : "Trường này không được để trống";
-  errors.value.productCategoryId =
-    inputLevelSpeci.value.productCategoryId !== ""
-      ? ""
-      : "Trường này không được để trống";
-  return (
-    !errors.value.durability &&
-    !errors.value.energy &&
-    !errors.value.durabilityConsumption &&
-    !errors.value.energyConsumption &&
-    !errors.value.sellingPrice &&
-    !errors.value.sellingPriceUnit &&
-    !errors.value.repairPrice &&
-    !errors.value.repairPriceUnit &&
-    !errors.value.energyRecoverPrice &&
-    !errors.value.energyRecoverPriceUnit &&
-    !errors.value.defaultLevelId &&
-    !errors.value.maxLevelId &&
-    !errors.value.productCategoryId
-  );
+   levelInputs = computed(() => {
+    const diff = Math.abs(
+        inputLevelSpeci.value.maxLevelId - inputLevelSpeci.value.defaultLevelId
+    );
+    const inputs = [];
+    for (let i = 0; i < diff; i++) {
+      inputs.push(ref(null));
+    }
+    state.valueInput = [];
+    state.sellingPriceUnit = [];
+    return inputs;
+  });
 };
 
 const handlRemoveLevelSpeci = async () => {
   try {
     await levelSpecificationServices.removeLevelSpecification(
-      idRemoveLevelSpeci.value
+        idRemoveLevelSpeci.value
     );
     await getLevelSpecification();
     toast.success("Xóa thông số level thành công ");
@@ -220,22 +256,22 @@ const handlRemoveLevelSpeci = async () => {
   visibleConfirm.value = false;
 };
 
-const handleChange = (value) => {
-  console.log(value); // { key: "lucy", label: "Lucy (101)" }
-};
+
+
+
+
 
 const showModalConfirm = (id) => {
   idRemoveLevelSpeci.value = id;
   visibleConfirm.value = true;
 };
 
-const SellingPriceUnitOptions = ref([]);
-const optionSellingPriceUnit = ref([]);
+
 const getUnitMoney = async () => {
   try {
     const res = await levelSpecificationServices.getUnitMoney();
 
-    const options = res.data.map((item) => ({ value: item, label: item }));
+    const options = res.data.map((item) => ({value: item, label: item}));
     SellingPriceUnitOptions.value = options;
     optionSellingPriceUnit.value = options;
     optionRepairPriceUnit.value = options;
@@ -245,7 +281,6 @@ const getUnitMoney = async () => {
   }
 };
 
-const idCategory = ref("");
 
 const showModalEdit = async (id) => {
   await getAllLevel();
@@ -253,6 +288,7 @@ const showModalEdit = async (id) => {
   await getUnitMoney();
   await resetStateError();
   visibleEdit.value = true;
+  let isFirstRun = true;
   idEditLevelSpeci.value = id;
   try {
     const res = await levelSpecificationServices.findByIdLevelSpecification(id);
@@ -272,12 +308,39 @@ const showModalEdit = async (id) => {
       productCategoryId: res.data.productCategory.name,
     };
     (state.valueInput = res.data?.levelUpgrades?.map(
-      (item) => item?.upgradePrice
+        (item) => item?.upgradePrice
     )),
-      (state.sellingPriceUnit = res.data?.levelUpgrades?.map(
-        (item) => item?.upgradePriceUnit
-      )),
-      (idCategory.value = res.data.productCategory.id);
+        (state.sellingPriceUnit = res.data?.levelUpgrades?.map(
+            (item) => item?.upgradePriceUnit
+        )),
+        (idCategory.value = res.data.productCategory.id);
+
+      state.valueInput2 = res.data?.levelUpgrades?.map(item=>item?.upgradePrice)
+      state.sellingPriceUnit2 = res.data?.levelUpgrades?.map(item=>item?.upgradePriceUnit)
+
+
+      levelInputs = computed(() => {
+      const diff = Math.abs(
+          inputLevelSpeci.value.maxLevelId - inputLevelSpeci.value.defaultLevelId
+      );
+      const inputs = [];
+      for (let i = 0; i < diff; i++) {
+        inputs.push(ref(null));
+      }
+
+      state.valueInput = [];
+      state.sellingPriceUnit = [];
+        if(isFirstRun){
+          const tempValueInput = res.data?.levelUpgrades?.map(item=>item?.upgradePrice)
+          const tempSellingPriceUnit = res.data?.levelUpgrades?.map(item=>item?.upgradePriceUnit)
+          state.valueInput = tempValueInput
+          state.sellingPriceUnit = tempSellingPriceUnit
+          isFirstRun = false
+        }
+      return inputs;
+    });
+
+
   } catch (e) {
     console.log(e);
   }
@@ -287,7 +350,7 @@ const editLevelSpeci = async () => {
   if (validate()) {
     try {
       const levelUpgradePriceUnit = SellingPriceUnitOptions.value.map(
-        (item) => item.value
+          (item) => item.value
       );
 
       await levelSpecificationServices.editLevelSpecification({
@@ -330,7 +393,7 @@ const handleAddLevelSpeci = async () => {
     loading.value = true;
     try {
       const levelUpgradePriceUnit = SellingPriceUnitOptions.value.map(
-        (item) => item.value
+          (item) => item.value
       );
       await levelSpecificationServices.createLevelSpecification({
         daysToUseMax: 30,
@@ -419,12 +482,6 @@ const getLevelSpecification = async () => {
   }
 };
 
-const optionMaxLevelId = ref({
-  value: [],
-});
-const optionDefaultLevelId = ref({
-  value: [],
-});
 
 const handleChangeDefaultLevelId = (value) => {
   inputLevelSpeci.value.defaultLevelId = value.value;
@@ -450,9 +507,6 @@ const getAllLevel = async () => {
   }
 };
 
-const optionsCate = ref({
-  value: [],
-});
 
 // danh mục
 
@@ -470,7 +524,9 @@ const getAllCate = async () => {
       };
     });
     optionsCate.value = options;
-  } catch (e) {}
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 const pageChanged = async () => {
@@ -487,22 +543,13 @@ const handleChangeSellingPriceUnit = (value, index) => {
   state.sellingPriceUnit[index] = value.value;
 };
 
-const levelInputs = computed(() => {
-  const diff = Math.abs(
-    inputLevelSpeci.value.maxLevelId - inputLevelSpeci.value.defaultLevelId
-  );
-  const inputs = [];
-  for (let i = 0; i < diff; i++) {
-    inputs.push(ref(null));
-  }
-  return inputs;
-});
+
 </script>
 
 <template>
   <a-page-header
-    style="border: 1px solid rgb(235, 237, 240); padding: 10px"
-    title="Quản lý thông số level"
+      style="border: 1px solid rgb(235, 237, 240); padding: 10px"
+      title="Quản lý thông số level"
   >
     <template #tags>
       <a-button type="primary" @click="showModal">Thêm thông số level</a-button>
@@ -511,10 +558,10 @@ const levelInputs = computed(() => {
     <template #extra>
       <a-space>
         <input
-          v-model="textSearch"
-          type="text"
-          class="w-[20rem] p-1 outline-1 outline-[#1890ff]"
-          placeholder="Tìm kiếm..."
+            v-model="textSearch"
+            type="text"
+            class="w-[20rem] p-1 outline-1 outline-[#1890ff]"
+            placeholder="Tìm kiếm..."
         />
 
         <a-dropdown placement="bottomRight">
@@ -532,10 +579,10 @@ const levelInputs = computed(() => {
 
     <div>
       <a-modal
-        v-model:visible="visible"
-        width="1000px"
-        title="Thêm thông số level"
-        @ok="handleAddLevelSpeci"
+          v-model:visible="visible"
+          width="1000px"
+          title="Thêm thông số level"
+          @ok="handleAddLevelSpeci"
       >
         <div>
           <label class="block text-sm font-medium text-gray-700">
@@ -543,8 +590,8 @@ const levelInputs = computed(() => {
           </label>
           <div class="mt-1">
             <a-input
-              v-model:value="inputLevelSpeci.durability"
-              placeholder="Độ bền ban đầu của giày"
+                v-model:value="inputLevelSpeci.durability"
+                placeholder="Độ bền ban đầu của giày"
             />
           </div>
           <span class="text-red-500 font-medium italic text-sm">
@@ -558,8 +605,8 @@ const levelInputs = computed(() => {
           </label>
           <div class="mt-1">
             <a-input
-              v-model:value="inputLevelSpeci.energy"
-              placeholder="Năng lượng ban đầu của giày"
+                v-model:value="inputLevelSpeci.energy"
+                placeholder="Năng lượng ban đầu của giày"
             />
           </div>
           <span class="text-red-500 font-medium italic text-sm">
@@ -573,8 +620,8 @@ const levelInputs = computed(() => {
           </label>
           <div class="mt-1">
             <a-input
-              v-model:value="inputLevelSpeci.durabilityConsumption"
-              placeholder="Độ bền tiêu hao trên mỗi lần sử dụng"
+                v-model:value="inputLevelSpeci.durabilityConsumption"
+                placeholder="Độ bền tiêu hao trên mỗi lần sử dụng"
             />
           </div>
           <span class="text-red-500 font-medium italic text-sm">
@@ -587,8 +634,8 @@ const levelInputs = computed(() => {
           </label>
           <div class="mt-1">
             <a-input
-              v-model:value="inputLevelSpeci.energyConsumption"
-              placeholder="Năng lượng tiêu hao trên mỗi lần sử dụng"
+                v-model:value="inputLevelSpeci.energyConsumption"
+                placeholder="Năng lượng tiêu hao trên mỗi lần sử dụng"
             />
           </div>
           <span class="text-red-500 font-medium italic text-sm">
@@ -602,8 +649,8 @@ const levelInputs = computed(() => {
           </label>
           <div class="mt-1">
             <a-input
-              v-model:value="inputLevelSpeci.sellingPrice"
-              placeholder="Giá bán giày"
+                v-model:value="inputLevelSpeci.sellingPrice"
+                placeholder="Giá bán giày"
             />
           </div>
           <span class="text-red-500 font-medium italic text-sm">
@@ -617,11 +664,11 @@ const levelInputs = computed(() => {
           </label>
           <div class="mt-1">
             <a-select
-              v-model:value="inputLevelSpeci.productCategoryId"
-              label-in-value
-              style="width: 100%"
-              :options="optionsCate"
-              @change="handleChangeProductCategory"
+                v-model:value="inputLevelSpeci.productCategoryId"
+                label-in-value
+                style="width: 100%"
+                :options="optionsCate"
+                @change="handleChangeProductCategory"
             >
             </a-select>
           </div>
@@ -636,11 +683,11 @@ const levelInputs = computed(() => {
           </label>
           <div class="mt-1">
             <a-select
-              v-model:value="inputLevelSpeci.sellingPriceUnit"
-              label-in-value
-              style="width: 100%"
-              :options="optionSellingPriceUnit"
-              @change="ChangeSellingPriceUnit"
+                v-model:value="inputLevelSpeci.sellingPriceUnit"
+                label-in-value
+                style="width: 100%"
+                :options="optionSellingPriceUnit"
+                @change="ChangeSellingPriceUnit"
             >
             </a-select>
           </div>
@@ -655,8 +702,8 @@ const levelInputs = computed(() => {
           </label>
           <div class="mt-1">
             <a-input
-              v-model:value="inputLevelSpeci.repairPrice"
-              placeholder="Giá sửa chữa (sửa xong thì giày có độ bền như ban đầu)"
+                v-model:value="inputLevelSpeci.repairPrice"
+                placeholder="Giá sửa chữa (sửa xong thì giày có độ bền như ban đầu)"
             />
           </div>
           <span class="text-red-500 font-medium italic text-sm">
@@ -670,11 +717,11 @@ const levelInputs = computed(() => {
           </label>
           <div class="mt-1">
             <a-select
-              v-model:value="inputLevelSpeci.repairPriceUnit"
-              label-in-value
-              style="width: 100%"
-              :options="optionRepairPriceUnit"
-              @change="handleChangeRepairPriceUnit"
+                v-model:value="inputLevelSpeci.repairPriceUnit"
+                label-in-value
+                style="width: 100%"
+                :options="optionRepairPriceUnit"
+                @change="handleChangeRepairPriceUnit"
             >
             </a-select>
           </div>
@@ -689,8 +736,8 @@ const levelInputs = computed(() => {
           </label>
           <div class="mt-1">
             <a-input
-              v-model:value="inputLevelSpeci.energyRecoverPrice"
-              placeholder="  Giá phục hồi năng lượng"
+                v-model:value="inputLevelSpeci.energyRecoverPrice"
+                placeholder="  Giá phục hồi năng lượng"
             />
           </div>
           <span class="text-red-500 font-medium italic text-sm">
@@ -704,11 +751,11 @@ const levelInputs = computed(() => {
           </label>
           <div class="mt-1">
             <a-select
-              v-model:value="inputLevelSpeci.energyRecoverPriceUnit"
-              label-in-value
-              style="width: 100%"
-              :options="optionEnergyRecoverPriceUnit"
-              @change="handleChangeEnergyRecoverPriceUnit"
+                v-model:value="inputLevelSpeci.energyRecoverPriceUnit"
+                label-in-value
+                style="width: 100%"
+                :options="optionEnergyRecoverPriceUnit"
+                @change="handleChangeEnergyRecoverPriceUnit"
             >
             </a-select>
           </div>
@@ -723,11 +770,11 @@ const levelInputs = computed(() => {
           </label>
           <div class="mt-1">
             <a-select
-              v-model:value="inputLevelSpeci.defaultLevelId"
-              label-in-value
-              style="width: 100%"
-              :options="optionDefaultLevelId"
-              @change="handleChangeDefaultLevelId"
+                v-model:value="inputLevelSpeci.defaultLevelId"
+                label-in-value
+                style="width: 100%"
+                :options="optionDefaultLevelId"
+                @change="handleChangeDefaultLevelId"
             >
             </a-select>
           </div>
@@ -742,11 +789,11 @@ const levelInputs = computed(() => {
           </label>
           <div class="mt-1">
             <a-select
-              v-model:value="inputLevelSpeci.maxLevelId"
-              label-in-value
-              style="width: 100%"
-              :options="optionMaxLevelId"
-              @change="handleChangeMaxLevelId"
+                v-model:value="inputLevelSpeci.maxLevelId"
+                label-in-value
+                style="width: 100%"
+                :options="optionMaxLevelId"
+                @change="handleChangeMaxLevelId"
             >
             </a-select>
           </div>
@@ -757,27 +804,27 @@ const levelInputs = computed(() => {
 
         <div v-for="(input, index) in levelInputs" :key="index" class="mt-2">
           <label
-            class="block text-sm font-medium text-gray-700"
-            :for="'input' + index"
-            >{{ "Giá trị level " + (index + 1) }}</label
+              class="block text-sm font-medium text-gray-700"
+              :for="'input' + index"
+          >{{ "Giá trị level " + (index + 1) }}</label
           >
           <a-input
-            :id="'input' + index"
-            v-model:value="state.valueInput[index]"
+              :id="'input' + index"
+              v-model:value="state.valueInput[index]"
           />
           <label
-            class="block text-sm font-medium text-gray-700"
-            :for="'input' + index"
+              class="block text-sm font-medium text-gray-700"
+              :for="'input' + index"
           >
             {{ "Đơn vị level " + (index + 1) }}
           </label>
           <div class="mt-1">
             <a-select
-              v-model:value="state.sellingPriceUnit[index]"
-              label-in-value
-              style="width: 100%"
-              :options="SellingPriceUnitOptions"
-              @change="handleChangeSellingPriceUnit(index)"
+                v-model:value="state.sellingPriceUnit[index]"
+                label-in-value
+                style="width: 100%"
+                :options="SellingPriceUnitOptions"
+                @change="handleChangeSellingPriceUnit(index)"
             >
             </a-select>
           </div>
@@ -791,115 +838,115 @@ const levelInputs = computed(() => {
           <div class="overflow-hidden">
             <table class="min-w-full">
               <thead class="bg-gray-200 border-b">
-                <tr>
-                  <th
+              <tr>
+                <th
                     scope="col"
                     class="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                  >
-                    #
-                  </th>
-                  <th
+                >
+                  #
+                </th>
+                <th
                     scope="col"
                     class="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                  >
-                    Giá bán giày
-                  </th>
-                  <th
+                >
+                  Giá bán giày
+                </th>
+                <th
                     scope="col"
                     class="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                  >
-                    Đơn vị giá bán giày
-                  </th>
-                  <th
+                >
+                  Đơn vị giá bán giày
+                </th>
+                <th
                     scope="col"
                     class="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                  >
-                    Level măc định
-                  </th>
-                  <th
+                >
+                  Level măc định
+                </th>
+                <th
                     scope="col"
                     class="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                  >
-                    Level tối đa
-                  </th>
-                  <th
+                >
+                  Level tối đa
+                </th>
+                <th
                     scope="col"
                     class="text-sm font-medium flex justify-end text-gray-900 px-6 py-4 text-left"
-                  >
-                    Hành động
-                  </th>
-                </tr>
+                >
+                  Hành động
+                </th>
+              </tr>
               </thead>
               <tbody
-                v-for="(
+                  v-for="(
                   itemLevelSpeci, indexLevelSpeci
                 ) in dataLevelSpecification"
-                :key="indexLevelSpeci"
+                  :key="indexLevelSpeci"
               >
-                <tr
+              <tr
                   class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100"
-                >
-                  <td
+              >
+                <td
                     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-                  >
-                    {{ (currentPage - 1) * 10 + (indexLevelSpeci + 1) }}
-                  </td>
-                  <router-link
+                >
+                  {{ (currentPage - 1) * 10 + (indexLevelSpeci + 1) }}
+                </td>
+                <router-link
                     :to="{
                       name: 'levelSpecificationDetail',
                       query: { id: itemLevelSpeci.id },
                     }"
-                  >
-                    <a-tooltip placement="bottom">
-                      <template #title>
-                        <span> Ấn vào để xem chi tiết </span>
-                      </template>
-                      <td
+                >
+                  <a-tooltip placement="bottom">
+                    <template #title>
+                      <span> Ấn vào để xem chi tiết </span>
+                    </template>
+                    <td
                         class="text-sm cursor-pointer text-gray-900 font-light px-6 whitespace-nowrap"
-                      >
-                        {{ itemLevelSpeci.sellingPrice }}
-                      </td>
-                    </a-tooltip>
-                  </router-link>
-                  <td
+                    >
+                      {{ itemLevelSpeci.sellingPrice }}
+                    </td>
+                  </a-tooltip>
+                </router-link>
+                <td
                     class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap"
-                  >
-                    {{ itemLevelSpeci.sellingPriceUnit }}
-                  </td>
+                >
+                  {{ itemLevelSpeci.sellingPriceUnit }}
+                </td>
 
-                  <td
+                <td
                     class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap"
-                  >
-                    {{ itemLevelSpeci?.defaultLevel?.value }}
-                  </td>
+                >
+                  {{ itemLevelSpeci?.defaultLevel?.value }}
+                </td>
 
-                  <td
+                <td
                     class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap"
-                  >
-                    {{ itemLevelSpeci?.maxLevel?.value }}
-                  </td>
+                >
+                  {{ itemLevelSpeci?.maxLevel?.value }}
+                </td>
 
-                  <td
+                <td
                     class="text-sm flex justify-end text-gray-900 font-light px-6 py-4 whitespace-nowrap"
-                  >
-                    <div class="flex justify-start items-center">
+                >
+                  <div class="flex justify-start items-center">
                       <span @click="showModalEdit(itemLevelSpeci.id)"
-                        ><i
+                      ><i
                           class="fa-solid fa-pen-to-square text-xl text-blue-500 mr-2 cursor-pointer"
-                        ></i
+                      ></i
                       ></span>
 
-                      <span
+                    <span
                         @click="showModalConfirm(itemLevelSpeci.id)"
                         data-bs-toggle="modal"
                         data-bs-target="#exampleModalCenter"
-                        ><i
-                          class="fa-solid fa-trash-can text-xl text-red-600 cursor-pointer"
-                        ></i
-                      ></span>
-                    </div>
-                  </td>
-                </tr>
+                    ><i
+                        class="fa-solid fa-trash-can text-xl text-red-600 cursor-pointer"
+                    ></i
+                    ></span>
+                  </div>
+                </td>
+              </tr>
               </tbody>
             </table>
           </div>
@@ -909,36 +956,36 @@ const levelInputs = computed(() => {
 
     <div class="flex justify-end">
       <a-pagination
-        @change="pageChanged()"
-        v-model:current="currentPage"
-        :total="totalPages"
-        show-less-items
-        :showSizeChanger="false"
+          @change="pageChanged()"
+          v-model:current="currentPage"
+          :total="totalPages"
+          show-less-items
+          :showSizeChanger="false"
       />
     </div>
   </a-page-header>
 
   <div
-    v-if="loading"
-    class="fixed top-0 bottom-0 left-0 z-[99999999] right-0 bg-black opacity-30 flex justify-center items-center"
+      v-if="loading"
+      class="fixed top-0 bottom-0 left-0 z-[99999999] right-0 bg-black opacity-30 flex justify-center items-center"
   >
     <Loading :loading="loading"></Loading>
   </div>
 
   <a-modal
-    v-model:visible="visibleConfirm"
-    title="Xóa thông số level"
-    :confirm-loading="confirmLoading"
-    @ok="handlRemoveLevelSpeci"
+      v-model:visible="visibleConfirm"
+      title="Xóa thông số level"
+      :confirm-loading="confirmLoading"
+      @ok="handlRemoveLevelSpeci"
   >
     <p>{{ modalText }}</p>
   </a-modal>
 
   <a-modal
-    v-model:visible="visibleEdit"
-    width="1000px"
-    title="Sửa thông số level"
-    @ok="editLevelSpeci"
+      v-model:visible="visibleEdit"
+      width="1000px"
+      title="Sửa thông số level"
+      @ok="editLevelSpeci"
   >
     <div>
       <label class="block text-sm font-medium text-gray-700">
@@ -946,8 +993,8 @@ const levelInputs = computed(() => {
       </label>
       <div class="mt-1">
         <a-input
-          v-model:value="inputLevelSpeci.durability"
-          placeholder="Độ bền ban đầu của giày"
+            v-model:value="inputLevelSpeci.durability"
+            placeholder="Độ bền ban đầu của giày"
         />
       </div>
       <span class="text-red-500 font-medium italic text-sm">
@@ -961,8 +1008,8 @@ const levelInputs = computed(() => {
       </label>
       <div class="mt-1">
         <a-input
-          v-model:value="inputLevelSpeci.energy"
-          placeholder="Năng lượng ban đầu của giày"
+            v-model:value="inputLevelSpeci.energy"
+            placeholder="Năng lượng ban đầu của giày"
         />
       </div>
       <span class="text-red-500 font-medium italic text-sm">
@@ -976,8 +1023,8 @@ const levelInputs = computed(() => {
       </label>
       <div class="mt-1">
         <a-input
-          v-model:value="inputLevelSpeci.durabilityConsumption"
-          placeholder="Độ bền tiêu hao trên mỗi lần sử dụng"
+            v-model:value="inputLevelSpeci.durabilityConsumption"
+            placeholder="Độ bền tiêu hao trên mỗi lần sử dụng"
         />
       </div>
       <span class="text-red-500 font-medium italic text-sm">
@@ -990,8 +1037,8 @@ const levelInputs = computed(() => {
       </label>
       <div class="mt-1">
         <a-input
-          v-model:value="inputLevelSpeci.energyConsumption"
-          placeholder="Năng lượng tiêu hao trên mỗi lần sử dụng"
+            v-model:value="inputLevelSpeci.energyConsumption"
+            placeholder="Năng lượng tiêu hao trên mỗi lần sử dụng"
         />
       </div>
       <span class="text-red-500 font-medium italic text-sm">
@@ -1005,8 +1052,8 @@ const levelInputs = computed(() => {
       </label>
       <div class="mt-1">
         <a-input
-          v-model:value="inputLevelSpeci.sellingPrice"
-          placeholder="Giá bán giày"
+            v-model:value="inputLevelSpeci.sellingPrice"
+            placeholder="Giá bán giày"
         />
       </div>
       <span class="text-red-500 font-medium italic text-sm">
@@ -1018,11 +1065,11 @@ const levelInputs = computed(() => {
       <label class="block text-sm font-medium text-gray-700"> Danh mục </label>
       <div class="mt-1">
         <a-select
-          v-model:value="inputLevelSpeci.productCategoryId"
-          label-in-value
-          style="width: 100%"
-          :options="optionsCate"
-          @change="handleChangeProductCategory"
+            v-model:value="inputLevelSpeci.productCategoryId"
+            label-in-value
+            style="width: 100%"
+            :options="optionsCate"
+            @change="handleChangeProductCategory"
         >
         </a-select>
       </div>
@@ -1037,11 +1084,11 @@ const levelInputs = computed(() => {
       </label>
       <div class="mt-1">
         <a-select
-          v-model:value="inputLevelSpeci.sellingPriceUnit"
-          label-in-value
-          style="width: 100%"
-          :options="optionSellingPriceUnit"
-          @change="handleChangeSellingPriceUnit"
+            v-model:value="inputLevelSpeci.sellingPriceUnit"
+            label-in-value
+            style="width: 100%"
+            :options="optionSellingPriceUnit"
+            @change="handleChangeSellingPriceUnit"
         >
         </a-select>
       </div>
@@ -1056,8 +1103,8 @@ const levelInputs = computed(() => {
       </label>
       <div class="mt-1">
         <a-input
-          v-model:value="inputLevelSpeci.repairPrice"
-          placeholder="    Giá sửa chữa (sửa xong thì giày có độ bền như ban đầu)"
+            v-model:value="inputLevelSpeci.repairPrice"
+            placeholder="    Giá sửa chữa (sửa xong thì giày có độ bền như ban đầu)"
         />
       </div>
       <span class="text-red-500 font-medium italic text-sm">
@@ -1071,11 +1118,11 @@ const levelInputs = computed(() => {
       </label>
       <div class="mt-1">
         <a-select
-          v-model:value="inputLevelSpeci.repairPriceUnit"
-          label-in-value
-          style="width: 100%"
-          :options="optionRepairPriceUnit"
-          @change="handleChangeRepairPriceUnit"
+            v-model:value="inputLevelSpeci.repairPriceUnit"
+            label-in-value
+            style="width: 100%"
+            :options="optionRepairPriceUnit"
+            @change="handleChangeRepairPriceUnit"
         >
         </a-select>
       </div>
@@ -1090,8 +1137,8 @@ const levelInputs = computed(() => {
       </label>
       <div class="mt-1">
         <a-input
-          v-model:value="inputLevelSpeci.energyRecoverPrice"
-          placeholder="Giá phục hồi năng lượng"
+            v-model:value="inputLevelSpeci.energyRecoverPrice"
+            placeholder="Giá phục hồi năng lượng"
         />
       </div>
       <span class="text-red-500 font-medium italic text-sm">
@@ -1105,11 +1152,11 @@ const levelInputs = computed(() => {
       </label>
       <div class="mt-1">
         <a-select
-          v-model:value="inputLevelSpeci.energyRecoverPriceUnit"
-          label-in-value
-          style="width: 100%"
-          :options="optionEnergyRecoverPriceUnit"
-          @change="handleChangeEnergyRecoverPriceUnit"
+            v-model:value="inputLevelSpeci.energyRecoverPriceUnit"
+            label-in-value
+            style="width: 100%"
+            :options="optionEnergyRecoverPriceUnit"
+            @change="handleChangeEnergyRecoverPriceUnit"
         >
         </a-select>
       </div>
@@ -1124,11 +1171,11 @@ const levelInputs = computed(() => {
       </label>
       <div class="mt-1">
         <a-select
-          v-model:value="inputLevelSpeci.defaultLevelId"
-          label-in-value
-          style="width: 100%"
-          :options="optionDefaultLevelId"
-          @change="handleChangeDefaultLevelId"
+            v-model:value="inputLevelSpeci.defaultLevelId"
+            label-in-value
+            style="width: 100%"
+            :options="optionDefaultLevelId"
+            @change="handleChangeDefaultLevelId"
         >
         </a-select>
       </div>
@@ -1143,11 +1190,11 @@ const levelInputs = computed(() => {
       </label>
       <div class="mt-1">
         <a-select
-          v-model:value="inputLevelSpeci.maxLevelId"
-          label-in-value
-          style="width: 100%"
-          :options="optionMaxLevelId"
-          @change="handleChangeMaxLevelId"
+            v-model:value="inputLevelSpeci.maxLevelId"
+            label-in-value
+            style="width: 100%"
+            :options="optionMaxLevelId"
+            @change="handleChangeMaxLevelId"
         >
         </a-select>
       </div>
@@ -1158,24 +1205,24 @@ const levelInputs = computed(() => {
 
     <div v-for="(input, index) in levelInputs" :key="index" class="mt-2">
       <label
-        class="block text-sm font-medium text-gray-700"
-        :for="'input' + index"
-        >{{ "Giá trị level " + (index + 1) }}</label
+          class="block text-sm font-medium text-gray-700"
+          :for="'input' + index"
+      >{{ "Giá trị level " + (index + 1) }}</label
       >
-      <a-input :id="'input' + index" v-model:value="state.valueInput[index]" />
+      <a-input :id="'input' + index" v-model:value="state.valueInput[index]"/>
       <label
-        class="block text-sm font-medium text-gray-700"
-        :for="'input' + index"
+          class="block text-sm font-medium text-gray-700"
+          :for="'input' + index"
       >
         {{ "Đơn vị level " + (index + 1) }}
       </label>
       <div class="mt-1">
         <a-select
-          v-model:value="state.sellingPriceUnit[index]"
-          label-in-value
-          style="width: 100%"
-          :options="optionSellingPriceUnit"
-          @change="handleChangeSellingPriceUnit(index)"
+            v-model:value="state.sellingPriceUnit[index]"
+            label-in-value
+            style="width: 100%"
+            :options="optionSellingPriceUnit"
+            @change="handleChangeSellingPriceUnit(index)"
         >
         </a-select>
       </div>
