@@ -24,9 +24,10 @@ const idEditLevelSpeci = ref("");
 
 const state = reactive({
   valueInput: [],
-  sellingPriceUnit: [],
-  valueInput2: [],
-  sellingPriceUnit2: [],
+  sellingPriceUnit: [{
+    value: "VND",
+    label: "VND",
+  }],
 });
 
 
@@ -95,6 +96,9 @@ const errors = ref({
   defaultLevelId: "",
   maxLevelId: "",
   productCategoryId: "",
+
+  valueInput: '',
+  sellingPriceUnitInput: [],
 });
 
 const resetState = () => {
@@ -133,6 +137,8 @@ const resetStateError = () => {
     defaultLevelId: "",
     maxLevelId: "",
     productCategoryId: "",
+    valueInput: '',
+    sellingPriceUnitInput: [],
   };
 };
 
@@ -200,6 +206,15 @@ const validate = () => {
       inputLevelSpeci.value.productCategoryId !== ""
           ? ""
           : "Trường này không được để trống";
+
+
+  for (let i = 0; i < levelInputs.value.length; i++) {
+    const regexNumber = /^[0-9]*$/;
+    errors.value.valueInput = regexNumber.test(state?.valueInput[i]) && state?.valueInput[i] != '' ? '' : 'Vui lòng nhập giá trị nâng cấp level (phải là số)';
+    // errors.value.sellingPriceUnitInput = state?.sellingPriceUnitInput[i]?.length < 0 ? '' : 'Trường này không được để trống';
+  }
+
+
   return (
       !errors.value.durability &&
       !errors.value.energy &&
@@ -213,7 +228,8 @@ const validate = () => {
       !errors.value.energyRecoverPriceUnit &&
       !errors.value.defaultLevelId &&
       !errors.value.maxLevelId &&
-      !errors.value.productCategoryId
+      !errors.value.productCategoryId &&
+      !errors.value.valueInput
   );
 };
 
@@ -234,6 +250,12 @@ const showModal = async () => {
     }
     state.valueInput = [];
     state.sellingPriceUnit = [];
+    for (let i = 0; i < diff; i++) {
+      state.sellingPriceUnit.push({
+        value: 'VND',
+        label: 'VND'
+      });
+    }
     return inputs;
   });
 };
@@ -246,7 +268,7 @@ const handlRemoveLevelSpeci = async () => {
     await getLevelSpecification();
     toast.success("Xóa thông số level thành công ");
   } catch (e) {
-    toast.error("Xóa thông số level thất bại");
+    toast.error(e.response.data);
   }
   visibleConfirm.value = false;
 };
@@ -306,9 +328,6 @@ const showModalEdit = async (id) => {
         )),
         (idCategory.value = res.data.productCategory.id);
 
-    state.valueInput2 = res.data?.levelUpgrades?.map(item => item?.upgradePrice)
-    state.sellingPriceUnit2 = res.data?.levelUpgrades?.map(item => item?.upgradePriceUnit)
-
 
     levelInputs = computed(() => {
       const diff = Math.abs(
@@ -320,7 +339,7 @@ const showModalEdit = async (id) => {
       }
 
       state.valueInput = [];
-      state.sellingPriceUnit = [];
+      state.sellingPriceUnit = res.data?.levelUpgrades?.map(item => item?.upgradePriceUnit)
       if (isFirstRun) {
         const tempValueInput = res.data?.levelUpgrades?.map(item => item?.upgradePrice)
         const tempSellingPriceUnit = res.data?.levelUpgrades?.map(item => item?.upgradePriceUnit)
@@ -341,7 +360,8 @@ const editLevelSpeci = async () => {
   if (validate()) {
     try {
 
-      const levelUpgradePriceUnit = state.sellingPriceUnit.map((item) => item.value)
+     // const levelUpgradePriceUnit = state.sellingPriceUnit.map((item) => item)
+    //  console.log(levelUpgradePriceUnit)
       await levelSpecificationServices.editLevelSpecification({
         id: idEditLevelSpeci.value,
         daysToUseMax: 30,
@@ -363,7 +383,7 @@ const editLevelSpeci = async () => {
         timeToUseMaxInDay: 8,
         levelUpgradeList: state.valueInput.map((price, index) => {
           return {
-            upgradePriceUnit: levelUpgradePriceUnit[index],
+            upgradePriceUnit: state.sellingPriceUnit[index],
             upgradePrice: parseInt(price),
           };
         }),
@@ -372,12 +392,13 @@ const editLevelSpeci = async () => {
       await getLevelSpecification();
       visibleEdit.value = false;
     } catch (e) {
-      console.log(e.response.data);
+      toast.error(e.response.data)
     }
   }
 };
 
 const handleAddLevelSpeci = async () => {
+  console.log(validate())
   if (validate()) {
     loading.value = true;
     try {
@@ -526,8 +547,11 @@ onMounted(async () => {
   loading.value = false;
 });
 
-const handleChangeSellingPriceUnit = (value, index) => {
-  state.sellingPriceUnit[index] = value.value;
+const handleChangeSellingPriceUnits = (index, value) => {
+  state.sellingPriceUnit[index] = value;
+};
+const handleChangeSellingPriceUnit = (value) => {
+  inputLevelSpeci.value.sellingPriceUnit = value.value;
 };
 
 
@@ -799,7 +823,6 @@ const handleChangeSellingPriceUnit = (value, index) => {
               :id="'input' + index"
               v-model:value="state.valueInput[index]"
           />
-          <span class="text-red-500 font-medium italic text-sm">ềwf </span>
           <label
               class="block text-sm font-medium text-gray-700"
               :for="'input' + index"
@@ -811,13 +834,20 @@ const handleChangeSellingPriceUnit = (value, index) => {
                 v-model:value="state.sellingPriceUnit[index]"
                 label-in-value
                 style="width: 100%"
-                :options="SellingPriceUnitOptions"
-                @change="handleChangeSellingPriceUnit(index)"
             >
+              <a-select-option
+
+                  v-for="option in SellingPriceUnitOptions"
+                  :key="option.value"
+                  :value="option.value"
+                  @click="handleChangeSellingPriceUnits(index, option.value)"
+              >
+                {{ option.label }}
+              </a-select-option>
             </a-select>
           </div>
-          <span class="text-red-500 font-medium italic text-sm">ềwf </span>
         </div>
+        <span class="text-red-500 font-medium italic text-sm"> {{ errors.valueInput }} </span>
       </a-modal>
     </div>
 
@@ -1210,12 +1240,20 @@ const handleChangeSellingPriceUnit = (value, index) => {
             v-model:value="state.sellingPriceUnit[index]"
             label-in-value
             style="width: 100%"
-            :options="optionSellingPriceUnit"
-            @change="handleChangeSellingPriceUnit(index)"
         >
+          <a-select-option
+
+              v-for="option in SellingPriceUnitOptions"
+              :key="option.value"
+              :value="option.value"
+              @click="handleChangeSellingPriceUnits(index, option.value)"
+          >
+            {{ option.label }}
+          </a-select-option>
         </a-select>
       </div>
     </div>
+    <span class="text-red-500 font-medium italic text-sm"> {{ errors.valueInput }} </span>
   </a-modal>
 </template>
 
