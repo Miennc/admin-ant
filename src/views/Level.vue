@@ -294,7 +294,7 @@ onMounted(async () => {
             for="file-upload"
             class="px-4 py-1 bg-blue-500 text-white cursor-pointer hover:bg-blue-600"
           >
-            Upload File
+            Tải ảnh lên
           </label>
           <input
             id="file-upload"

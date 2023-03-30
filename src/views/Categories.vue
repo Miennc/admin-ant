@@ -243,7 +243,7 @@ onMounted(async () => {
           <div class="mt-1">
             <a-input
               v-model:value="inputCate.name"
-              placeholder="Tên người dùng"
+              placeholder="Tên danh mục"
             />
           </div>
           <span class="text-red-500 font-medium italic text-sm">
@@ -258,7 +258,7 @@ onMounted(async () => {
           <div class="mt-1">
             <a-input
               v-model:value="inputCate.description"
-              placeholder="Tên đăng nhập"
+              placeholder="Mô tả danh mục "
             />
           </div>
           <span class="text-red-500 font-medium italic text-sm">
