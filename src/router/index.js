@@ -7,9 +7,7 @@ import UserDetails from "../views/UserDetails.vue";
 import Profile from "../views/Profile.vue";
 import Categories from "../views/Categories.vue";
 import Level from "../views/Level.vue";
-import News from "../views/News.vue";
 import ProductDetails from "../views/ProductDetails.vue";
-import DetailNew from "../views/DetailNew.vue";
 import levelSpecification from "../views/levelSpecification.vue";
 import DetailLevelSpecification from "../views/DetailLevelSpecification.vue";
 import Mission from "../views/Mission.vue";
@@ -60,19 +58,9 @@ const router = createRouter({
                     component: Level,
                 },
                 {
-                    path: "news",
-                    name: "News",
-                    component: News,
-                },
-                {
                     path: "product-detail",
                     name: "ProductDetail",
                     component: ProductDetails,
-                },
-                {
-                    path: "detail-news",
-                    name: "DetailNews",
-                    component: DetailNew,
                 },
                 {
                     path: "levelSpecification",

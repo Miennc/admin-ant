@@ -41,8 +41,8 @@ const optionsMoney = ref([]);
 
 const inputProduct = ref({
   name: "",
-  fileUrl: [],
-  fileUpload: [],
+  fileUrl: '',
+  fileUpload: '',
   sku: "",
   price: "",
   priceUnit: "VND",
@@ -116,8 +116,8 @@ const getAllLevel = async () => {
 const showModal = async () => {
   inputProduct.value = {
     name: "",
-    fileUrl: [],
-    fileUpload: [],
+    fileUrl: '',
+    fileUpload: '',
     sku: "",
     price: "",
     priceUnit: "VND",
@@ -252,14 +252,9 @@ const handlEditProduct = async () => {
     try {
       const formData = new FormData();
       formData.append("id", idEditLevel.value);
-        for (let i = 0; i < inputProduct?.value?.fileUrl.length; i++) {
-          formData.append("imageUrlsKeep", inputProduct?.value?.fileUrl[i]);
-        }
-        for (let i = 0; i < inputProduct?.value?.fileUpload.length; i++) {
-          formData.append("imageList", inputProduct.value.fileUpload[i]);
-        }
+      formData.append("imageList", inputProduct.value.fileUpload);
 
-
+      formData.append("imageUrlsKeep", []);
       formData.append("name", inputProduct.value.name);
       formData.append("sku", inputProduct.value.sku);
       formData.append("price", inputProduct.value.price);
@@ -285,20 +280,16 @@ const handlEditProduct = async () => {
   }
 };
 
-const removeFilePreview = (index) => {
-  inputProduct.value.fileUrl?.splice(index, 1);
-  inputProduct.value.fileUpload?.splice(index, 1);
-
-  console.log("inputProduct.value.fileUrl", inputProduct.value.fileUrl);
-  console.log("inputProduct.value.fileUpload", inputProduct.value.fileUpload);
-};
 
 const previewFile = (e) => {
-  const files = e.target.files;
-  for (let i = 0; i < files.length; i++) {
-    console.log("files[i]", files[i]);
-    inputProduct.value.fileUpload.push(files[i]);
-    inputProduct.value.fileUrl.push(URL.createObjectURL(files[i]));
+  const file = e.target.files[0];
+  if (file) {
+    inputProduct.value.fileUpload = file;
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      inputProduct.value.fileUrl = reader.result;
+    };
   }
   e.target.value = "";
 };
@@ -321,11 +312,9 @@ const handlAddProduct = async () => {
       formData.append("defaultLevelId", inputProduct.value.defaultLevelId);
       formData.append("minSpeed", inputProduct.value.minSpeed);
       formData.append("maxSpeed", inputProduct.value.maxSpeed);
-      if (inputProduct.value.fileUpload) {
-        for (let i = 0; i < inputProduct.value.fileUpload.length; i++) {
-          formData.append("imageList", inputProduct.value.fileUpload[i]);
-        }
-      }
+      formData.append("imageList", inputProduct.value.fileUpload);
+
+
       const config = {
         headers: {
           "content-type": "multipart/form-data",
@@ -618,31 +607,33 @@ onMounted(async () => {
               type="file"
               class="sr-only"
               @change="previewFile"
-              multiple="multiple"
           />
         </div>
 
-        <div class="flex flex-wrap items-center gap-2">
-          <div
-              v-for="(itemImg, indexImg) in inputProduct.fileUrl"
-              :key="index"
-              class="w-44 relative mt-2 overflow-hidden h-44"
-              v-if="inputProduct.fileUrl.length > 0"
-          >
-            <img class="w-full h-full object-cover" :src="itemImg" alt=""/>
-            <div v-if="inputProduct.fileUrl.length > 0" class="ml-2">
-              <button
-                  class="text-red-700 bg-[#ffffff] w-7 h-7 shadow-md rounded-full absolute -top-1 -right-1"
-                  @click="removeFilePreview(indexImg)"
-              >
-                <i class="fa-solid text-gray-500 text-lg fa-xmark"></i>
-              </button>
-            </div>
+        <div
+            class="w-44 relative mt-2 overflow-hidden h-44"
+            v-if="inputProduct.fileUrl"
+        >
+          <img
+              class="w-full h-full object-cover"
+              :src="inputProduct.fileUrl"
+              alt=""
+          />
+          <div v-if="inputProduct.fileUrl" class="ml-2">
+            <button
+                class="text-red-700 bg-[#ffffff] w-7 h-7 shadow-md rounded-full absolute -top-1 -right-1"
+                @click="
+            inputProduct.fileUrl = '';
+            inputProduct.fileUpload = '';
+          "
+            >
+              <i class="fa-solid text-gray-500 text-lg fa-xmark"></i>
+            </button>
           </div>
         </div>
 
         <span class="text-red-500 font-medium italic text-sm">
-          {{ errors.fileUpload }}</span
+      {{ errors.fileUpload }}</span
         >
       </a-modal>
     </div>
@@ -956,26 +947,28 @@ onMounted(async () => {
           type="file"
           class="sr-only"
           @change="previewFile"
-          multiple="multiple"
       />
     </div>
 
-    <div class="flex flex-wrap items-center gap-2">
-      <div
-          v-for="(itemImg, indexImg) in inputProduct.fileUrl"
-          :key="indexImg"
-          class="w-44 relative mt-2 overflow-hidden h-44"
-          v-if="inputProduct.fileUrl.length > 0"
-      >
-        <img class="w-full h-full object-cover" :src="itemImg" alt=""/>
-        <div v-if="inputProduct.fileUrl.length > 0" class="ml-2">
-          <button
-              class="text-red-700 bg-[#ffffff] w-7 h-7 shadow-md rounded-full absolute -top-1 -right-1"
-              @click="removeFilePreview(indexImg)"
-          >
-            <i class="fa-solid text-gray-500 text-lg fa-xmark"></i>
-          </button>
-        </div>
+    <div
+        class="w-44 relative mt-2 overflow-hidden h-44"
+        v-if="inputProduct.fileUrl"
+    >
+      <img
+          class="w-full h-full object-cover"
+          :src="inputProduct.fileUrl"
+          alt=""
+      />
+      <div v-if="inputProduct.fileUrl" class="ml-2">
+        <button
+            class="text-red-700 bg-[#ffffff] w-7 h-7 shadow-md rounded-full absolute -top-1 -right-1"
+            @click="
+            inputProduct.fileUrl = '';
+            inputProduct.fileUpload = '';
+          "
+        >
+          <i class="fa-solid text-gray-500 text-lg fa-xmark"></i>
+        </button>
       </div>
     </div>
 

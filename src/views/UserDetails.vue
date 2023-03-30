@@ -72,8 +72,8 @@ onMounted(() => {
             <p class="text-gray-800">{{ dataUserById.email }}</p>
           </div>
           <div>
-            <p class="font-semibold text-gray-600">Số điện thoại:</p>
-            <p class="text-gray-800">{{ dataUserById.phoneNumber }}</p>
+            <p class="font-semibold text-gray-600">Tên hiển thị</p>
+            <p class="text-gray-800">{{ dataUserById.displayName }}</p>
           </div>
 
           <div>
@@ -152,7 +152,7 @@ onMounted(() => {
           <div class="mt-[2.1rem]">
             <p class="font-semibold text-gray-600">Ảnh chân dung:</p>
             <div
-              class="w-[230px] h-[230px] overflow-hidden bg-red-500"
+              class="w-[230px] h-[230px] overflow-hidden "
               v-if="dataUserById?.identification?.identificationImageSelfieUrl"
             >
               <img

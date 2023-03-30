@@ -126,12 +126,6 @@ onMounted(() => {
           </span>
         </a-menu-item>
 
-        <a-menu-item key="news">
-          <span class="flex items-center">
-            <send-outlined/>
-            <span>Quản lý Tin tức</span>
-          </span>
-        </a-menu-item>
 
         <a-menu-item key="mission">
           <span class="flex items-center">
