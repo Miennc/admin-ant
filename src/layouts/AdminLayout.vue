@@ -19,16 +19,15 @@ const collapsed = ref(false);
 const openedSubMenu = ref(["dashboard"]);
 const baseAdminUrl = "/home/";
 
-// for methods
+
 const onMenuClick =  ({key}) => {
-  console.log("onMenuClick", key);
+  console.log("onMenuClick", baseAdminUrl + key);
   selectedKeys.value = [key];
-  router.push(baseAdminUrl + key);
+ router.push(baseAdminUrl + key);
 };
 
 
 const refreshOpenedSubMenu = () => {
-  // for opened sub menu
   let path = route.path.replace(baseAdminUrl, "");
 
   const slashIndex = path.indexOf("/");
@@ -92,7 +91,7 @@ onMounted(() => {
           :openKeys="openedSubMenu"
           @click="onMenuClick"
       >
-        <a-menu-item key="">
+        <a-menu-item key="/">
           <span class="flex items-center">
             <project-outlined/>
             <span>Quản lý sản phẩm </span>
@@ -120,19 +119,19 @@ onMounted(() => {
           </span>
         </a-menu-item>
 
-<!--        <a-menu-item key="levelSpecification">-->
-<!--          <span class="flex items-center">-->
-<!--            <stock-outlined/>-->
-<!--            <span>Quản lý thông số level </span>-->
-<!--          </span>-->
-<!--        </a-menu-item>-->
+        <a-menu-item key="levelSpecification">
+          <span class="flex items-center">
+            <stock-outlined/>
+            <span>Quản lý thông số level </span>
+          </span>
+        </a-menu-item>
 
-<!--        <a-menu-item key="news">-->
-<!--          <span class="flex items-center">-->
-<!--            <send-outlined/>-->
-<!--            <span>Quản lý Tin tức</span>-->
-<!--          </span>-->
-<!--        </a-menu-item>-->
+        <a-menu-item key="news">
+          <span class="flex items-center">
+            <send-outlined/>
+            <span>Quản lý Tin tức</span>
+          </span>
+        </a-menu-item>
 
         <a-menu-item key="mission">
           <span class="flex items-center">
@@ -141,12 +140,7 @@ onMounted(() => {
           </span>
         </a-menu-item>
 
-        <a-menu-item key="test">
-          <span class="flex items-center">
-            <setting-outlined/>
-            <span>test</span>
-          </span>
-        </a-menu-item>
+
 
         <!--        <a-sub-menu key="sub4">-->
         <!--          <template #icon>-->

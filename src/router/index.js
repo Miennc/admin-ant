@@ -83,22 +83,22 @@ const router = createRouter({
                 {
                     path: "level-specification-detail",
                     name: "levelSpecificationDetail",
-                    component: () => DetailLevelSpecification,
+                    component:  DetailLevelSpecification,
                 },
                 {
                     path: "mission",
                     name: "Mission",
-                    component: () => Mission,
+                    component:  Mission,
                 },
                 {
                     path: "mission-detail",
                     name: "DetailMission",
-                    component: () => DetailMission,
+                    component:  DetailMission,
                 },
                 {
                     path: "test",
                     name: "Test",
-                    component: () => Test,
+                    component:  Test,
                 }
             ],
         },
