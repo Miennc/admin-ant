@@ -14,7 +14,6 @@ import levelSpecification from "../views/levelSpecification.vue";
 import DetailLevelSpecification from "../views/DetailLevelSpecification.vue";
 import Mission from "../views/Mission.vue";
 import DetailMission from "../views/DetailMission.vue";
-import Test from "../views/Test.vue";
 
 const router = createRouter({
     history: createWebHashHistory(),
@@ -95,11 +94,6 @@ const router = createRouter({
                     name: "DetailMission",
                     component:  DetailMission,
                 },
-                {
-                    path: "test",
-                    name: "Test",
-                    component:  Test,
-                }
             ],
         },
     ],
