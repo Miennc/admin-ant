@@ -63,45 +63,45 @@ const regexNumber = /^[0-9]*$/;
 
 const validate = () => {
   errors.value.name = inputMission.value.name
-    ? ""
-    : "Tên danh mục không được để trống";
-  errors.value.description = inputMission.value.description
-    ? ""
-    : "Mô tả không được để trống";
-  errors.value.type = inputMission.value.type
-    ? ""
-    : "Loại nhiệm vụ không được để trống";
-  errors.value.distanceInKiloMeter = regexNumber.test(inputMission.value.distanceInKiloMeter)
-    ? ""
-    : "Số bước phải là số";
-  errors.value.minutes =
-    inputMission.value.minutes && inputMission.value.type == "FASTER"
       ? ""
-      : "Số phút không được để trống";
+      : "Tên danh mục không được để trống";
+  errors.value.description = inputMission.value.description
+      ? ""
+      : "Mô tả không được để trống";
+  errors.value.type = inputMission.value.type
+      ? ""
+      : "Loại nhiệm vụ không được để trống";
+  errors.value.distanceInKiloMeter = regexNumber.test(inputMission.value.distanceInKiloMeter)
+      ? ""
+      : "Số bước phải là số";
+  errors.value.minutes =
+      inputMission.value.minutes && inputMission.value.type == "FASTER"
+          ? ""
+          : "Số phút không được để trống";
   errors.value.reward = regexNumber.test(inputMission.value.reward)
-    ? ""
-    : "Số tiền phải là số";
+      ? ""
+      : "Số tiền phải là số";
   errors.value.rewardUnit = inputMission.value.rewardUnit
-    ? ""
-    : "Đơn vị phần thưởng không được để trống";
+      ? ""
+      : "Đơn vị phần thưởng không được để trống";
   if (inputMission.value.type == "FASTER") {
     return (
-      !errors.value.name &&
-      !errors.value.description &&
-      !errors.value.type &&
-      !errors.value.distanceInKiloMeter &&
-      !errors.value.minutes &&
-      !errors.value.reward &&
-      !errors.value.rewardUnit
+        !errors.value.name &&
+        !errors.value.description &&
+        !errors.value.type &&
+        !errors.value.distanceInKiloMeter &&
+        !errors.value.minutes &&
+        !errors.value.reward &&
+        !errors.value.rewardUnit
     );
   } else {
     return (
-      !errors.value.name &&
-      !errors.value.description &&
-      !errors.value.type &&
-      !errors.value.distanceInKiloMeter &&
-      !errors.value.reward &&
-      !errors.value.rewardUnit
+        !errors.value.name &&
+        !errors.value.description &&
+        !errors.value.type &&
+        !errors.value.distanceInKiloMeter &&
+        !errors.value.reward &&
+        !errors.value.rewardUnit
     );
   }
 };
@@ -288,8 +288,8 @@ onMounted(async () => {
 
 <template>
   <a-page-header
-    style="border: 1px solid rgb(235, 237, 240); padding: 10px"
-    title="Quản lý  nhiệm vụ"
+      style="border: 1px solid rgb(235, 237, 240); padding: 10px"
+      title="Quản lý  nhiệm vụ"
   >
     <template #tags>
       <a-button type="primary" @click="showModal">Thêm nhiệm vụ</a-button>
@@ -298,10 +298,10 @@ onMounted(async () => {
     <template #extra>
       <a-space>
         <input
-          v-model="textSearch"
-          type="text"
-          class="w-[20rem] p-1 outline-1 outline-[#1890ff]"
-          placeholder="Tìm kiếm..."
+            v-model="textSearch"
+            type="text"
+            class="w-[20rem] p-1 outline-1 outline-[#1890ff]"
+            placeholder="Tìm kiếm..."
         />
 
         <a-dropdown placement="bottomRight">
@@ -319,10 +319,10 @@ onMounted(async () => {
 
     <div>
       <a-modal
-        v-model:visible="visible"
-        width="1000px"
-        title="Thêm nhiệm vụ"
-        @ok="handlAddMission"
+          v-model:visible="visible"
+          width="1000px"
+          title="Thêm nhiệm vụ"
+          @ok="handlAddMission"
       >
         <div>
           <label class="block text-sm font-medium text-gray-700">
@@ -330,11 +330,11 @@ onMounted(async () => {
           </label>
           <div class="mt-1">
             <a-select
-              v-model:value="inputMission.type"
-              label-in-value
-              style="width: 100%"
-              :options="optionsType"
-              @change="handlChangeType"
+                v-model:value="inputMission.type"
+                label-in-value
+                style="width: 100%"
+                :options="optionsType"
+                @change="handlChangeType"
             >
             </a-select>
           </div>
@@ -349,8 +349,8 @@ onMounted(async () => {
           </label>
           <div class="mt-1">
             <a-input
-              v-model:value="inputMission.name"
-              placeholder="Tên người dùng"
+                v-model:value="inputMission.name"
+                placeholder="Tên người dùng"
             />
           </div>
           <span class="text-red-500 font-medium italic text-sm">
@@ -364,8 +364,8 @@ onMounted(async () => {
           </label>
           <div class="mt-1">
             <a-input
-              v-model:value="inputMission.description"
-              placeholder="Mô tả nhiệm vụ"
+                v-model:value="inputMission.description"
+                placeholder="Mô tả nhiệm vụ"
             />
           </div>
           <span class="text-red-500 font-medium italic text-sm">
@@ -379,8 +379,8 @@ onMounted(async () => {
           </label>
           <div class="mt-1">
             <a-input
-              v-model:value="inputMission.distanceInKiloMeter"
-              placeholder="km"
+                v-model:value="inputMission.distanceInKiloMeter"
+                placeholder="km"
             />
           </div>
           <span class="text-red-500 font-medium italic text-sm">
@@ -394,8 +394,8 @@ onMounted(async () => {
           </label>
           <div class="mt-1">
             <a-input
-              v-model:value="inputMission.minutes"
-              placeholder="Số phút thực hiện"
+                v-model:value="inputMission.minutes"
+                placeholder="Số phút thực hiện"
             />
           </div>
           <span class="text-red-500 font-medium italic text-sm">
@@ -409,8 +409,8 @@ onMounted(async () => {
           </label>
           <div class="mt-1">
             <a-input
-              v-model:value="inputMission.reward"
-              placeholder="Phần thưởng"
+                v-model:value="inputMission.reward"
+                placeholder="Phần thưởng"
             />
           </div>
           <span class="text-red-500 font-medium italic text-sm">
@@ -424,11 +424,11 @@ onMounted(async () => {
           </label>
           <div class="mt-1">
             <a-select
-              v-model:value="inputMission.rewardUnit"
-              label-in-value
-              style="width: 100%"
-              :options="optionsUnit"
-              @change="handlChangeUnit"
+                v-model:value="inputMission.rewardUnit"
+                label-in-value
+                style="width: 100%"
+                :options="optionsUnit"
+                @change="handlChangeUnit"
             >
             </a-select>
           </div>
@@ -445,117 +445,117 @@ onMounted(async () => {
           <div class="overflow-hidden">
             <table class="min-w-full">
               <thead class="bg-gray-200 border-b">
-                <tr>
-                  <th
+              <tr>
+                <th
                     scope="col"
                     class="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                  >
-                    #
-                  </th>
-                  <th
+                >
+                  #
+                </th>
+                <th
                     scope="col"
                     class="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                  >
-                    Tên nhiệm vụ
-                  </th>
-                  <th
+                >
+                  Tên nhiệm vụ
+                </th>
+                <th
                     scope="col"
                     class="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                  >
-                    Mô tả nhiệm vụ
-                  </th>
+                >
+                  Mô tả nhiệm vụ
+                </th>
 
-                  <th
+                <th
                     scope="col"
                     class="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                  >
-                    Số bước chân
-                  </th>
-                  <th
+                >
+                  Số bước chân
+                </th>
+                <th
                     scope="col"
                     class="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                  >
-                    Phần thưởng
-                  </th>
-                  <th
+                >
+                  Phần thưởng
+                </th>
+                <th
                     scope="col"
                     class="text-sm font-medium flex justify-end text-gray-900 px-6 py-4 text-left"
-                  >
-                    Hành động
-                  </th>
-                </tr>
+                >
+                  Hành động
+                </th>
+              </tr>
               </thead>
               <tbody
-                v-for="(itemMission, indexMission) in dataMission"
-                :key="indexMission"
+                  v-for="(itemMission, indexMission) in dataMission"
+                  :key="indexMission"
               >
-                <tr
+              <tr
                   class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100"
-                >
-                  <td
+              >
+                <td
                     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-                  >
-                    {{ (currentPage - 1) * 10 + (indexMission + 1) }}
-                  </td>
+                >
+                  {{ (currentPage - 1) * 10 + (indexMission + 1) }}
+                </td>
 
-                  <router-link
+                <router-link
                     :to="{
                       name: 'DetailMission',
                       query: { id: itemMission.id },
                     }"
-                  >
-                    <a-tooltip placement="bottom">
-                      <template #title>
-                        <span> Ấn vào để xem chi tiết </span>
-                      </template>
-                      <td
+                >
+                  <a-tooltip placement="bottom">
+                    <template #title>
+                      <span> Ấn vào để xem chi tiết </span>
+                    </template>
+                    <td
                         class="text-sm cursor-pointer text-gray-900 font-light px-6 whitespace-nowrap"
-                      >
-                        {{ itemMission.name }}
-                      </td>
-                    </a-tooltip>
-                  </router-link>
+                    >
+                      {{ itemMission.name }}
+                    </td>
+                  </a-tooltip>
+                </router-link>
 
-                  <td
+                <td
                     class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap"
-                  >
-                    {{
-                      itemMission.description.length > 50
+                >
+                  {{
+                    itemMission.description.length > 50
                         ? itemMission.description.substring(0, 50) + "..."
                         : itemMission.description
-                    }}
-                  </td>
-                  <td
+                  }}
+                </td>
+                <td
                     class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap"
-                  >
-                    {{ itemMission.distanceInKiloMeter }}
-                  </td>
-                  <td
+                >
+                  {{ itemMission.distanceInKiloMeter }}
+                </td>
+                <td
                     class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap"
-                  >
-                    {{ itemMission.reward }}
-                  </td>
-                  <td
+                >
+                  {{ itemMission.reward }}
+                </td>
+                <td
                     class="text-sm flex justify-end text-gray-900 font-light px-6 py-4 whitespace-nowrap"
-                  >
-                    <div class="flex justify-start items-center">
+                >
+                  <div class="flex justify-start items-center">
                       <span @click="showModalEdit(itemMission.id)"
-                        ><i
+                      ><i
                           class="fa-solid fa-pen-to-square text-xl text-blue-500 mr-2 cursor-pointer"
-                        ></i
+                      ></i
                       ></span>
 
-                      <span
+                    <span
                         @click="showModalConfirm(itemMission.id)"
                         data-bs-toggle="modal"
                         data-bs-target="#exampleModalCenter"
-                        ><i
-                          class="fa-solid fa-trash-can text-xl text-red-600 cursor-pointer"
-                        ></i
-                      ></span>
-                    </div>
-                  </td>
-                </tr>
+                    ><i
+                        class="fa-solid fa-trash-can text-xl text-red-600 cursor-pointer"
+                    ></i
+                    ></span>
+                  </div>
+                </td>
+              </tr>
               </tbody>
             </table>
           </div>
@@ -565,36 +565,36 @@ onMounted(async () => {
 
     <div class="flex justify-end">
       <a-pagination
-        @change="pageChanged()"
-        v-model:current="currentPage"
-        :total="totalPages"
-        show-less-items
-        :showSizeChanger="false"
+          @change="pageChanged()"
+          v-model:current="currentPage"
+          :total="totalPages"
+          show-less-items
+          :showSizeChanger="false"
       />
     </div>
   </a-page-header>
 
   <div
-    v-if="loading"
-    class="fixed top-0 bottom-0 left-0 z-[99999999] right-0 bg-black opacity-30 flex justify-center items-center"
+      v-if="loading"
+      class="fixed top-0 bottom-0 left-0 z-[99999999] right-0 bg-black opacity-30 flex justify-center items-center"
   >
     <Loading :loading="loading"></Loading>
   </div>
 
   <a-modal
-    v-model:visible="visibleConfirm"
-    title="Xóa nhiệm vụ"
-    :confirm-loading="confirmLoading"
-    @ok="handlRemoveMission"
+      v-model:visible="visibleConfirm"
+      title="Xóa nhiệm vụ"
+      :confirm-loading="confirmLoading"
+      @ok="handlRemoveMission"
   >
     <p>{{ modalText }}</p>
   </a-modal>
 
   <a-modal
-    v-model:visible="visibleEdit"
-    width="1000px"
-    title="Sửa  nhiệm vụ"
-    @ok="hanldEditCate"
+      v-model:visible="visibleEdit"
+      width="1000px"
+      title="Sửa  nhiệm vụ"
+      @ok="hanldEditCate"
   >
     <div>
       <label class="block text-sm font-medium text-gray-700">
@@ -602,11 +602,11 @@ onMounted(async () => {
       </label>
       <div class="mt-1">
         <a-select
-          v-model:value="inputMission.type"
-          label-in-value
-          style="width: 100%"
-          :options="optionsType"
-          @change="handlChangeType"
+            v-model:value="inputMission.type"
+            label-in-value
+            style="width: 100%"
+            :options="optionsType"
+            @change="handlChangeType"
         >
         </a-select>
       </div>
@@ -621,8 +621,8 @@ onMounted(async () => {
       </label>
       <div class="mt-1">
         <a-input
-          v-model:value="inputMission.name"
-          placeholder="Tên người dùng"
+            v-model:value="inputMission.name"
+            placeholder="Tên người dùng"
         />
       </div>
       <span class="text-red-500 font-medium italic text-sm">
@@ -636,8 +636,8 @@ onMounted(async () => {
       </label>
       <div class="mt-1">
         <a-input
-          v-model:value="inputMission.description"
-          placeholder="Mô tả nhiệm vụ"
+            v-model:value="inputMission.description"
+            placeholder="Mô tả nhiệm vụ"
         />
       </div>
       <span class="text-red-500 font-medium italic text-sm">
@@ -651,8 +651,8 @@ onMounted(async () => {
       </label>
       <div class="mt-1">
         <a-input
-          v-model:value="inputMission.distanceInKiloMeter"
-          placeholder="km"
+            v-model:value="inputMission.distanceInKiloMeter"
+            placeholder="km"
         />
       </div>
       <span class="text-red-500 font-medium italic text-sm">
@@ -666,8 +666,8 @@ onMounted(async () => {
       </label>
       <div class="mt-1">
         <a-input
-          v-model:value="inputMission.minutes"
-          placeholder="Số phút thực hiện"
+            v-model:value="inputMission.minutes"
+            placeholder="Số phút thực hiện"
         />
       </div>
       <span class="text-red-500 font-medium italic text-sm">
@@ -681,8 +681,8 @@ onMounted(async () => {
       </label>
       <div class="mt-1">
         <a-input
-          v-model:value="inputMission.reward"
-          placeholder="Phần thưởng"
+            v-model:value="inputMission.reward"
+            placeholder="Phần thưởng"
         />
       </div>
       <span class="text-red-500 font-medium italic text-sm">
@@ -696,11 +696,11 @@ onMounted(async () => {
       </label>
       <div class="mt-1">
         <a-select
-          v-model:value="inputMission.rewardUnit"
-          label-in-value
-          style="width: 100%"
-          :options="optionsUnit"
-          @change="handlChangeUnit"
+            v-model:value="inputMission.rewardUnit"
+            label-in-value
+            style="width: 100%"
+            :options="optionsUnit"
+            @change="handlChangeUnit"
         >
         </a-select>
       </div>

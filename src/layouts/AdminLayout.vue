@@ -20,17 +20,12 @@ const openedSubMenu = ref(["dashboard"]);
 const baseAdminUrl = "/home/";
 
 // for methods
-const onMenuClick = ({key}) => {
+const onMenuClick =  ({key}) => {
   console.log("onMenuClick", key);
   selectedKeys.value = [key];
   router.push(baseAdminUrl + key);
 };
 
-const onSubMenuClicked = (e, key) => {
-  selectedKeys.value = [key];
-
-  router.push(baseAdminUrl + key);
-};
 
 const refreshOpenedSubMenu = () => {
   // for opened sub menu
@@ -55,6 +50,7 @@ const logout = () => {
 onMounted(() => {
   if (!localStorage.getItem("token")) {
     router.push({name: "Login"});
+    return;
   }
 
   refreshOpenedSubMenu();
@@ -138,10 +134,17 @@ onMounted(() => {
           </span>
         </a-menu-item>
 
-        <a-menu-item key="test">
+        <a-menu-item key="mission">
           <span class="flex items-center">
             <setting-outlined/>
             <span>Quản lý nhiệm vụ</span>
+          </span>
+        </a-menu-item>
+
+        <a-menu-item key="test">
+          <span class="flex items-center">
+            <setting-outlined/>
+            <span>test</span>
           </span>
         </a-menu-item>
 
