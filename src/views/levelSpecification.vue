@@ -29,10 +29,6 @@ const state = reactive({
   sellingPriceUnit2: [],
 });
 
-// const dataUpLevelUpgradeList = ref([{
-//   upgradePriceUnit: levelUpgradePriceUnit[index],
-//   upgradePrice: parseInt(price),
-// }]);
 
 const SellingPriceUnitOptions = ref([]);
 const optionSellingPriceUnit = ref([]);
@@ -64,7 +60,6 @@ const handleChangeEnergyRecoverPriceUnit = (value) => {
 const ChangeSellingPriceUnit = (value) => {
   inputLevelSpeci.value.sellingPriceUnit = value.value;
 };
-
 
 
 const inputLevelSpeci = ref({
@@ -229,7 +224,7 @@ const showModal = async () => {
   await getUnitMoney();
   resetState();
   visible.value = true;
-   levelInputs = computed(() => {
+  levelInputs = computed(() => {
     const diff = Math.abs(
         inputLevelSpeci.value.maxLevelId - inputLevelSpeci.value.defaultLevelId
     );
@@ -255,10 +250,6 @@ const handlRemoveLevelSpeci = async () => {
   }
   visibleConfirm.value = false;
 };
-
-
-
-
 
 
 const showModalConfirm = (id) => {
@@ -315,11 +306,11 @@ const showModalEdit = async (id) => {
         )),
         (idCategory.value = res.data.productCategory.id);
 
-      state.valueInput2 = res.data?.levelUpgrades?.map(item=>item?.upgradePrice)
-      state.sellingPriceUnit2 = res.data?.levelUpgrades?.map(item=>item?.upgradePriceUnit)
+    state.valueInput2 = res.data?.levelUpgrades?.map(item => item?.upgradePrice)
+    state.sellingPriceUnit2 = res.data?.levelUpgrades?.map(item => item?.upgradePriceUnit)
 
 
-      levelInputs = computed(() => {
+    levelInputs = computed(() => {
       const diff = Math.abs(
           inputLevelSpeci.value.maxLevelId - inputLevelSpeci.value.defaultLevelId
       );
@@ -330,13 +321,13 @@ const showModalEdit = async (id) => {
 
       state.valueInput = [];
       state.sellingPriceUnit = [];
-        if(isFirstRun){
-          const tempValueInput = res.data?.levelUpgrades?.map(item=>item?.upgradePrice)
-          const tempSellingPriceUnit = res.data?.levelUpgrades?.map(item=>item?.upgradePriceUnit)
-          state.valueInput = tempValueInput
-          state.sellingPriceUnit = tempSellingPriceUnit
-          isFirstRun = false
-        }
+      if (isFirstRun) {
+        const tempValueInput = res.data?.levelUpgrades?.map(item => item?.upgradePrice)
+        const tempSellingPriceUnit = res.data?.levelUpgrades?.map(item => item?.upgradePriceUnit)
+        state.valueInput = tempValueInput
+        state.sellingPriceUnit = tempSellingPriceUnit
+        isFirstRun = false
+      }
       return inputs;
     });
 
@@ -349,10 +340,8 @@ const showModalEdit = async (id) => {
 const editLevelSpeci = async () => {
   if (validate()) {
     try {
-      const levelUpgradePriceUnit = SellingPriceUnitOptions.value.map(
-          (item) => item.value
-      );
 
+      const levelUpgradePriceUnit = state.sellingPriceUnit.map((item) => item.value)
       await levelSpecificationServices.editLevelSpecification({
         id: idEditLevelSpeci.value,
         daysToUseMax: 30,
@@ -392,9 +381,7 @@ const handleAddLevelSpeci = async () => {
   if (validate()) {
     loading.value = true;
     try {
-      const levelUpgradePriceUnit = SellingPriceUnitOptions.value.map(
-          (item) => item.value
-      );
+      const levelUpgradePriceUnit = state.sellingPriceUnit.map((item) => item.value)
       await levelSpecificationServices.createLevelSpecification({
         daysToUseMax: 30,
         durability: inputLevelSpeci.value.durability,
@@ -812,6 +799,7 @@ const handleChangeSellingPriceUnit = (value, index) => {
               :id="'input' + index"
               v-model:value="state.valueInput[index]"
           />
+          <span class="text-red-500 font-medium italic text-sm">ềwf </span>
           <label
               class="block text-sm font-medium text-gray-700"
               :for="'input' + index"
@@ -828,6 +816,7 @@ const handleChangeSellingPriceUnit = (value, index) => {
             >
             </a-select>
           </div>
+          <span class="text-red-500 font-medium italic text-sm">ềwf </span>
         </div>
       </a-modal>
     </div>
