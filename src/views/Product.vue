@@ -1,11 +1,11 @@
 <script setup>
-import { levelServices } from "@/services/levelServices";
-import { onMounted, ref, watch } from "vue";
+import {levelServices} from "@/services/levelServices";
+import {onMounted, ref, watch} from "vue";
 import Loading from "@/components/loading/Loading.vue";
-import { useToast } from "vue-toastification";
-import { productServices } from "@/services/productServices";
-import { categoryServices } from "@/services/categoryServices";
-import { useRoute } from "vue-router";
+import {useToast} from "vue-toastification";
+import {productServices} from "@/services/productServices";
+import {categoryServices} from "@/services/categoryServices";
+import {useRoute} from "vue-router";
 
 const router = useRoute();
 const toast = useToast();
@@ -139,48 +139,48 @@ const regexNumber = /^[0-9]*$/;
 
 const validate = () => {
   errors.value.name = inputProduct.value.name
-    ? ""
-    : "Tên sản phẩm không được để trống";
+      ? ""
+      : "Tên sản phẩm không được để trống";
   errors.value.fileUpload =
-    inputProduct?.value?.fileUrl?.length < 1 ? "Ảnh không được để trống" : "";
+      inputProduct?.value?.fileUrl?.length < 1 ? "Ảnh không được để trống" : "";
   errors.value.sku = inputProduct.value.sku ? "" : "Sku không được để trống";
   errors.value.price =
-    regexNumber.test(inputProduct.value.price) && inputProduct.value.price
-      ? ""
-      : "Giá phải là số";
+      regexNumber.test(inputProduct.value.price) && inputProduct.value.price
+          ? ""
+          : "Giá phải là số";
   errors.value.minSpeed =
-    regexNumber.test(inputProduct.value.minSpeed) && inputProduct.value.minSpeed
-      ? ""
-      : "Tốc độ tối thiểu phải là số";
+      regexNumber.test(inputProduct.value.minSpeed) && inputProduct.value.minSpeed
+          ? ""
+          : "Tốc độ tối thiểu phải là số";
   errors.value.maxSpeed =
-    regexNumber.test(inputProduct.value.maxSpeed) && inputProduct.value.maxSpeed
-      ? ""
-      : "Tốc độ tối đa phải là số";
+      regexNumber.test(inputProduct.value.maxSpeed) && inputProduct.value.maxSpeed
+          ? ""
+          : "Tốc độ tối đa phải là số";
   errors.value.priceUnit = inputProduct.value.priceUnit
-    ? ""
-    : "Đơn vị in không được để trống";
+      ? ""
+      : "Đơn vị in không được để trống";
   errors.value.status = inputProduct.value.status
-    ? ""
-    : "Trạng thái không được để trống";
+      ? ""
+      : "Trạng thái không được để trống";
   errors.value.description = inputProduct.value.description
-    ? ""
-    : "Mô tả không được để trống";
+      ? ""
+      : "Mô tả không được để trống";
   errors.value.categoryId = inputProduct.value.categoryId
-    ? ""
-    : "Danh mục không được để trống";
+      ? ""
+      : "Danh mục không được để trống";
   errors.value.defaultLevelId = inputProduct.value.defaultLevelId
-    ? ""
-    : "Level mặc định không được để trống";
+      ? ""
+      : "Level mặc định không được để trống";
   return (
-    !errors.value.name &&
-    !errors.value.fileUpload &&
-    !errors.value.sku &&
-    !errors.value.price &&
-    !errors.value.priceUnit &&
-    !errors.value.status &&
-    !errors.value.description &&
-    !errors.value.categoryId &&
-    !errors.value.defaultLevelId
+      !errors.value.name &&
+      !errors.value.fileUpload &&
+      !errors.value.sku &&
+      !errors.value.price &&
+      !errors.value.priceUnit &&
+      !errors.value.status &&
+      !errors.value.description &&
+      !errors.value.categoryId &&
+      !errors.value.defaultLevelId
   );
 };
 
@@ -252,11 +252,14 @@ const handlEditProduct = async () => {
     try {
       const formData = new FormData();
       formData.append("id", idEditLevel.value);
-      if (inputProduct.value.fileUrl.length) {
-        for (let i = 0; i < inputProduct.value.fileUrl.length; i++) {
-          formData.append("imageUrlsKeep", inputProduct.value.fileUrl[i]);
+        for (let i = 0; i < inputProduct?.value?.fileUrl.length; i++) {
+          formData.append("imageUrlsKeep", inputProduct?.value?.fileUrl[i]);
         }
-      }
+        for (let i = 0; i < inputProduct?.value?.fileUpload.length; i++) {
+          formData.append("imageList", inputProduct.value.fileUpload[i]);
+        }
+
+
       formData.append("name", inputProduct.value.name);
       formData.append("sku", inputProduct.value.sku);
       formData.append("price", inputProduct.value.price);
@@ -283,12 +286,11 @@ const handlEditProduct = async () => {
 };
 
 const removeFilePreview = (index) => {
-  if (inputProduct.value.fileUrl?.length > 0) {
-    inputProduct.value.fileUrl?.splice(index, 1);
-  }
-  if (inputProduct.value.fileUpload?.length > 0) {
-    inputProduct.value.fileUpload?.splice(index, 1);
-  }
+  inputProduct.value.fileUrl?.splice(index, 1);
+  inputProduct.value.fileUpload?.splice(index, 1);
+
+  console.log("inputProduct.value.fileUrl", inputProduct.value.fileUrl);
+  console.log("inputProduct.value.fileUpload", inputProduct.value.fileUpload);
 };
 
 const previewFile = (e) => {
@@ -415,7 +417,7 @@ const pageChanged = async () => {
 const checkToken = () => {
   const token = localStorage.getItem("token");
   if (!token) {
-    router.push({ name: "login" });
+    router.push({name: "login"});
   }
 };
 
@@ -429,8 +431,8 @@ onMounted(async () => {
 
 <template>
   <a-page-header
-    style="border: 1px solid rgb(235, 237, 240); padding: 10px"
-    title="Quản lý sản phẩm"
+      style="border: 1px solid rgb(235, 237, 240); padding: 10px"
+      title="Quản lý sản phẩm"
   >
     <template #tags>
       <a-button type="primary" @click="showModal">Thêm sản phẩm</a-button>
@@ -439,10 +441,10 @@ onMounted(async () => {
     <template #extra>
       <a-space>
         <input
-          v-model="textSearch"
-          type="text"
-          class="w-[20rem] p-1 outline-1 outline-[#1890ff]"
-          placeholder="Tìm kiếm..."
+            v-model="textSearch"
+            type="text"
+            class="w-[20rem] p-1 outline-1 outline-[#1890ff]"
+            placeholder="Tìm kiếm..."
         />
 
         <a-dropdown placement="bottomRight">
@@ -460,10 +462,10 @@ onMounted(async () => {
 
     <div>
       <a-modal
-        v-model:visible="visible"
-        width="1000px"
-        title="Thêm sản phẩm"
-        @ok="handlAddProduct"
+          v-model:visible="visible"
+          width="1000px"
+          title="Thêm sản phẩm"
+          @ok="handlAddProduct"
       >
         <div>
           <label class="block text-sm font-medium text-gray-700">
@@ -471,8 +473,8 @@ onMounted(async () => {
           </label>
           <div class="mt-1">
             <a-input
-              v-model:value="inputProduct.name"
-              placeholder="Tên sản  phẩm "
+                v-model:value="inputProduct.name"
+                placeholder="Tên sản  phẩm "
             />
           </div>
           <span class="text-red-500 font-medium italic text-sm">
@@ -486,8 +488,8 @@ onMounted(async () => {
           </label>
           <div class="mt-1">
             <a-input
-              v-model:value="inputProduct.sku"
-              placeholder="Mã sản phẩm"
+                v-model:value="inputProduct.sku"
+                placeholder="Mã sản phẩm"
             />
           </div>
           <span class="text-red-500 font-medium italic text-sm">
@@ -501,8 +503,8 @@ onMounted(async () => {
           </label>
           <div class="mt-1">
             <a-input
-              v-model:value="inputProduct.price"
-              placeholder="Giá sản phẩm "
+                v-model:value="inputProduct.price"
+                placeholder="Giá sản phẩm "
             />
           </div>
           <span class="text-red-500 font-medium italic text-sm">
@@ -516,11 +518,11 @@ onMounted(async () => {
           </label>
           <div class="mt-1">
             <a-select
-              v-model:value="inputProduct.priceUnit"
-              label-in-value
-              style="width: 100%"
-              :options="optionsMoney"
-              @change="handleChangeMoney"
+                v-model:value="inputProduct.priceUnit"
+                label-in-value
+                style="width: 100%"
+                :options="optionsMoney"
+                @change="handleChangeMoney"
             >
             </a-select>
           </div>
@@ -535,8 +537,8 @@ onMounted(async () => {
           </label>
           <div class="mt-1">
             <a-input
-              v-model:value="inputProduct.description"
-              placeholder="mô tả sản phẩm"
+                v-model:value="inputProduct.description"
+                placeholder="mô tả sản phẩm"
             />
           </div>
           <span class="text-red-500 font-medium italic text-sm">
@@ -549,7 +551,7 @@ onMounted(async () => {
             Tốc độ tối đa
           </label>
           <div class="mt-1">
-            <a-input v-model:value="inputProduct.maxSpeed" placeholder="10km" />
+            <a-input v-model:value="inputProduct.maxSpeed" placeholder="10km"/>
           </div>
           <span class="text-red-500 font-medium italic text-sm">
             {{ errors.maxSpeed }}</span
@@ -561,7 +563,7 @@ onMounted(async () => {
             Tốc độ tối thiểu
           </label>
           <div class="mt-1">
-            <a-input v-model:value="inputProduct.minSpeed" placeholder="1km" />
+            <a-input v-model:value="inputProduct.minSpeed" placeholder="1km"/>
           </div>
           <span class="text-red-500 font-medium italic text-sm">
             {{ errors.minSpeed }}</span
@@ -572,11 +574,11 @@ onMounted(async () => {
           <label class="block text-sm font-medium text-gray-700"> Level </label>
           <div class="mt-1">
             <a-select
-              v-model:value="inputProduct.defaultLevelId"
-              label-in-value
-              style="width: 100%"
-              :options="dataLevel"
-              @change="handleChangeLevel"
+                v-model:value="inputProduct.defaultLevelId"
+                label-in-value
+                style="width: 100%"
+                :options="dataLevel"
+                @change="handleChangeLevel"
             >
             </a-select>
           </div>
@@ -591,11 +593,11 @@ onMounted(async () => {
           </label>
           <div class="mt-1">
             <a-select
-              v-model:value="inputProduct.categoryId"
-              label-in-value
-              style="width: 100%"
-              :options="dataCategory"
-              @change="handleChangeCategory"
+                v-model:value="inputProduct.categoryId"
+                label-in-value
+                style="width: 100%"
+                :options="dataCategory"
+                @change="handleChangeCategory"
             >
             </a-select>
           </div>
@@ -606,32 +608,32 @@ onMounted(async () => {
 
         <div class="flex items-center mt-3 justify-start">
           <label
-            for="file-upload"
-            class="px-4 py-1 bg-blue-500 text-white cursor-pointer hover:bg-blue-600"
+              for="file-upload"
+              class="px-4 py-1 bg-blue-500 text-white cursor-pointer hover:bg-blue-600"
           >
             Tải file lên
           </label>
           <input
-            id="file-upload"
-            type="file"
-            class="sr-only"
-            @change="previewFile"
-            multiple="multiple"
+              id="file-upload"
+              type="file"
+              class="sr-only"
+              @change="previewFile"
+              multiple="multiple"
           />
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
           <div
-            v-for="(itemImg, indexImg) in inputProduct.fileUrl"
-            :key="index"
-            class="w-44 relative mt-2 overflow-hidden h-44"
-            v-if="inputProduct.fileUrl.length > 0"
+              v-for="(itemImg, indexImg) in inputProduct.fileUrl"
+              :key="index"
+              class="w-44 relative mt-2 overflow-hidden h-44"
+              v-if="inputProduct.fileUrl.length > 0"
           >
-            <img class="w-full h-full object-cover" :src="itemImg" alt="" />
+            <img class="w-full h-full object-cover" :src="itemImg" alt=""/>
             <div v-if="inputProduct.fileUrl.length > 0" class="ml-2">
               <button
-                class="text-red-700 bg-[#ffffff] w-7 h-7 shadow-md rounded-full absolute -top-1 -right-1"
-                @click="removeFilePreview(indexImg)"
+                  class="text-red-700 bg-[#ffffff] w-7 h-7 shadow-md rounded-full absolute -top-1 -right-1"
+                  @click="removeFilePreview(indexImg)"
               >
                 <i class="fa-solid text-gray-500 text-lg fa-xmark"></i>
               </button>
@@ -651,121 +653,121 @@ onMounted(async () => {
           <div class="overflow-hidden">
             <table class="min-w-full">
               <thead class="bg-gray-200 border-b">
-                <tr>
-                  <th
+              <tr>
+                <th
                     scope="col"
                     class="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                  >
-                    #
-                  </th>
-                  <th
+                >
+                  #
+                </th>
+                <th
                     scope="col"
                     class="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                  >
-                    Tên sản phẩm
-                  </th>
-                  <th
+                >
+                  Tên sản phẩm
+                </th>
+                <th
                     scope="col"
                     class="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                  >
-                    Mô tả
-                  </th>
-                  <th
+                >
+                  Mô tả
+                </th>
+                <th
                     scope="col"
                     class="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                  >
-                    Giá
-                  </th>
+                >
+                  Giá
+                </th>
 
-                  <th
+                <th
                     scope="col"
                     class="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                  >
-                    Ảnh
-                  </th>
+                >
+                  Ảnh
+                </th>
 
-                  <th
+                <th
                     scope="col"
                     class="text-sm font-medium flex justify-end text-gray-900 px-6 py-4 text-left"
-                  >
-                    Hành động
-                  </th>
-                </tr>
+                >
+                  Hành động
+                </th>
+              </tr>
               </thead>
               <tbody
-                v-for="(itemLevel, indexProduct) in dataProduct"
-                :key="indexProduct"
+                  v-for="(itemLevel, indexProduct) in dataProduct"
+                  :key="indexProduct"
               >
-                <tr
+              <tr
                   class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100"
-                >
-                  <td
+              >
+                <td
                     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-                  >
-                    {{ (currentPage - 1) * 10 + (indexProduct + 1) }}
-                  </td>
-                  <td
+                >
+                  {{ (currentPage - 1) * 10 + (indexProduct + 1) }}
+                </td>
+                <td
                     class="text-sm cursor-pointer text-gray-900 font-light px-6 py-4 whitespace-nowrap"
-                  >
-                    <router-link
+                >
+                  <router-link
                       :to="{
                         name: 'ProductDetail',
                         query: { id: itemLevel.id },
                       }"
-                    >
-                      <a-tooltip placement="bottom">
-                        <template #title>
-                          <span> Ấn vào để xem chi tiết sản phẩm </span>
-                        </template>
-                        {{ itemLevel.name }}
-                      </a-tooltip>
-                    </router-link>
-                  </td>
-                  <td
-                    class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap"
                   >
-                    {{ itemLevel.description }}
-                  </td>
+                    <a-tooltip placement="bottom">
+                      <template #title>
+                        <span> Ấn vào để xem chi tiết sản phẩm </span>
+                      </template>
+                      {{ itemLevel.name }}
+                    </a-tooltip>
+                  </router-link>
+                </td>
+                <td
+                    class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap"
+                >
+                  {{ itemLevel.description }}
+                </td>
 
-                  <td
+                <td
                     class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap"
-                  >
-                    {{ itemLevel.price }}đ
-                  </td>
+                >
+                  {{ itemLevel.price }}đ
+                </td>
 
-                  <td
+                <td
                     class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap"
-                  >
-                    <div class="w-[100px] h-[100px] overflow-hidden">
-                      <img
+                >
+                  <div class="w-[100px] h-[100px] overflow-hidden">
+                    <img
                         :src="itemLevel.imageList[0]"
                         alt=""
                         class="w-full h-full object-cover"
-                      />
-                    </div>
-                  </td>
+                    />
+                  </div>
+                </td>
 
-                  <td
+                <td
                     class="text-sm flex justify-end text-gray-900 font-light px-6 py-4 whitespace-nowrap"
-                  >
-                    <div class="flex justify-start items-center">
+                >
+                  <div class="flex justify-start items-center">
                       <span @click="showModalEdit(itemLevel.id)"
-                        ><i
+                      ><i
                           class="fa-solid fa-pen-to-square text-xl text-blue-500 mr-2 cursor-pointer"
-                        ></i
+                      ></i
                       ></span>
 
-                      <span
+                    <span
                         @click="showModalConfirm(itemLevel.id)"
                         data-bs-toggle="modal"
                         data-bs-target="#exampleModalCenter"
-                        ><i
-                          class="fa-solid fa-trash-can text-xl text-red-600 cursor-pointer"
-                        ></i
-                      ></span>
-                    </div>
-                  </td>
-                </tr>
+                    ><i
+                        class="fa-solid fa-trash-can text-xl text-red-600 cursor-pointer"
+                    ></i
+                    ></span>
+                  </div>
+                </td>
+              </tr>
               </tbody>
             </table>
           </div>
@@ -775,36 +777,36 @@ onMounted(async () => {
 
     <div class="flex justify-end">
       <a-pagination
-        @change="pageChanged()"
-        v-model:current="currentPage"
-        :total="totalPages"
-        show-less-items
-        :showSizeChanger="false"
+          @change="pageChanged()"
+          v-model:current="currentPage"
+          :total="totalPages"
+          show-less-items
+          :showSizeChanger="false"
       />
     </div>
   </a-page-header>
 
   <div
-    v-if="loading"
-    class="fixed top-0 bottom-0 left-0 z-[99999999] right-0 bg-black opacity-30 flex justify-center items-center"
+      v-if="loading"
+      class="fixed top-0 bottom-0 left-0 z-[99999999] right-0 bg-black opacity-30 flex justify-center items-center"
   >
     <Loading :loading="loading"></Loading>
   </div>
 
   <a-modal
-    v-model:visible="visibleConfirm"
-    title="Xóa sản phẩm"
-    :confirm-loading="confirmLoading"
-    @ok="handlRemoveProduct"
+      v-model:visible="visibleConfirm"
+      title="Xóa sản phẩm"
+      :confirm-loading="confirmLoading"
+      @ok="handlRemoveProduct"
   >
     <p>{{ modalText }}</p>
   </a-modal>
 
   <a-modal
-    v-model:visible="visibleEdit"
-    width="1000px"
-    title="Sửa danh mục"
-    @ok="handlEditProduct"
+      v-model:visible="visibleEdit"
+      width="1000px"
+      title="Sửa danh mục"
+      @ok="handlEditProduct"
   >
     <div>
       <label class="block text-sm font-medium text-gray-700">
@@ -812,8 +814,8 @@ onMounted(async () => {
       </label>
       <div class="mt-1">
         <a-input
-          v-model:value="inputProduct.name"
-          placeholder="Tên sản  phẩm "
+            v-model:value="inputProduct.name"
+            placeholder="Tên sản  phẩm "
         />
       </div>
       <span class="text-red-500 font-medium italic text-sm">
@@ -826,7 +828,7 @@ onMounted(async () => {
         Mã sản phẩm
       </label>
       <div class="mt-1">
-        <a-input v-model:value="inputProduct.sku" placeholder="Mã sản phẩm" />
+        <a-input v-model:value="inputProduct.sku" placeholder="Mã sản phẩm"/>
       </div>
       <span class="text-red-500 font-medium italic text-sm">
         {{ errors.sku }}</span
@@ -839,8 +841,8 @@ onMounted(async () => {
       </label>
       <div class="mt-1">
         <a-input
-          v-model:value="inputProduct.price"
-          placeholder="Giá   sản phẩm "
+            v-model:value="inputProduct.price"
+            placeholder="Giá   sản phẩm "
         />
       </div>
       <span class="text-red-500 font-medium italic text-sm">
@@ -854,11 +856,11 @@ onMounted(async () => {
       </label>
       <div class="mt-1">
         <a-select
-          v-model:value="inputProduct.priceUnit"
-          label-in-value
-          style="width: 100%"
-          :options="optionsMoney"
-          @change="handleChangeMoney"
+            v-model:value="inputProduct.priceUnit"
+            label-in-value
+            style="width: 100%"
+            :options="optionsMoney"
+            @change="handleChangeMoney"
         >
         </a-select>
       </div>
@@ -873,8 +875,8 @@ onMounted(async () => {
       </label>
       <div class="mt-1">
         <a-input
-          v-model:value="inputProduct.description"
-          placeholder="10 000VNĐ "
+            v-model:value="inputProduct.description"
+            placeholder="10 000VNĐ "
         />
       </div>
       <span class="text-red-500 font-medium italic text-sm">
@@ -887,7 +889,7 @@ onMounted(async () => {
         Tốc độ tối đa
       </label>
       <div class="mt-1">
-        <a-input v-model:value="inputProduct.maxSpeed" placeholder="10km" />
+        <a-input v-model:value="inputProduct.maxSpeed" placeholder="10km"/>
       </div>
       <span class="text-red-500 font-medium italic text-sm">
         {{ errors.maxSpeed }}</span
@@ -899,7 +901,7 @@ onMounted(async () => {
         Tốc độ tối thiểu
       </label>
       <div class="mt-1">
-        <a-input v-model:value="inputProduct.minSpeed" placeholder="1km" />
+        <a-input v-model:value="inputProduct.minSpeed" placeholder="1km"/>
       </div>
       <span class="text-red-500 font-medium italic text-sm">
         {{ errors.minSpeed }}</span
@@ -910,11 +912,11 @@ onMounted(async () => {
       <label class="block text-sm font-medium text-gray-700"> Level </label>
       <div class="mt-1">
         <a-select
-          v-model:value="inputProduct.defaultLevelId"
-          label-in-value
-          style="width: 100%"
-          :options="dataLevel"
-          @change="handleChangeLevel"
+            v-model:value="inputProduct.defaultLevelId"
+            label-in-value
+            style="width: 100%"
+            :options="dataLevel"
+            @change="handleChangeLevel"
         >
         </a-select>
       </div>
@@ -929,11 +931,11 @@ onMounted(async () => {
       </label>
       <div class="mt-1">
         <a-select
-          v-model:value="inputProduct.categoryId"
-          label-in-value
-          style="width: 100%"
-          :options="dataCategory"
-          @change="handleChangeCategory"
+            v-model:value="inputProduct.categoryId"
+            label-in-value
+            style="width: 100%"
+            :options="dataCategory"
+            @change="handleChangeCategory"
         >
         </a-select>
       </div>
@@ -944,32 +946,32 @@ onMounted(async () => {
 
     <div class="flex items-center mt-3 justify-start">
       <label
-        for="file-upload"
-        class="px-4 py-1 bg-blue-500 text-white cursor-pointer hover:bg-blue-600"
+          for="file-upload"
+          class="px-4 py-1 bg-blue-500 text-white cursor-pointer hover:bg-blue-600"
       >
         Tải file lên
       </label>
       <input
-        id="file-upload"
-        type="file"
-        class="sr-only"
-        @change="previewFile"
-        multiple="multiple"
+          id="file-upload"
+          type="file"
+          class="sr-only"
+          @change="previewFile"
+          multiple="multiple"
       />
     </div>
 
     <div class="flex flex-wrap items-center gap-2">
       <div
-        v-for="(itemImg, indexImg) in inputProduct.fileUrl"
-        :key="indexImg"
-        class="w-44 relative mt-2 overflow-hidden h-44"
-        v-if="inputProduct.fileUrl.length > 0"
+          v-for="(itemImg, indexImg) in inputProduct.fileUrl"
+          :key="indexImg"
+          class="w-44 relative mt-2 overflow-hidden h-44"
+          v-if="inputProduct.fileUrl.length > 0"
       >
-        <img class="w-full h-full object-cover" :src="itemImg" alt="" />
+        <img class="w-full h-full object-cover" :src="itemImg" alt=""/>
         <div v-if="inputProduct.fileUrl.length > 0" class="ml-2">
           <button
-            class="text-red-700 bg-[#ffffff] w-7 h-7 shadow-md rounded-full absolute -top-1 -right-1"
-            @click="removeFilePreview(indexImg)"
+              class="text-red-700 bg-[#ffffff] w-7 h-7 shadow-md rounded-full absolute -top-1 -right-1"
+              @click="removeFilePreview(indexImg)"
           >
             <i class="fa-solid text-gray-500 text-lg fa-xmark"></i>
           </button>
