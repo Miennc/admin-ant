@@ -252,9 +252,9 @@ const handlEditProduct = async () => {
     try {
       const formData = new FormData();
       formData.append("id", idEditLevel.value);
-      if (inputProduct.value.fileUpload) {
-        for (let i = 0; i < inputProduct.value.fileUpload.length; i++) {
-          formData.append("imageList", inputProduct.value.fileUpload[i]);
+      if (inputProduct.value.fileUrl.length) {
+        for (let i = 0; i < inputProduct.value.fileUrl.length; i++) {
+          formData.append("imageUrlsKeep", inputProduct.value.fileUrl[i]);
         }
       }
       formData.append("name", inputProduct.value.name);

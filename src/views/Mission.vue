@@ -34,7 +34,7 @@ const inputMission = ref({
   name: "",
   description: "",
   type: "",
-  steps: "",
+  distanceInKiloMeter: "",
   minutes: "",
   reward: "",
   rewardUnit: "",
@@ -44,7 +44,7 @@ const errors = ref({
   name: "",
   description: "",
   type: "",
-  steps: "",
+  distanceInKiloMeter: "",
   minutes: "",
   reward: "",
   rewardUnit: "",
@@ -71,7 +71,7 @@ const validate = () => {
   errors.value.type = inputMission.value.type
     ? ""
     : "Loại nhiệm vụ không được để trống";
-  errors.value.steps = regexNumber.test(inputMission.value.steps)
+  errors.value.distanceInKiloMeter = regexNumber.test(inputMission.value.distanceInKiloMeter)
     ? ""
     : "Số bước phải là số";
   errors.value.minutes =
@@ -89,7 +89,7 @@ const validate = () => {
       !errors.value.name &&
       !errors.value.description &&
       !errors.value.type &&
-      !errors.value.steps &&
+      !errors.value.distanceInKiloMeter &&
       !errors.value.minutes &&
       !errors.value.reward &&
       !errors.value.rewardUnit
@@ -99,7 +99,7 @@ const validate = () => {
       !errors.value.name &&
       !errors.value.description &&
       !errors.value.type &&
-      !errors.value.steps &&
+      !errors.value.distanceInKiloMeter &&
       !errors.value.reward &&
       !errors.value.rewardUnit
     );
@@ -151,7 +151,7 @@ const showModalEdit = async (id) => {
     name: "",
     description: "",
     type: "",
-    steps: "",
+    distanceInKiloMeter: "",
     minutes: "",
     reward: "",
     rewardUnit: "",
@@ -164,7 +164,7 @@ const showModalEdit = async (id) => {
       name: res.data.name,
       description: res.data.description,
       type: res.data.type,
-      steps: res.data.steps,
+      distanceInKiloMeter: res.data.distanceInKiloMeter,
       minutes: res.data.minutes,
       reward: res.data.reward,
       rewardUnit: res.data.rewardUnit,
@@ -182,7 +182,7 @@ const hanldEditCate = async () => {
         name: inputMission.value.name,
         description: inputMission.value.description,
         type: inputMission.value.type,
-        steps: inputMission.value.steps,
+        distanceInKiloMeter: inputMission.value.distanceInKiloMeter,
         minutes: inputMission.value.minutes,
         reward: inputMission.value.reward,
         rewardUnit: inputMission.value.rewardUnit,
@@ -204,7 +204,7 @@ const handlAddMission = async () => {
         name: inputMission.value.name,
         description: inputMission.value.description,
         type: inputMission.value.type,
-        steps: inputMission.value.steps,
+        distanceInKiloMeter: inputMission.value.distanceInKiloMeter,
         minutes: inputMission.value.minutes,
         reward: inputMission.value.reward,
         rewardUnit: inputMission.value.rewardUnit,
@@ -216,7 +216,7 @@ const handlAddMission = async () => {
         name: "",
         description: "",
         type: "",
-        steps: "",
+        distanceInKiloMeter: "",
         minutes: "",
         reward: "",
         rewardUnit: "",
@@ -378,16 +378,16 @@ onMounted(async () => {
 
         <div class="mt-2">
           <label class="block text-sm font-medium text-gray-700">
-            Số bước chân
+            Khoảng cách đi được
           </label>
           <div class="mt-1">
             <a-input
-              v-model:value="inputMission.steps"
-              placeholder="Số bước chân"
+              v-model:value="inputMission.distanceInKiloMeter"
+              placeholder="km"
             />
           </div>
           <span class="text-red-500 font-medium italic text-sm">
-            {{ errors.steps }}</span
+            {{ errors.distanceInKiloMeter }}</span
           >
         </div>
 
@@ -531,7 +531,7 @@ onMounted(async () => {
                   <td
                     class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap"
                   >
-                    {{ itemMission.steps }}
+                    {{ itemMission.distanceInKiloMeter }}
                   </td>
                   <td
                     class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap"
@@ -596,7 +596,7 @@ onMounted(async () => {
   <a-modal
     v-model:visible="visibleEdit"
     width="1000px"
-    title="Sửa danh mục"
+    title="Sửa  nhiệm vụ"
     @ok="hanldEditCate"
   >
     <div>
@@ -650,16 +650,16 @@ onMounted(async () => {
 
     <div class="mt-2">
       <label class="block text-sm font-medium text-gray-700">
-        Số bước chân
+        Khoảng cách đi được
       </label>
       <div class="mt-1">
         <a-input
-          v-model:value="inputMission.steps"
-          placeholder="Số bước chân"
+          v-model:value="inputMission.distanceInKiloMeter"
+          placeholder="km"
         />
       </div>
       <span class="text-red-500 font-medium italic text-sm">
-        {{ errors.steps }}</span
+        {{ errors.distanceInKiloMeter }}</span
       >
     </div>
 
