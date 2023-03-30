@@ -91,7 +91,7 @@ onMounted(() => {
           :openKeys="openedSubMenu"
           @click="onMenuClick"
       >
-        <a-menu-item key="/">
+        <a-menu-item key="">
           <span class="flex items-center">
             <project-outlined/>
             <span>Quản lý sản phẩm </span>
