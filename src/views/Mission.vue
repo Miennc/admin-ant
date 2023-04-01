@@ -64,21 +64,21 @@ const regexNumber = /^[0-9]*$/;
 const validate = () => {
   errors.value.name = inputMission.value.name
     ? ""
-    : "Tên danh mục không được để trống";
+    : "Tên nhiệm vụ không được để trống";
   errors.value.description = inputMission.value.description
     ? ""
     : "Mô tả không được để trống";
   errors.value.type = inputMission.value.type
     ? ""
     : "Loại nhiệm vụ không được để trống";
-  errors.value.distanceInKiloMeter = regexNumber.test(inputMission.value.distanceInKiloMeter)
+  errors.value.distanceInKiloMeter = regexNumber.test(inputMission.value.distanceInKiloMeter) && inputMission.value.distanceInKiloMeter
     ? ""
-    : "Số bước phải là số";
+    : "Khoảng cách đi được phải  là số ";
   errors.value.minutes =
-    inputMission.value.minutes && inputMission.value.type == "FASTER"
+    regexNumber.test(inputMission.value.minutes) && inputMission.value.minutes && inputMission.value.type == "FASTER"
       ? ""
-      : "Số phút không được để trống";
-  errors.value.reward = regexNumber.test(inputMission.value.reward)
+      : "Số phút phải là số";
+  errors.value.reward = regexNumber.test(inputMission.value.reward) && inputMission.value.reward
     ? ""
     : "Số tiền phải là số";
   errors.value.rewardUnit = inputMission.value.rewardUnit
