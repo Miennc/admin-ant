@@ -38,7 +38,6 @@ const inputUsers = ref({
   password: "",
   userName: "",
   phone: "",
-  status: "ACTIVE",
 });
 
 const errors = ref({
@@ -118,10 +117,7 @@ const handleRemoveUser = async () => {
   visibleConfirm.value = false;
 };
 
-const handleChange = (value) => {
-  inputUsers.value.status = value.value;
-  console.log(value); // { key: "lucy", label: "Lucy (101)" }
-};
+
 
 const showModalConfirm = (id) => {
   idRemoveUser.value = id;
@@ -146,7 +142,6 @@ const showModalEdit = async (id) => {
       email: res.data.email,
       userName: res.data.username,
       phone: res.data.phoneNumber,
-      status: res.data.status,
     };
   } catch (e) {
     console.log(e);
@@ -163,7 +158,6 @@ const handleEditUser = async () => {
         password: inputUsers.value.password,
         username: inputUsers.value.userName,
         phoneNumber: inputUsers.value.phone,
-        status: inputUsers.value.status,
       });
       await getAllUser();
       toast.success("Cập nhật người dùng thành công");
@@ -597,17 +591,5 @@ onMounted(async () => {
       >
     </div>
 
-    <div class="mt-2">
-      <label class="block text-sm font-medium text-gray-700">
-        Trạng thái
-      </label>
-      <a-select
-        v-model:value="inputUsers.status"
-        label-in-value
-        style="width: 100%"
-        :options="options"
-        @change="handleChange"
-      ></a-select>
-    </div>
   </a-modal>
 </template>
