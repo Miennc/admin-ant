@@ -402,7 +402,6 @@ const handleAddLevelSpeci = async () => {
   if (validate()) {
     loading.value = true;
     try {
-      const levelUpgradePriceUnit = state.sellingPriceUnit.map((item) => item.value)
       await levelSpecificationServices.createLevelSpecification({
         daysToUseMax: 30,
         durability: inputLevelSpeci.value.durability,
@@ -423,7 +422,7 @@ const handleAddLevelSpeci = async () => {
         timeToUseMaxInDay: 8,
         levelUpgradeList: state.valueInput.map((price, index) => {
           return {
-            upgradePriceUnit: levelUpgradePriceUnit[index],
+            upgradePriceUnit: state.sellingPriceUnit[index],
             upgradePrice: parseInt(price),
           };
         }),
