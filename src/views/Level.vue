@@ -462,7 +462,7 @@ onMounted(async () => {
   <a-modal
     v-model:visible="visibleEdit"
     width="1000px"
-    title="Sửa danh mục"
+    title="Sửa level"
     @ok="handlEditLevel"
   >
     <div>
