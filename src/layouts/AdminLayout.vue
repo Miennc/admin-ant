@@ -180,7 +180,7 @@ onMounted(() => {
           <template #overlay>
             <a-menu>
               <a-menu-item>
-                <router-link to="/profile">Thông tin cá nhân</router-link>
+                <router-link :to="{name: 'Profile' }">Thông tin cá nhân</router-link>
               </a-menu-item>
               <a-menu-item>
                 <span @click="logout">Đăng xuất</span>
